@@ -910,6 +910,56 @@ body {
 }
 
 /* ==========================================================================
+   REGISTER FORM PANEL
+   ========================================================================== */
+
+/* Register form is hidden by default */
+.register-form {
+  display: none;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* When active, show with fade + slide up */
+.register-form.active {
+  display: flex;
+  animation: formSlideIn 0.35s ease forwards;
+}
+
+@keyframes formSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Login form hides with fade out */
+.login-form.hide {
+  animation: formSlideOut 0.25s ease forwards;
+}
+
+@keyframes formSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Subtitle transition when switching modes */
+.brand-subtitle {
+  transition: opacity 0.3s ease;
+}
+
+/* ==========================================================================
    RESPONSIVE MEDIA QUERIES
    ========================================================================== */
 

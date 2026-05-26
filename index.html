@@ -49,7 +49,7 @@
           <span class="status-text" id="statusConsole">SYSTEM: READY</span>
         </div>
 
-        <!-- Form -->
+        <!-- ===== LOGIN FORM ===== -->
         <form class="login-form" id="loginForm" autocomplete="off">
           <!-- Username / Email Input -->
           <div class="input-group">
@@ -115,15 +115,107 @@
           </button>
         </form>
 
+        <!-- ===== REGISTER FORM (hidden by default) ===== -->
+        <form class="login-form register-form" id="registerForm" autocomplete="off">
+          <!-- Full Name -->
+          <div class="input-group">
+            <label for="regName" class="input-label">
+              <i class="ph-bold ph-identification-badge icon-field"></i>
+              <span>Full Name</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="regName"
+                name="regName"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                spellcheck="false"
+              />
+              <span class="focus-border"></span>
+            </div>
+            <span class="error-msg" id="regNameError"></span>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="regEmail" class="input-label">
+              <i class="ph-bold ph-envelope-simple icon-field"></i>
+              <span>Email Address</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="email"
+                id="regEmail"
+                name="regEmail"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                spellcheck="false"
+              />
+              <span class="focus-border"></span>
+            </div>
+            <span class="error-msg" id="regEmailError"></span>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label for="regPassword" class="input-label">
+              <i class="ph-bold ph-key icon-field"></i>
+              <span>Password</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="regPassword"
+                name="regPassword"
+                placeholder="Create a password (min. 6 characters)"
+                autocomplete="new-password"
+              />
+              <button type="button" class="btn-toggle-password" id="toggleRegPassword" aria-label="Toggle password visibility">
+                <i class="ph-bold ph-eye" id="toggleRegIcon"></i>
+              </button>
+              <span class="focus-border"></span>
+            </div>
+            <span class="error-msg" id="regPasswordError"></span>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-group">
+            <label for="regConfirm" class="input-label">
+              <i class="ph-bold ph-lock icon-field"></i>
+              <span>Confirm Password</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="password"
+                id="regConfirm"
+                name="regConfirm"
+                placeholder="Repeat your password"
+                autocomplete="new-password"
+              />
+              <span class="focus-border"></span>
+            </div>
+            <span class="error-msg" id="regConfirmError"></span>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-submit" id="registerBtn">
+            <span class="btn-text">CREATE ACCOUNT</span>
+            <div class="btn-glow"></div>
+            <i class="ph-bold ph-user-plus btn-icon"></i>
+          </button>
+        </form>
+
         <!-- System Notification Log -->
         <div class="terminal-log" id="terminalLog">
           <div class="log-line">> Connecting to server...</div>
           <div class="log-line">> Securing connection...</div>
         </div>
 
-        <!-- Footer / Request Access -->
-        <div class="card-footer">
-          <p>Don't have an account? <a href="#" class="signup-link">Register here</a></p>
+        <!-- Footer - switches between login and register -->
+        <div class="card-footer" id="cardFooter">
+          <p id="footerLogin">Don't have an account? <a href="#" class="signup-link" id="showRegister">Register here</a></p>
+          <p id="footerRegister" style="display:none;">Already have an account? <a href="#" class="signup-link" id="showLogin">Log in</a></p>
         </div>
       </div>
 
