@@ -868,6 +868,8 @@ body {
   width: 100vw;
   height: 100vh;
   background: radial-gradient(circle at 0% 0%, #11141d 0%, #08090c 100%);
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack children vertically */
 }
 
 .dashboard-header {
@@ -1006,8 +1008,8 @@ body {
 }
 
 .dashboard-content {
-  padding: 30px 50px;
-  min-height: calc(100vh - 70px); /* Header balandligini hisobga olgan holda */
+  padding: 30px 50px; /* Padding is inside the flex item */
+  flex-grow: 1; /* Take up remaining vertical space */
   display: flex;
   justify-content: center;
   align-items: center;
