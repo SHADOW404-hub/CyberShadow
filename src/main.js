@@ -20,21 +20,12 @@ const toggleIcon = document.getElementById('toggleIcon');
 const submitBtn = document.getElementById('submitBtn');
 
 // Register fields
-<<<<<<< HEAD
 const regUsername    = document.getElementById('regUsername');
 const regEmail       = document.getElementById('regEmail');
 const regPassword    = document.getElementById('regPassword');
 const regConfirm     = document.getElementById('regConfirm');
 const regUsernameError = document.getElementById('regUsernameError');
 const regEmailError  = document.getElementById('regEmailError');
-=======
-const regName = document.getElementById('regName');
-const regEmail = document.getElementById('regEmail');
-const regPassword = document.getElementById('regPassword');
-const regConfirm = document.getElementById('regConfirm');
-const regNameError = document.getElementById('regNameError');
-const regEmailError = document.getElementById('regEmailError');
->>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
 const regPasswordError = document.getElementById('regPasswordError');
 const regConfirmError = document.getElementById('regConfirmError');
 const toggleRegPassword = document.getElementById('toggleRegPassword');
@@ -293,15 +284,9 @@ if (registerForm) {
       [regConfirm, regConfirmError]
     ]);
 
-<<<<<<< HEAD
     const username = regUsername.value.trim();
-    const email   = regEmail.value.trim();
-    const pass    = regPassword.value;
-=======
-    const name = regName.value.trim();
     const email = regEmail.value.trim();
     const password = regPassword.value;
->>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
     const confirm = regConfirm.value;
     let hasError = false;
 
@@ -333,32 +318,14 @@ if (registerForm) {
       return;
     }
 
-<<<<<<< HEAD
-    performRegister(username, email);
+    performRegister(username, email, password);
   });
 }
 
-function performRegister(username, email) {
-  registerBtn.classList.add('loading');
-  updateStatus('processing', 'Creating your account...');
-  addLogLine(`Registering: ${email}`, 'system');
-=======
-    performRegister(name, email, password);
-  });
-}
-
-async function performRegister(name, email, password) {
->>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
+async function performRegister(username, email, password) {
 
   registerBtn.classList.add('loading')
 
-<<<<<<< HEAD
-  setTimeout(() => {
-    registerBtn.classList.remove('loading');
-    updateStatus('success', `Welcome, ${username}!`);
-    showSuccessOverlay('ACCOUNT CREATED', `Welcome, ${username}! Redirecting...`);
-  }, 2500);
-=======
   updateStatus(
     'processing',
     'Creating your account...'
@@ -376,7 +343,7 @@ async function performRegister(name, email, password) {
       password: password,
       options: {
         data: {
-          full_name: name
+          username: username
         }
       }
     })
@@ -403,14 +370,13 @@ async function performRegister(name, email, password) {
 
   updateStatus(
     'success',
-    'Account created successfully'
+    `Welcome, ${username}!`
   )
 
   showSuccessOverlay(
     'ACCOUNT CREATED',
-    'You can now log in', false
+    `Welcome, ${username}! You can now log in.`, false
   )
->>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
 }
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
