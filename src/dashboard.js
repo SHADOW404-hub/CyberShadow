@@ -10,16 +10,17 @@ if (sessionError || !session) {
 }
 
 // Username chiqarish (email o'rniga)
-const { data: profile } = await supabase
+let { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('username, email')
     .eq('id', session.user.id)
     .single()
 
-let currentProfile = profile; // Supabase'dan olingan profil ma'lumotlarini saqlash
+if (profileError) console.error("Profile fetch error:", profileError);
+let currentProfile = profile || {}; // Supabase'dan olingan profil ma'lumotlarini saqlash
 
-if (profile && document.getElementById('userEmail')) {
-    document.getElementById('userEmail').textContent = profile.username;
+if (currentProfile.username && document.getElementById('userEmail')) {
+    document.getElementById('userEmail').textContent = currentProfile.username;
 }
 
 // Dropdown menyuni ochish/yopish logikasi
@@ -51,8 +52,8 @@ if (editProfileBtn && profileModal) {
         const uInput = document.getElementById('modalUsername');
         const eInput = document.getElementById('modalEmail');
         
-        uInput.value = profile?.username || '';
-        eInput.value = profile?.email || '';
+        uInput.value = currentProfile.username || '';
+        eInput.value = currentProfile.email || '';
         
         // Modal ochilganda inputlarni yana qulflash
         uInput.readOnly = true;
@@ -88,15 +89,25 @@ if (saveProfileBtn) {
         }
 
         if (changesMade) {
-            const { error } = await supabase
+            // Tugmani vaqtincha bloklash
+            saveProfileBtn.disabled = true;
+            saveProfileBtn.textContent = 'Saving...';
+
+            const { data, error } = await supabase
                 .from('profiles')
                 .update(updateData)
-                .eq('id', session.user.id);
+                .eq('id', session.user.id)
+                .select(); // Yangilangan qatorni qaytarib olish
+
+            saveProfileBtn.disabled = false;
+            saveProfileBtn.textContent = 'Save Changes';
 
             if (error) {
                 alert('Profilni yangilashda xatolik yuz berdi: ' + error.message);
+            } else if (!data || data.length === 0) {
+                alert('Xatolik: Ma\'lumot saqlanmadi. Supabase RLS (Row Level Security) politsiyalarini tekshiring!');
             } else {
-                currentProfile = { ...currentProfile, ...updateData }; // Mahalliy profilni yangilash
+                currentProfile = data[0]; // Mahalliy holatni bazadan qaytgan ma'lumot bilan yangilash
                 document.getElementById('userEmail').textContent = currentProfile.username; // Headerdagi usernameni yangilash
                 profileModal.classList.remove('active'); // Modalni yopish
             }
