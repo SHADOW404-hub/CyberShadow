@@ -17,7 +17,23 @@ const { data: profile } = await supabase
     .single()
 
 if (profile && document.getElementById('userEmail')) {
-    document.getElementById('userEmail').textContent = profile.username
+    document.getElementById('userEmail').textContent = profile.username;
+}
+
+// Dropdown menyuni ochish/yopish logikasi
+const profileDisplay = document.querySelector('.profile-display');
+const profileDropdown = document.querySelector('.profile-dropdown');
+
+if (profileDisplay && profileDropdown) {
+    profileDisplay.addEventListener('click', (e) => {
+        e.stopPropagation(); // Click hodisasi documentga o'tib ketmasligi uchun
+        profileDropdown.classList.toggle('show');
+    });
+
+    // Tashqariga bosilganda dropdownni yopish
+    document.addEventListener('click', () => {
+        profileDropdown.classList.remove('show');
+    });
 }
 
 // Logout funksiyasi
