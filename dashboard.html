@@ -37,7 +37,7 @@
           </div>
           <!-- Dropdown menu -->
           <div class="profile-dropdown">
-              <a href="#" class="dropdown-item">
+              <a href="#" class="dropdown-item" id="editProfileBtn">
                   <i class="ph-bold ph-user-circle"></i> Edit Profile
               </a>
               <button id="logoutBtn" class="dropdown-item logout">
@@ -51,6 +51,31 @@
       <main class="dashboard-main-content">
         <p>Welcome to your CyberShadow Dashboard. Select an option from the menu above.</p>
       </main>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal-overlay">
+      <div class="glass-card modal-content">
+        <div class="card-decor top-left"></div>
+        <div class="card-decor top-right"></div>
+        <div class="card-decor-line"></div>
+        
+        <div class="modal-header">
+          <h3>USER PROFILE</h3>
+          <button id="closeModal" class="btn-close-modal"><i class="ph-bold ph-x"></i></button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="info-group">
+            <label>Current Username</label>
+            <p id="modalUsername">---</p>
+          </div>
+          <div class="info-group">
+            <label>Email Address</label>
+            <p id="modalEmail">---</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Background Cyber effects -->

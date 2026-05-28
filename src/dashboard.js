@@ -12,7 +12,7 @@ if (sessionError || !session) {
 // Username chiqarish (email o'rniga)
 const { data: profile } = await supabase
     .from('profiles')
-    .select('username')
+    .select('username, email')
     .eq('id', session.user.id)
     .single()
 
@@ -33,6 +33,26 @@ if (profileDisplay && profileDropdown) {
     // Tashqariga bosilganda dropdownni yopish
     document.addEventListener('click', () => {
         profileDropdown.classList.remove('show');
+    });
+}
+
+// Modal logikasi
+const editProfileBtn = document.getElementById('editProfileBtn');
+const profileModal = document.getElementById('editProfileModal');
+const closeModal = document.getElementById('closeModal');
+
+if (editProfileBtn && profileModal) {
+    editProfileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Ma'lumotlarni modalga yozish
+        document.getElementById('modalUsername').textContent = profile?.username || 'N/A';
+        document.getElementById('modalEmail').textContent = profile?.email || 'N/A';
+        
+        profileModal.classList.add('active');
+    });
+
+    closeModal.addEventListener('click', () => {
+        profileModal.classList.remove('active');
     });
 }
 
