@@ -2,44 +2,45 @@
    CYBERSHADOW INTERACTION CONTROLLER
    ========================================================================== */
 
+import { supabase } from './supabase.js'
 import './style.css';
 
 // ─── DOM Elements ─────────────────────────────────────────────────────────────
-const loginForm      = document.getElementById('loginForm');
-const registerForm   = document.getElementById('registerForm');
-const brandSubtitle  = document.querySelector('.brand-subtitle');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const brandSubtitle = document.querySelector('.brand-subtitle');
 
 // Login fields
-const usernameInput  = document.getElementById('username');
-const passwordInput  = document.getElementById('password');
-const usernameError  = document.getElementById('usernameError');
-const passwordError  = document.getElementById('passwordError');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const usernameError = document.getElementById('usernameError');
+const passwordError = document.getElementById('passwordError');
 const togglePassword = document.getElementById('togglePassword');
-const toggleIcon     = document.getElementById('toggleIcon');
-const submitBtn      = document.getElementById('submitBtn');
+const toggleIcon = document.getElementById('toggleIcon');
+const submitBtn = document.getElementById('submitBtn');
 
 // Register fields
-const regName        = document.getElementById('regName');
-const regEmail       = document.getElementById('regEmail');
-const regPassword    = document.getElementById('regPassword');
-const regConfirm     = document.getElementById('regConfirm');
-const regNameError   = document.getElementById('regNameError');
-const regEmailError  = document.getElementById('regEmailError');
+const regName = document.getElementById('regName');
+const regEmail = document.getElementById('regEmail');
+const regPassword = document.getElementById('regPassword');
+const regConfirm = document.getElementById('regConfirm');
+const regNameError = document.getElementById('regNameError');
+const regEmailError = document.getElementById('regEmailError');
 const regPasswordError = document.getElementById('regPasswordError');
-const regConfirmError  = document.getElementById('regConfirmError');
+const regConfirmError = document.getElementById('regConfirmError');
 const toggleRegPassword = document.getElementById('toggleRegPassword');
-const toggleRegIcon  = document.getElementById('toggleRegIcon');
-const registerBtn    = document.getElementById('registerBtn');
+const toggleRegIcon = document.getElementById('toggleRegIcon');
+const registerBtn = document.getElementById('registerBtn');
 
 // Shared
-const statusConsole  = document.getElementById('statusConsole');
+const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
-const terminalLog    = document.getElementById('terminalLog');
-const systemTime     = document.getElementById('systemTime');
-const glassCard      = document.querySelector('.glass-card');
+const terminalLog = document.getElementById('terminalLog');
+const systemTime = document.getElementById('systemTime');
+const glassCard = document.querySelector('.glass-card');
 const showRegisterLink = document.getElementById('showRegister');
-const showLoginLink  = document.getElementById('showLogin');
-const footerLogin    = document.getElementById('footerLogin');
+const showLoginLink = document.getElementById('showLogin');
+const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 
 // ─── Real-time Clock ──────────────────────────────────────────────────────────
@@ -47,7 +48,7 @@ function updateClock() {
   if (!systemTime) return;
   const now = new Date();
   const pad = n => String(n).padStart(2, '0');
-  systemTime.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  systemTime.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -222,10 +223,10 @@ function performLogin(username, password) {
   addLogLine(`Logging in: ${username.toUpperCase()}`, 'system');
 
   const steps = [
-    { delay: 400,  log: 'Checking credentials...',       type: 'system'  },
-    { delay: 900,  log: 'Connecting to database...',      type: 'system'  },
-    { delay: 1400, log: 'Loading your dashboard...',      type: 'system'  },
-    { delay: 2000, log: 'Login successful!',              type: 'success' },
+    { delay: 400, log: 'Checking credentials...', type: 'system' },
+    { delay: 900, log: 'Connecting to database...', type: 'system' },
+    { delay: 1400, log: 'Loading your dashboard...', type: 'system' },
+    { delay: 2000, log: 'Login successful!', type: 'success' },
   ];
   steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
 
@@ -254,11 +255,11 @@ if (registerForm) {
       [regConfirm, regConfirmError]
     ]);
 
-    const name    = regName.value.trim();
-    const email   = regEmail.value.trim();
-    const pass    = regPassword.value;
+    const name = regName.value.trim();
+    const email = regEmail.value.trim();
+    const pass = regPassword.value;
     const confirm = regConfirm.value;
-    let hasError  = false;
+    let hasError = false;
 
     if (name.length < 2) {
       showError(regName, regNameError, 'Please enter your full name.');
@@ -298,10 +299,10 @@ function performRegister(name, email) {
   addLogLine(`Registering: ${email}`, 'system');
 
   const steps = [
-    { delay: 400,  log: 'Validating email address...',    type: 'system'  },
-    { delay: 900,  log: 'Creating user profile...',       type: 'system'  },
-    { delay: 1400, log: 'Setting up your account...',     type: 'system'  },
-    { delay: 2000, log: 'Account created successfully!',  type: 'success' },
+    { delay: 400, log: 'Validating email address...', type: 'system' },
+    { delay: 900, log: 'Creating user profile...', type: 'system' },
+    { delay: 1400, log: 'Setting up your account...', type: 'system' },
+    { delay: 2000, log: 'Account created successfully!', type: 'success' },
   ];
   steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
 
