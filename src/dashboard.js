@@ -39,7 +39,6 @@ if (profileDisplay && profileDropdown) {
 // Modal logikasi
 const editProfileBtn = document.getElementById('editProfileBtn');
 const profileModal = document.getElementById('editProfileModal');
-const closeModal = document.getElementById('closeModal');
 const cancelModal = document.getElementById('cancelModal');
 
 if (editProfileBtn && profileModal) {
@@ -50,10 +49,6 @@ if (editProfileBtn && profileModal) {
         document.getElementById('modalEmail').textContent = profile?.email || 'N/A';
         
         profileModal.classList.add('active');
-    });
-
-    closeModal.addEventListener('click', () => {
-        profileModal.classList.remove('active');
     });
 
     cancelModal?.addEventListener('click', () => {

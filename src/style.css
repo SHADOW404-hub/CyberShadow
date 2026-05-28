@@ -1126,32 +1126,6 @@ body {
   text-shadow: 0 0 10px var(--neon-cyan-glow);
 }
 
-.btn-close-modal {
-  position: absolute; /* Tugmani absolut joylashtirish */
-  top: 15px; /* Yuqoridan masofa */
-  right: 15px; /* O'ngdan masofa */
-  z-index: 2001; /* Boshqa elementlardan ustun turishi uchun */
-  background: none;
-  border: none;
-  color: var(--color-text-bright);
-  font-size: 26px;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  width: 30px; /* Tugmaning o'lchami */
-  height: 30px; /* Tugmaning o'lchami */
-  border-radius: 50%; /* Tugmani dumaloq qilish */
-}
-
-.btn-close-modal:hover {
-  color: var(--color-error);
-  transform: rotate(90deg);
-  background: rgba(255, 51, 102, 0.1);
-}
-
 /* Modal Footer Styles */
 .modal-footer {
   display: flex;
