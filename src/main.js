@@ -242,13 +242,13 @@ if (loginForm) {
       [passwordInput, passwordError]
     ]);
 
-    const email = usernameInput.value.trim();
+    const identifier = usernameInput.value.trim();
     const pass = passwordInput.value; 
     let hasError = false;
 
-    if (!email.includes('@')) {
-      showError(usernameInput, usernameError, 'Please enter a valid email address.');
-      addLogLine('Error: Invalid email format', 'error');
+    if (identifier.length < 3) {
+      showError(usernameInput, usernameError, 'Please enter a valid username or email.');
+      addLogLine('Error: Identifier too short', 'error');
       hasError = true;
     }
     if (pass.length < 6) {
@@ -262,11 +262,11 @@ if (loginForm) {
       return;
     }
 
-    performLogin(email, pass);
+    performLogin(identifier, pass);
   });
 }
 
-async function performLogin(email, password) {
+async function performLogin(identifier, password) {
 
   submitBtn.classList.add('loading')
 
@@ -276,11 +276,34 @@ async function performLogin(email, password) {
   )
 
   addLogLine(
-    `Logging in: ${email}`,
+    `Logging in: ${identifier}`,
     'system'
   )
 
   submitBtn.disabled = true;
+
+  let email = identifier;
+
+  // Agar identifierda '@' bo'lmasa, uni username deb hisoblaymiz
+  // va 'profiles' jadvalidan emailni qidiramiz
+  if (!identifier.includes('@')) {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('username', identifier)
+      .single();
+
+    if (profileError || !profile) {
+      updateStatus('error', 'User not found');
+      addLogLine('Error: Username not found', 'error');
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      alert('Username topilmadi');
+      return;
+    }
+    email = profile.email;
+  }
+
   const { data, error } =
     await supabase.auth.signInWithPassword({
       email,
