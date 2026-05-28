@@ -16,56 +16,33 @@
   </head>
   <body>
     <div class="app-container">
-      <!-- Silliq yon menyu -->
-      <nav class="side-nav">
-        <div class="nav-logo">
-          <div class="logo-dot"></div>
-          <span>CS</span>
+      <!-- Top Navigation -->
+      <header class="top-nav">
+        <div class="nav-left">
+          <div class="nav-logo">CS</div>
         </div>
-        <div class="nav-links">
-          <a href="#" class="nav-link active"><i class="ph-fill ph-house"></i></a>
-          <a href="#" class="nav-link"><i class="ph-bold ph-chart-pie-slice"></i></a>
-          <a href="#" class="nav-link"><i class="ph-bold ph-shield-check"></i></a>
-          <a href="#" class="nav-link"><i class="ph-bold ph-user"></i></a>
+        
+        <nav class="nav-center">
+          <a href="#" class="nav-item">Challenge</a>
+          <a href="#" class="nav-item">Scoreboard</a>
+        </nav>
+
+        <div class="nav-right">
+          <div class="profile-section" id="profileBtn">
+            <span id="userEmail">Agent</span>
+            <div class="profile-avatar">
+              <i class="ph-bold ph-user"></i>
+            </div>
+          </div>
+          <button class="btn-logout-minimal" id="logoutBtn" title="Logout">
+            <i class="ph-bold ph-sign-out"></i>
+          </button>
         </div>
-        <button class="btn-logout-icon" id="logoutBtn">
-          <i class="ph-bold ph-sign-out"></i>
-        </button>
-      </nav>
+      </header>
 
       <!-- Asosiy kontent -->
       <main class="main-content">
-        <header class="top-bar">
-          <div class="welcome-text">
-            <h1>Salom, <span id="userEmail">Agent</span></h1>
-            <p>Tizim holati barqaror va himoyalangan.</p>
-          </div>
-          <div class="status-pill">
-            <span class="pulse-dot"></span>
-            ONLINE
-          </div>
-        </header>
-
-        <div class="content-grid">
-          <!-- Asosiy karta -->
-          <div class="glass-panel main-stats reveal-1">
-            <div class="panel-header">Xavfsizlik monitoringi</div>
-            <div class="stats-placeholder">
-              <div class="big-circle-progress">
-                <span class="percentage">98%</span>
-                <span class="label">Secure</span>
-              </div>
-            </div>
-          </div>
-          <!-- Kichik kartalar -->
-          <div class="glass-panel info-card reveal-2">
-            <div class="panel-header">So'nggi harakatlar</div>
-            <div class="simple-list">
-              <div class="list-item"><span>Muvaffaqiyatli kirish</span><time>Hozir</time></div>
-              <div class="list-item"><span>IP tekshiruvi</span><time>2 daq avval</time></div>
-            </div>
-          </div>
-        </div>
+        <!-- Content will be added here later -->
       </main>
     </div>
 
