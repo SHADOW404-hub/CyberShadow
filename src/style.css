@@ -1136,7 +1136,7 @@ body {
 }
 
 .btn-save {
-  flex: 2;
+  flex: 1;
   background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
   color: #000;
   border: none;
