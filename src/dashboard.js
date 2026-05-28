@@ -16,8 +16,6 @@ let { data: profile, error: profileError } = await supabase
     .eq('id', session.user.id)
     .single()
 
-console.log("Fetched profile:", profile); // Debugging uchun: Supabase'dan kelgan profil ma'lumotlarini tekshiring
-
 if (profileError) console.error("Profile fetch error:", profileError);
 let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null }; // avatar_url ni ham qo'shamiz
 
@@ -232,12 +230,15 @@ if (saveProfileBtn) {
 }
 
 // Inline CHANGE tugmalari uchun logika
-document.querySelectorAll('.btn-inline-change').forEach(btn => { //
+document.querySelectorAll('.btn-inline-change').forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-target');
+        if (!targetId) return; // Rasm uchun bo'lgan tugmani chetlab o'tish
         const input = document.getElementById(targetId);
-        input.readOnly = false; // Tahrirlashga ruxsat berish
-        input.focus();
+        if (input) {
+            input.readOnly = false; // Tahrirlashga ruxsat berish
+            input.focus();
+        }
     });
 });
 
