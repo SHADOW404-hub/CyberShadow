@@ -417,19 +417,6 @@ async function performRegister(username, email, password) {
       }
     })
 
-  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, 'profiles' jadvaliga ma'lumot qo'shamiz
-  if (data && data.user) {
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        { id: data.user.id, username: username, email: email }
-      ]);
-
-    if (profileError) {
-      addLogLine('Warning: Could not create profile record', 'error');
-    }
-  }
-
   registerBtn.classList.remove('loading')
   registerBtn.disabled = false;
 
@@ -451,6 +438,22 @@ async function performRegister(username, email, password) {
 
     alert(errorMsg)
     return
+  }
+
+  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, 'profiles' jadvaliga ma'lumot qo'shamiz
+  if (data && data.user) {
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        { id: data.user.id, username: username, email: email }
+      ]);
+
+    if (profileError) {
+      updateStatus('error', 'Profile creation failed');
+      addLogLine(`Database Error: ${profileError.message}`, 'error');
+      alert(`Foydalanuvchi yaratildi, lekin profil bazaga yozilmadi: ${profileError.message}. RLS qoidalarini tekshiring!`);
+      return;
+    }
   }
 
   updateStatus(
