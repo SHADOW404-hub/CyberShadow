@@ -35,6 +35,7 @@ const registerBtn = document.getElementById('registerBtn');
 // Shared
 const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
+const terminalLog = document.getElementById('terminalLog');
 const systemTime = document.getElementById('systemTime');
 const glassCard = document.querySelector('.glass-card');
 const showRegisterLink = document.getElementById('showRegister');
@@ -93,7 +94,6 @@ function showSuccessOverlay(title, subtitle, isLogin = false) {
     setTimeout(() => location.reload(), 2800);
   }
 }
-
 function updateClock() {
   if (!systemTime) return;
   const now = new Date();
@@ -102,6 +102,16 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
+
+// ─── Terminal Log Helper ──────────────────────────────────────────────────────
+function addLogLine(text, type = '') {
+  if (!terminalLog) return;
+  const line = document.createElement('div');
+  line.className = `log-line ${type}`;
+  line.textContent = `> ${text}`;
+  terminalLog.appendChild(line);
+  terminalLog.scrollTop = terminalLog.scrollHeight;
+}
 
 // ─── Status Bar Update ───────────────────────────────────────────────────────
 function updateStatus(stateClass, text) {
@@ -151,6 +161,7 @@ if (togglePassword) {
     const isHidden = passwordInput.type === 'password';
     passwordInput.type = isHidden ? 'text' : 'password';
     toggleIcon.className = isHidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
+    addLogLine(isHidden ? 'Password visibility: Shown' : 'Password visibility: Hidden');
   });
 }
 
@@ -172,10 +183,10 @@ if (showRegisterLink) {
     loginForm.classList.add('hide');
     setTimeout(() => {
       loginForm.style.display = 'none';
-      registerForm.classList.remove('active'); // Oldingi holatni tozalash
       registerForm.style.display = 'flex';
       setTimeout(() => {
         registerForm.classList.add('active');
+        loginForm.classList.remove('hide');
         
         brandSubtitle.textContent = 'CREATE NEW ACCOUNT';
         footerLogin.style.display = 'none';
@@ -183,12 +194,6 @@ if (showRegisterLink) {
         updateStatus('online', 'READY — Registration mode');
       }, 10);
     }, 400);
-
-    // Login xatoliklarini tozalash
-    clearErrors([
-      [usernameInput, usernameError],
-      [passwordInput, passwordError]
-    ]);
   });
 }
 
@@ -202,11 +207,11 @@ if (showLoginLink) {
 
     setTimeout(() => {
       registerForm.style.display = 'none';
-      loginForm.classList.add('hide'); // Animattsiyadan oldin yashirish
       loginForm.style.display = 'flex';
       
       setTimeout(() => {
-        loginForm.classList.remove('hide'); // Silliq paydo bo'lish
+        loginForm.style.opacity = '1';
+        loginForm.style.transform = 'translateX(0)';
         
         brandSubtitle.textContent = 'SECURE LOGIN PORTAL';
         footerLogin.style.display = '';
@@ -218,7 +223,6 @@ if (showLoginLink) {
     // Clear register errors
     clearErrors([
       [regUsername, regUsernameError],
-      [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
@@ -267,6 +271,7 @@ if (forgotPasswordLink) {
       return;
     }
 
+    addLogLine(`Initiating password reset for: ${identifier}`, 'system');
     updateStatus('processing', 'Sending reset link...');
 
     let email = identifier;
@@ -343,6 +348,11 @@ async function performLogin(identifier, password) {
       'Login failed'
     )
 
+    addLogLine(
+      error.message,
+      'error'
+    )
+
     alert(error.message)
 
     return
@@ -375,18 +385,12 @@ if (registerForm) {
     ]);
 
     const username = regUsername.value.trim();
-    const email = regEmail.value.trim();
     const password = regPassword.value;
     const confirm = regConfirm.value;
     let hasError = false;
 
     if (username.length < 3) {
       showError(regUsername, regUsernameError, 'Username must be at least 3 characters.');
-      hasError = true;
-    }
-
-    if (!email.includes('@')) {
-      showError(regEmail, regEmailError, 'Please enter a valid email address.');
       hasError = true;
     }
 
