@@ -1128,10 +1128,11 @@ body {
 .btn-close-modal {
   background: none;
   border: none;
-  color: var(--color-text-muted);
-  font-size: 22px;
+  color: var(--color-text-bright);
+  font-size: 26px;
   cursor: pointer;
   transition: var(--transition-fast);
+  display: flex;
 }
 
 .btn-close-modal:hover {
