@@ -417,6 +417,19 @@ async function performRegister(username, email, password) {
       }
     })
 
+  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, profil yaratamiz
+  if (data && data.user) {
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        { id: data.user.id, username: username, email: email }
+      ]);
+
+    if (profileError) {
+      addLogLine('Warning: Could not create profile record', 'error');
+    }
+  }
+
   registerBtn.classList.remove('loading')
   registerBtn.disabled = false;
 
