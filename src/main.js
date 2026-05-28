@@ -375,12 +375,18 @@ if (registerForm) {
     ]);
 
     const username = regUsername.value.trim();
+    const email = regEmail.value.trim();
     const password = regPassword.value;
     const confirm = regConfirm.value;
     let hasError = false;
 
     if (username.length < 3) {
       showError(regUsername, regUsernameError, 'Username must be at least 3 characters.');
+      hasError = true;
+    }
+
+    if (!email.includes('@')) {
+      showError(regEmail, regEmailError, 'Please enter a valid email address.');
       hasError = true;
     }
 
