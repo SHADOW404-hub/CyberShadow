@@ -256,9 +256,10 @@ body {
 }
 
 .logo-icon {
-  font-size: 32px;
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan-glow);
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px var(--neon-cyan-glow));
   transition: var(--transition-smooth);
 }
 
@@ -885,12 +886,16 @@ body {
 }
 
 .nav-logo {
-  font-size: 28px;
-  color: var(--neon-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 0 10px var(--neon-cyan-glow));
+}
+
+.nav-logo img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 
 .nav-brand {
