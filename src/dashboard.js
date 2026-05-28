@@ -28,8 +28,7 @@ if (currentProfile.username && document.getElementById('userEmail')) {
         if (currentProfile.avatar_url) {
             avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
         } else {
-            avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
-            avatarEl.innerHTML = `<i class="ph-bold ph-user"></i>`; // Default icon
+            avatarEl.innerHTML = currentProfile.username.charAt(0).toUpperCase();
         }
     }
 }
@@ -208,9 +207,13 @@ if (saveProfileBtn) {
                 document.getElementById('userEmail').textContent = currentProfile.username; // Headerdagi usernameni yangilash
                 
                 // Avatar harfini yangilash
-                const avatarEl = document.querySelector('.profile-avatar');
+                const avatarEl = document.getElementById('headerProfileAvatar'); // Use the ID for the header avatar
                 if (avatarEl) {
-                    avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+                    if (currentProfile.avatar_url) {
+                        avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarEl.innerHTML = currentProfile.username.charAt(0).toUpperCase();
+                    }
                 }
                 profileModal.classList.remove('active'); // Modalni yopish
             }
