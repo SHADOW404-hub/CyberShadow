@@ -45,6 +45,15 @@ const profileModal = document.getElementById('editProfileModal');
 const cancelModal = document.getElementById('cancelModal');
 const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes tugmasi
 
+// O'zgarishlarni tekshirish funksiyasi
+const checkChanges = () => {
+    const uInput = document.getElementById('modalUsername');
+    const eInput = document.getElementById('modalEmail');
+    const hasChanges = uInput.value.trim() !== (currentProfile.username || '') || 
+                       eInput.value.trim() !== (currentProfile.email || '');
+    if (saveProfileBtn) saveProfileBtn.disabled = !hasChanges;
+};
+
 if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -58,6 +67,9 @@ if (editProfileBtn && profileModal) {
         // Modal ochilganda inputlarni yana qulflash
         uInput.readOnly = true;
         eInput.readOnly = true;
+
+        // Tugmani boshlang'ich holatda bloklash
+        if (saveProfileBtn) saveProfileBtn.disabled = true;
         
         profileModal.classList.add('active');
     });
@@ -66,6 +78,10 @@ if (editProfileBtn && profileModal) {
         profileModal.classList.remove('active');
     });
 }
+
+// Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
+document.getElementById('modalUsername')?.addEventListener('input', checkChanges);
+document.getElementById('modalEmail')?.addEventListener('input', checkChanges);
 
 // Save Changes tugmasi logikasi
 if (saveProfileBtn) {

@@ -1148,6 +1148,12 @@ body {
   transition: var(--transition-fast);
 }
 
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
 .btn-cancel {
   flex: 1;
   background: rgba(255, 255, 255, 0.05);
