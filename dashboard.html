@@ -15,41 +15,42 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/index.css" />
   </head>
   <body>
-    <div class="app-container">
+    <div class="dashboard-layout">
       <!-- Top Navigation -->
-      <header class="top-nav">
-        <a href="/dashboard.html" class="nav-left nav-brand">
-          <div class="nav-logo">
+      <header class="dashboard-header">
+        <a href="/dashboard.html" class="header-brand">
+          <div class="brand-logo">
             <img src="/favicon.svg" alt="CyberShadow Logo" />
           </div>
-          <span class="nav-title">CYBER<span>SHADOW</span></span>
+          <span class="brand-name">CYBER<span>SHADOW</span></span>
         </a>
         
-        <nav class="nav-center">
-          <a href="#" class="nav-item">Challenge</a>
-          <a href="#" class="nav-item">Scoreboard</a>
+        <nav class="header-menu">
+          <a href="#" class="menu-item">Challenge</a>
+          <a href="#" class="menu-item">Scoreboard</a>
         </nav>
 
-        <div class="nav-right">
-          <div class="profile-section" id="profileBtn">
+        <div class="header-profile">
+          <div class="profile-info" id="profileBtn">
             <span id="userEmail">Agent</span>
             <div class="profile-avatar">
               <i class="ph-bold ph-user"></i>
             </div>
           </div>
-          <button class="btn-logout-minimal" id="logoutBtn" title="Logout">
+          <button class="btn-logout" id="logoutBtn" title="Logout">
             <i class="ph-bold ph-sign-out"></i>
           </button>
         </div>
       </header>
 
       <!-- Asosiy kontent -->
-      <main class="main-content">
+      <main class="dashboard-content">
         <!-- Content will be added here later -->
       </main>
     </div>
 
     <!-- Background Cyber effects -->
+    <!-- This background is likely global and should be in index.html or body style. Removing from here to avoid duplication. -->
     <div class="cyber-bg">
       <div class="grid-overlay"></div>
       <div class="glow-orb orb-1"></div>
