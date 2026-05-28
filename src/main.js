@@ -19,11 +19,11 @@ const toggleIcon     = document.getElementById('toggleIcon');
 const submitBtn      = document.getElementById('submitBtn');
 
 // Register fields
-const regName        = document.getElementById('regName');
+const regUsername    = document.getElementById('regUsername');
 const regEmail       = document.getElementById('regEmail');
 const regPassword    = document.getElementById('regPassword');
 const regConfirm     = document.getElementById('regConfirm');
-const regNameError   = document.getElementById('regNameError');
+const regUsernameError = document.getElementById('regUsernameError');
 const regEmailError  = document.getElementById('regEmailError');
 const regPasswordError = document.getElementById('regPasswordError');
 const regConfirmError  = document.getElementById('regConfirmError');
@@ -175,7 +175,7 @@ if (showLoginLink) {
 
     // Clear register errors
     clearErrors([
-      [regName, regNameError],
+      [regUsername, regUsernameError],
       [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
@@ -248,20 +248,20 @@ if (registerForm) {
   registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
     clearErrors([
-      [regName, regNameError],
+      [regUsername, regUsernameError],
       [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
 
-    const name    = regName.value.trim();
+    const username = regUsername.value.trim();
     const email   = regEmail.value.trim();
     const pass    = regPassword.value;
     const confirm = regConfirm.value;
     let hasError  = false;
 
-    if (name.length < 2) {
-      showError(regName, regNameError, 'Please enter your full name.');
+    if (username.length < 3) {
+      showError(regUsername, regUsernameError, 'Username must be at least 3 characters.');
       hasError = true;
     }
 
@@ -288,11 +288,11 @@ if (registerForm) {
       return;
     }
 
-    performRegister(name, email);
+    performRegister(username, email);
   });
 }
 
-function performRegister(name, email) {
+function performRegister(username, email) {
   registerBtn.classList.add('loading');
   updateStatus('processing', 'Creating your account...');
   addLogLine(`Registering: ${email}`, 'system');
@@ -307,8 +307,8 @@ function performRegister(name, email) {
 
   setTimeout(() => {
     registerBtn.classList.remove('loading');
-    updateStatus('success', `Welcome, ${name.split(' ')[0]}!`);
-    showSuccessOverlay('ACCOUNT CREATED', `Welcome, ${name.split(' ')[0]}! Redirecting...`);
+    updateStatus('success', `Welcome, ${username}!`);
+    showSuccessOverlay('ACCOUNT CREATED', `Welcome, ${username}! Redirecting...`);
   }, 2500);
 }
 
