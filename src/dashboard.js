@@ -40,6 +40,7 @@ if (profileDisplay && profileDropdown) {
 const editProfileBtn = document.getElementById('editProfileBtn');
 const profileModal = document.getElementById('editProfileModal');
 const closeModal = document.getElementById('closeModal');
+const cancelModal = document.getElementById('cancelModal');
 
 if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
@@ -52,6 +53,10 @@ if (editProfileBtn && profileModal) {
     });
 
     closeModal.addEventListener('click', () => {
+        profileModal.classList.remove('active');
+    });
+
+    cancelModal?.addEventListener('click', () => {
         profileModal.classList.remove('active');
     });
 }
