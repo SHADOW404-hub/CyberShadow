@@ -417,7 +417,7 @@ async function performRegister(username, email, password) {
       }
     })
 
-  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, profil yaratamiz
+  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, 'profiles' jadvaliga ma'lumot qo'shamiz
   if (data && data.user) {
     const { error: profileError } = await supabase
       .from('profiles')
