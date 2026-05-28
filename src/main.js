@@ -183,18 +183,18 @@ if (showRegisterLink) {
     loginForm.classList.add('hide');
     setTimeout(() => {
       loginForm.style.display = 'none';
-      loginForm.classList.remove('hide');
-
-      // Show register form
-      registerForm.classList.add('active');
-
-      // Update UI
-      brandSubtitle.textContent = 'CREATE NEW ACCOUNT';
-      footerLogin.style.display = 'none';
-      footerRegister.style.display = '';
-      updateStatus('online', 'READY — Registration mode');
-      addLogLine('Switched to registration mode', 'system');
-    }, 250);
+      registerForm.style.display = 'flex';
+      setTimeout(() => {
+        registerForm.classList.add('active');
+        loginForm.classList.remove('hide');
+        
+        brandSubtitle.textContent = 'CREATE NEW ACCOUNT';
+        footerLogin.style.display = 'none';
+        footerRegister.style.display = '';
+        updateStatus('online', 'READY — Registration mode');
+        addLogLine('Switched to registration mode', 'system');
+      }, 10);
+    }, 400);
   });
 }
 
@@ -205,24 +205,22 @@ if (showLoginLink) {
 
     // Hide register form
     registerForm.classList.remove('active');
-    registerForm.style.display = 'none';
 
-    // Show login form
-    loginForm.style.display = '';
-    loginForm.style.opacity = '0';
-    loginForm.style.transform = 'translateY(12px)';
     setTimeout(() => {
-      loginForm.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-      loginForm.style.opacity = '1';
-      loginForm.style.transform = 'translateY(0)';
-    }, 20);
-
-    // Update UI
-    brandSubtitle.textContent = 'SECURE LOGIN PORTAL';
-    footerLogin.style.display = '';
-    footerRegister.style.display = 'none';
-    updateStatus('online', 'READY');
-    addLogLine('Switched to login mode', 'system');
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'flex';
+      
+      setTimeout(() => {
+        loginForm.style.opacity = '1';
+        loginForm.style.transform = 'translateX(0)';
+        
+        brandSubtitle.textContent = 'SECURE LOGIN PORTAL';
+        footerLogin.style.display = '';
+        footerRegister.style.display = 'none';
+        updateStatus('online', 'READY');
+        addLogLine('Switched to login mode', 'system');
+      }, 10);
+    }, 400);
 
     // Clear register errors
     clearErrors([
