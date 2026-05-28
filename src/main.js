@@ -40,7 +40,6 @@ const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
-const forgotPasswordLink = document.getElementById('forgotPassword');
 // ─── Success Overlay ──────────────────────────────────────────────────────────
 function showSuccessOverlay(title, subtitle, isLogin = false) {
   const overlay = document.createElement('div');
@@ -245,7 +244,7 @@ if (loginForm) {
     let hasError = false;
 
     if (identifier.length < 3) {
-      showError(usernameInput, usernameError, 'Please enter a valid username or email.');
+      showError(usernameInput, usernameError, 'Please enter your username.');
       addLogLine('Error: Identifier too short', 'error');
       hasError = true;
     }
@@ -261,52 +260,6 @@ if (loginForm) {
     }
 
     performLogin(identifier, pass);
-  });
-}
-
-// ─── FORGOT PASSWORD ──────────────────────────────────────────────────────────
-if (forgotPasswordLink) {
-  forgotPasswordLink.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const identifier = usernameInput.value.trim();
-
-    if (!identifier) {
-      showError(usernameInput, usernameError, 'Please enter your username or email first.');
-      addLogLine('Error: Identifier required for password reset', 'error');
-      return;
-    }
-
-    addLogLine(`Initiating password reset for: ${identifier}`, 'system');
-    updateStatus('processing', 'Sending reset link...');
-
-    let email = identifier;
-
-    // Agar username kiritilgan bo'lsa, profilidan emailni aniqlaymiz
-    if (!identifier.includes('@')) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('username', identifier)
-        .single();
-      
-      if (!profile) {
-        updateStatus('error', 'User not found');
-        alert('Username topilmadi');
-        return;
-      }
-      email = profile.email;
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
-
-    if (error) {
-      updateStatus('error', 'Reset failed');
-      alert(error.message);
-    } else {
-      updateStatus('success', 'Reset link sent');
-      addLogLine('Reset link sent to ' + email, 'success');
-      alert('Parolni tiklash havolasi emailingizga yuborildi!');
-    }
   });
 }
 
@@ -326,27 +279,23 @@ async function performLogin(identifier, password) {
 
   submitBtn.disabled = true;
 
-  let email = identifier;
+  // Username orqali tegishli tizim emailini qidiramiz
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('email')
+    .eq('username', identifier)
+    .single();
 
-  // Agar identifierda '@' bo'lmasa, uni username deb hisoblaymiz
-  // va 'profiles' jadvalidan emailni qidiramiz
-  if (!identifier.includes('@')) {
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('email')
-      .eq('username', identifier)
-      .single();
-
-    if (profileError || !profile) {
-      updateStatus('error', 'User not found');
-      addLogLine('Error: Username not found', 'error');
-      submitBtn.classList.remove('loading');
-      submitBtn.disabled = false;
-      alert('Username topilmadi');
-      return;
-    }
-    email = profile.email;
+  if (profileError || !profile) {
+    updateStatus('error', 'User not found');
+    addLogLine('Error: Username not found', 'error');
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+    alert('Username topilmadi');
+    return;
   }
+
+  const email = profile.email;
 
   const { data, error } =
     await supabase.auth.signInWithPassword({

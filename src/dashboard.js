@@ -8,9 +8,17 @@ if (!session) {
     window.location.href = '/'
 }
 
-// email chiqarish
-document.getElementById('userEmail')
-    .textContent = session.user.email
+// Username chiqarish (email o'rniga)
+const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', session.user.id)
+    .single()
+
+if (profile) {
+    document.getElementById('userEmail')
+        .textContent = profile.username
+}
 
 
 // logout
