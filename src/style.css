@@ -407,6 +407,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  transition: var(--transition-smooth);
+}
+
+.register-form {
+  display: none;
+}
+
+.login-form.hide {
+  opacity: 0;
+  transform: translateX(-20px);
+  pointer-events: none;
 }
 
 .input-group {
