@@ -17,7 +17,7 @@ let { data: profile, error: profileError } = await supabase
     .single()
 
 if (profileError) console.error("Profile fetch error:", profileError);
-let currentProfile = profile || {}; // Supabase'dan olingan profil ma'lumotlarini saqlash
+let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com' }; // Supabase'dan olingan profil ma'lumotlarini saqlash
 
 if (currentProfile.username && document.getElementById('userEmail')) {
     document.getElementById('userEmail').textContent = currentProfile.username;
@@ -43,6 +43,8 @@ if (profileDisplay && profileDropdown) {
 const editProfileBtn = document.getElementById('editProfileBtn');
 const profileModal = document.getElementById('editProfileModal');
 const cancelModal = document.getElementById('cancelModal');
+const logoutConfirmModal = document.getElementById('logoutConfirmModal');
+const cancelLogoutBtn = document.getElementById('cancelLogout');
 const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes tugmasi
 
 // O'zgarishlarni tekshirish funksiyasi
@@ -79,6 +81,18 @@ if (editProfileBtn && profileModal) {
     });
 }
 
+// Logout Confirmation Modal logikasi
+const logoutBtn = document.getElementById('logoutBtn');
+const confirmLogoutBtn = document.getElementById('confirmLogout');
+
+if (logoutBtn && logoutConfirmModal) {
+    logoutBtn.addEventListener('click', () => {
+        logoutConfirmModal.classList.add('active');
+    });
+    cancelLogoutBtn?.addEventListener('click', () => {
+        logoutConfirmModal.classList.remove('active');
+    });
+}
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 document.getElementById('modalUsername')?.addEventListener('input', checkChanges);
 document.getElementById('modalEmail')?.addEventListener('input', checkChanges);
@@ -134,7 +148,7 @@ if (saveProfileBtn) {
 }
 
 // Inline CHANGE tugmalari uchun logika
-document.querySelectorAll('.btn-inline-change').forEach(btn => {
+document.querySelectorAll('.btn-inline-change').forEach(btn => { //
     btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-target');
         const input = document.getElementById(targetId);
@@ -143,8 +157,8 @@ document.querySelectorAll('.btn-inline-change').forEach(btn => {
     });
 });
 
-// Logout funksiyasi
-document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+// Confirm Logout funksiyasi
+confirmLogoutBtn?.addEventListener('click', async () => {
     await supabase.auth.signOut()
     window.location.href = '/'
 })

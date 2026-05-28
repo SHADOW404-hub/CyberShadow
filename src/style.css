@@ -1167,6 +1167,10 @@ body {
   transition: var(--transition-fast);
 }
 
+.confirm-message {
+  text-align: center;
+}
+
 .btn-cancel:hover {
   background: rgba(255, 51, 102, 0.15);
   border-color: var(--color-error);
