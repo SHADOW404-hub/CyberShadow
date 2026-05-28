@@ -324,6 +324,12 @@ async function performRegister(name, email, password) {
 
   registerBtn.classList.add('loading')
 
+  console.log({
+    name,
+    email,
+    password
+  })
+
   updateStatus(
     'processing',
     'Creating your account...'
