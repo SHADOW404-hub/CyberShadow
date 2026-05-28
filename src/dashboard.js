@@ -1,16 +1,19 @@
 import { supabase } from './supabase.js'
 
-// session tekshirish
-const { data: { session } } =
-    await supabase.auth.getSession()
+// Autentifikatsiya holatini real-vaqtda kuzatish
+supabase.auth.onAuthStateChange((event, session) => {
+    if (!session) {
+        window.location.href = '/'
+        return
+    }
 
-if (!session) {
-    window.location.href = '/'
-}
+    // Emailni chiqarish (null check bilan)
+    const userEmail = document.getElementById('userEmail')
+    if (userEmail) {
+        userEmail.textContent = session.user.email
+    }
+})
 
-// email chiqarish
-document.getElementById('userEmail')
-    .textContent = session.user.email
 
 // logout
 document.getElementById('logoutBtn')
