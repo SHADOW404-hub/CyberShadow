@@ -1,8 +1,7 @@
 import { supabase } from './supabase.js'
 
 // session tekshirish
-const { data: { session } } =
-    await supabase.auth.getSession()
+const { data: { session } } = await supabase.auth.getSession()
 
 if (!session) {
     window.location.href = '/'
@@ -15,15 +14,12 @@ const { data: profile } = await supabase
     .eq('id', session.user.id)
     .single()
 
-if (profile) {
-    document.getElementById('userEmail')
-        .textContent = profile.username
+if (profile && document.getElementById('userEmail')) {
+    document.getElementById('userEmail').textContent = profile.username
 }
 
-
-// logout
-document.getElementById('logoutBtn')
-    .addEventListener('click', async () => {
-        await supabase.auth.signOut()
-        window.location.href = '/'
-    })
+// Logout funksiyasi
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/'
+})

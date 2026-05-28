@@ -21,9 +21,11 @@ const submitBtn = document.getElementById('submitBtn');
 
 // Register fields
 const regUsername    = document.getElementById('regUsername');
+const regEmail       = document.getElementById('regEmail');
 const regPassword    = document.getElementById('regPassword');
 const regConfirm     = document.getElementById('regConfirm');
 const regUsernameError = document.getElementById('regUsernameError');
+const regEmailError  = document.getElementById('regEmailError');
 const regPasswordError = document.getElementById('regPasswordError');
 const regConfirmError = document.getElementById('regConfirmError');
 const toggleRegPassword = document.getElementById('toggleRegPassword');
@@ -40,6 +42,7 @@ const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
+const forgotPasswordLink = document.getElementById('forgotPassword');
 // ─── Success Overlay ──────────────────────────────────────────────────────────
 function showSuccessOverlay(title, subtitle, isLogin = false) {
   const overlay = document.createElement('div');
@@ -244,7 +247,7 @@ if (loginForm) {
     let hasError = false;
 
     if (identifier.length < 3) {
-      showError(usernameInput, usernameError, 'Please enter your username.');
+      showError(usernameInput, usernameError, 'Please enter a valid username or email.');
       addLogLine('Error: Identifier too short', 'error');
       hasError = true;
     }
@@ -260,6 +263,48 @@ if (loginForm) {
     }
 
     performLogin(identifier, pass);
+  });
+}
+
+// ─── FORGOT PASSWORD ──────────────────────────────────────────────────────────
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const identifier = usernameInput.value.trim();
+
+    if (!identifier) {
+      showError(usernameInput, usernameError, 'Please enter your username or email first.');
+      return;
+    }
+
+    addLogLine(`Initiating password reset for: ${identifier}`, 'system');
+    updateStatus('processing', 'Sending reset link...');
+
+    let email = identifier;
+
+    if (!identifier.includes('@')) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', identifier)
+        .single();
+      
+      if (!profile) {
+        updateStatus('error', 'User not found');
+        alert('Username topilmadi');
+        return;
+      }
+      email = profile.email;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+
+    if (error) {
+      updateStatus('error', 'Reset failed');
+    } else {
+      updateStatus('success', 'Reset link sent');
+      alert('Parolni tiklash havolasi yuborildi!');
+    }
   });
 }
 
@@ -279,23 +324,24 @@ async function performLogin(identifier, password) {
 
   submitBtn.disabled = true;
 
-  // Username orqali tegishli tizim emailini qidiramiz
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('email')
-    .eq('username', identifier)
-    .single();
+  let email = identifier;
 
-  if (profileError || !profile) {
-    updateStatus('error', 'User not found');
-    addLogLine('Error: Username not found', 'error');
-    submitBtn.classList.remove('loading');
-    submitBtn.disabled = false;
-    alert('Username topilmadi');
-    return;
+  if (!identifier.includes('@')) {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('username', identifier)
+      .single();
+
+    if (profileError || !profile) {
+      updateStatus('error', 'User not found');
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+      alert('Username topilmadi');
+      return;
+    }
+    email = profile.email;
   }
-
-  const email = profile.email;
 
   const { data, error } =
     await supabase.auth.signInWithPassword({
@@ -344,6 +390,7 @@ if (registerForm) {
     e.preventDefault();
     clearErrors([
       [regUsername, regUsernameError],
+      [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
@@ -375,11 +422,11 @@ if (registerForm) {
       return;
     }
 
-    performRegister(username, password);
+    performRegister(username, email, password);
   });
 }
 
-async function performRegister(username, password) {
+async function performRegister(username, email, password) {
 
   registerBtn.classList.add('loading')
 
@@ -388,16 +435,13 @@ async function performRegister(username, password) {
     'Creating your account...'
   )
 
-  addLogLine(`Registering user: ${username}`, 'system')
+  addLogLine(`Registering user: ${username} (${email})`, 'system')
 
   registerBtn.disabled = true;
 
-  // Hozircha email shart emasligi uchun username'dan vaqtinchalik email yasaymiz
-  const fakeEmail = `${username.toLowerCase()}@cybershadow.local`;
-
   const { data, error } =
     await supabase.auth.signUp({
-      email: fakeEmail,
+      email: email,
       password: password,
       options: {
         data: {
@@ -436,7 +480,7 @@ async function performRegister(username, password) {
     const { error: profileError } = await supabase
       .from('profiles')
       .insert([
-        { id: data.user.id, username: username, email: fakeEmail }
+        { id: data.user.id, username: username, email: email }
       ]);
 
     if (profileError) {

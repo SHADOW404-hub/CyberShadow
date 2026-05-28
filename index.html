@@ -55,14 +55,14 @@
           <div class="input-group">
             <label for="username" class="input-label">
               <i class="ph-bold ph-user-focus icon-field"></i>
-              <span>Username</span>
+              <span>Username or Email</span>
             </label>
             <div class="input-wrapper">
               <input 
                 type="text" 
                 id="username" 
                 name="username" 
-                placeholder="Enter your username" 
+                placeholder="Enter your username or email" 
                 required 
                 autocomplete="username"
                 spellcheck="false"
@@ -93,6 +93,7 @@
               <span class="focus-border"></span>
             </div>
             <span class="error-msg" id="passwordError"></span>
+            <a href="#" class="forgot-link" id="forgotPassword">Forgot password?</a>
           </div>
 
           <!-- Options -->
@@ -134,6 +135,26 @@
               <span class="focus-border"></span>
             </div>
             <span class="error-msg" id="regUsernameError"></span>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="regEmail" class="input-label">
+              <i class="ph-bold ph-envelope-simple icon-field"></i>
+              <span>Email Address</span>
+            </label>
+            <div class="input-wrapper">
+              <input
+                type="email"
+                id="regEmail"
+                name="regEmail"
+                placeholder="Enter your email address"
+                autocomplete="email"
+                spellcheck="false"
+              />
+              <span class="focus-border"></span>
+            </div>
+            <span class="error-msg" id="regEmailError"></span>
           </div>
 
           <!-- Password -->
