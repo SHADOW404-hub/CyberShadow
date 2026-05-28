@@ -193,11 +193,11 @@ if (loginForm) {
       [passwordInput, passwordError]
     ]);
 
-    const user = usernameInput.value.trim();
+    const email = usernameInput.value.trim();
     const pass = passwordInput.value;
     let hasError = false;
 
-    if (user.length < 3) {
+    if (email.length < 3) {
       showError(usernameInput, usernameError, 'Username must be at least 3 characters.');
       addLogLine('Error: Username is too short', 'error');
       hasError = true;
