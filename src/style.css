@@ -140,7 +140,7 @@ body {
   background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
   top: -10%;
   left: -10%;
-  animation: orbDrift 30s infinite alternate ease-in-out;
+  animation: orbDrift 20s infinite alternate ease-in-out;
 }
 
 .orb-2 {
@@ -149,7 +149,7 @@ body {
   background: radial-gradient(circle, var(--neon-purple) 0%, transparent 70%);
   bottom: -15%;
   right: -10%;
-  animation: orbDrift 40s infinite alternate-reverse ease-in-out;
+  animation: orbDrift 25s infinite alternate-reverse ease-in-out;
 }
 
 .orb-3 {
