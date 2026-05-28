@@ -418,6 +418,8 @@ async function performRegister(username, password) {
     let errorMsg = error.message;
     if (error.status === 429) {
       errorMsg = "Too many requests. Please try again later or disable email confirmation in Supabase.";
+    } else if (error.message.includes("Email signups are disabled")) {
+      errorMsg = "Supabase-da 'Email signups' o'chirilgan! Authentication -> Providers -> Email bo'limidan 'Allow new users to sign up'ni yoqing.";
     }
 
     addLogLine(
