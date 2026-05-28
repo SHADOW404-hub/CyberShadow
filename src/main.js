@@ -2,44 +2,54 @@
    CYBERSHADOW INTERACTION CONTROLLER
    ========================================================================== */
 
+import { supabase } from './supabase.js'
 import './style.css';
 
 // ─── DOM Elements ─────────────────────────────────────────────────────────────
-const loginForm      = document.getElementById('loginForm');
-const registerForm   = document.getElementById('registerForm');
-const brandSubtitle  = document.querySelector('.brand-subtitle');
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const brandSubtitle = document.querySelector('.brand-subtitle');
 
 // Login fields
-const usernameInput  = document.getElementById('username');
-const passwordInput  = document.getElementById('password');
-const usernameError  = document.getElementById('usernameError');
-const passwordError  = document.getElementById('passwordError');
+const usernameInput = document.getElementById('username');
+const passwordInput = document.getElementById('password');
+const usernameError = document.getElementById('usernameError');
+const passwordError = document.getElementById('passwordError');
 const togglePassword = document.getElementById('togglePassword');
-const toggleIcon     = document.getElementById('toggleIcon');
-const submitBtn      = document.getElementById('submitBtn');
+const toggleIcon = document.getElementById('toggleIcon');
+const submitBtn = document.getElementById('submitBtn');
 
 // Register fields
+<<<<<<< HEAD
 const regUsername    = document.getElementById('regUsername');
 const regEmail       = document.getElementById('regEmail');
 const regPassword    = document.getElementById('regPassword');
 const regConfirm     = document.getElementById('regConfirm');
 const regUsernameError = document.getElementById('regUsernameError');
 const regEmailError  = document.getElementById('regEmailError');
+=======
+const regName = document.getElementById('regName');
+const regEmail = document.getElementById('regEmail');
+const regPassword = document.getElementById('regPassword');
+const regConfirm = document.getElementById('regConfirm');
+const regNameError = document.getElementById('regNameError');
+const regEmailError = document.getElementById('regEmailError');
+>>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
 const regPasswordError = document.getElementById('regPasswordError');
-const regConfirmError  = document.getElementById('regConfirmError');
+const regConfirmError = document.getElementById('regConfirmError');
 const toggleRegPassword = document.getElementById('toggleRegPassword');
-const toggleRegIcon  = document.getElementById('toggleRegIcon');
-const registerBtn    = document.getElementById('registerBtn');
+const toggleRegIcon = document.getElementById('toggleRegIcon');
+const registerBtn = document.getElementById('registerBtn');
 
 // Shared
-const statusConsole  = document.getElementById('statusConsole');
+const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
-const terminalLog    = document.getElementById('terminalLog');
-const systemTime     = document.getElementById('systemTime');
-const glassCard      = document.querySelector('.glass-card');
+const terminalLog = document.getElementById('terminalLog');
+const systemTime = document.getElementById('systemTime');
+const glassCard = document.querySelector('.glass-card');
 const showRegisterLink = document.getElementById('showRegister');
-const showLoginLink  = document.getElementById('showLogin');
-const footerLogin    = document.getElementById('footerLogin');
+const showLoginLink = document.getElementById('showLogin');
+const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 
 // ─── Real-time Clock ──────────────────────────────────────────────────────────
@@ -47,7 +57,7 @@ function updateClock() {
   if (!systemTime) return;
   const now = new Date();
   const pad = n => String(n).padStart(2, '0');
-  systemTime.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  systemTime.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -192,13 +202,13 @@ if (loginForm) {
       [passwordInput, passwordError]
     ]);
 
-    const user = usernameInput.value.trim();
-    const pass = passwordInput.value;
+    const email = usernameInput.value.trim();
+    const pass = passwordInput.value; 
     let hasError = false;
 
-    if (user.length < 3) {
-      showError(usernameInput, usernameError, 'Username must be at least 3 characters.');
-      addLogLine('Error: Username is too short', 'error');
+    if (!email.includes('@')) {
+      showError(usernameInput, usernameError, 'Please enter a valid email address.');
+      addLogLine('Error: Invalid email format', 'error');
       hasError = true;
     }
     if (pass.length < 6) {
@@ -212,35 +222,64 @@ if (loginForm) {
       return;
     }
 
-    performLogin(user, pass);
+    performLogin(email, pass);
   });
 }
 
-function performLogin(username, password) {
-  submitBtn.classList.add('loading');
-  updateStatus('processing', 'Verifying credentials...');
-  addLogLine(`Logging in: ${username.toUpperCase()}`, 'system');
+async function performLogin(email, password) {
 
-  const steps = [
-    { delay: 400,  log: 'Checking credentials...',       type: 'system'  },
-    { delay: 900,  log: 'Connecting to database...',      type: 'system'  },
-    { delay: 1400, log: 'Loading your dashboard...',      type: 'system'  },
-    { delay: 2000, log: 'Login successful!',              type: 'success' },
-  ];
-  steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
+  submitBtn.classList.add('loading')
+
+  updateStatus(
+    'processing',
+    'Verifying credentials...'
+  )
+
+  addLogLine(
+    `Logging in: ${email}`,
+    'system'
+  )
+
+  submitBtn.disabled = true;
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+  submitBtn.classList.remove('loading')
+  submitBtn.disabled = false;
+
+  if (error) {
+
+    updateStatus(
+      'error',
+      'Login failed'
+    )
+
+    addLogLine(
+      error.message,
+      'error'
+    )
+
+    alert(error.message)
+
+    return
+  }
+
+  updateStatus(
+    'success',
+    'Welcome back!'
+  )
+
+  showSuccessOverlay(
+    'LOGIN SUCCESSFUL',
+    'Redirecting to dashboard...', true
+  )
 
   setTimeout(() => {
-    submitBtn.classList.remove('loading');
-    if (password === 'admin1234') {
-      updateStatus('error', 'Login failed');
-      addLogLine('Error: Incorrect password', 'error');
-      showError(passwordInput, passwordError, 'Incorrect password.');
-      triggerShake();
-    } else {
-      updateStatus('success', 'Welcome back!');
-      showSuccessOverlay('LOGIN SUCCESSFUL', 'Redirecting to your dashboard...');
-    }
-  }, 2500);
+    window.location.href = '/dashboard.html'
+  }, 2000)
 }
 
 // ─── REGISTER Form Submit ─────────────────────────────────────────────────────
@@ -254,11 +293,17 @@ if (registerForm) {
       [regConfirm, regConfirmError]
     ]);
 
+<<<<<<< HEAD
     const username = regUsername.value.trim();
     const email   = regEmail.value.trim();
     const pass    = regPassword.value;
+=======
+    const name = regName.value.trim();
+    const email = regEmail.value.trim();
+    const password = regPassword.value;
+>>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
     const confirm = regConfirm.value;
-    let hasError  = false;
+    let hasError = false;
 
     if (username.length < 3) {
       showError(regUsername, regUsernameError, 'Username must be at least 3 characters.');
@@ -271,12 +316,12 @@ if (registerForm) {
       hasError = true;
     }
 
-    if (pass.length < 6) {
+    if (password.length < 6) {
       showError(regPassword, regPasswordError, 'Password must be at least 6 characters.');
       hasError = true;
     }
 
-    if (pass !== confirm) {
+    if (password !== confirm) {
       showError(regConfirm, regConfirmError, 'Passwords do not match.');
       hasError = true;
     }
@@ -288,6 +333,7 @@ if (registerForm) {
       return;
     }
 
+<<<<<<< HEAD
     performRegister(username, email);
   });
 }
@@ -296,24 +342,79 @@ function performRegister(username, email) {
   registerBtn.classList.add('loading');
   updateStatus('processing', 'Creating your account...');
   addLogLine(`Registering: ${email}`, 'system');
+=======
+    performRegister(name, email, password);
+  });
+}
 
-  const steps = [
-    { delay: 400,  log: 'Validating email address...',    type: 'system'  },
-    { delay: 900,  log: 'Creating user profile...',       type: 'system'  },
-    { delay: 1400, log: 'Setting up your account...',     type: 'system'  },
-    { delay: 2000, log: 'Account created successfully!',  type: 'success' },
-  ];
-  steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
+async function performRegister(name, email, password) {
+>>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
 
+  registerBtn.classList.add('loading')
+
+<<<<<<< HEAD
   setTimeout(() => {
     registerBtn.classList.remove('loading');
     updateStatus('success', `Welcome, ${username}!`);
     showSuccessOverlay('ACCOUNT CREATED', `Welcome, ${username}! Redirecting...`);
   }, 2500);
+=======
+  updateStatus(
+    'processing',
+    'Creating your account...'
+  )
+
+  addLogLine(
+    `Registering: ${email}`,
+    'system'
+  )
+
+  registerBtn.disabled = true;
+  const { data, error } =
+    await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    })
+
+  registerBtn.classList.remove('loading')
+  registerBtn.disabled = false;
+
+  if (error) {
+
+    updateStatus(
+      'error',
+      'Registration failed'
+    )
+
+    addLogLine(
+      error.message,
+      'error'
+    )
+
+    alert(error.message)
+
+    return
+  }
+
+  updateStatus(
+    'success',
+    'Account created successfully'
+  )
+
+  showSuccessOverlay(
+    'ACCOUNT CREATED',
+    'You can now log in', false
+  )
+>>>>>>> 5f87de15c6dda19268cc81dd7c7d4edf60042b7d
 }
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
-function showSuccessOverlay(title, subtitle) {
+function showSuccessOverlay(title, subtitle, isLogin = false) {
   const overlay = document.createElement('div');
   Object.assign(overlay.style, {
     position: 'fixed', top: '0', left: '0',
@@ -358,5 +459,9 @@ function showSuccessOverlay(title, subtitle) {
   overlay.append(ring, h2, p);
   document.body.appendChild(overlay);
   setTimeout(() => (overlay.style.opacity = '1'), 50);
-  setTimeout(() => location.reload(), 2800);
+  
+  // Redirect bo'layotgan bo'lsa reload qilmaslik kerak
+  if (!isLogin) {
+    setTimeout(() => location.reload(), 2800);
+  }
 }
