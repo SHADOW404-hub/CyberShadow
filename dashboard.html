@@ -1,26 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberShadow Dashboard</title>
-
-    <link rel="stylesheet" href="/src/dashboard.css">
-</head>
-
-<body>
-
-    <div class="container">
-        <h1 class="title">CYBERSHADOW DASHBOARD</h1>
-
-        <p id="userEmail">Loading...</p>
-
-        <button id="logoutBtn">Logout</button>
+  <head>
+    <meta charset="UTF-8" />
+    <link class="favicon" rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CyberShadow — Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/dist/index.css" crossorigin />
+  </head>
+  <body>
+    <!-- Cyberpunk grid background -->
+    <div class="cyber-bg">
+      <div class="grid-overlay"></div>
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
     </div>
 
+    <!-- Main Dashboard Card -->
+    <main class="login-container">
+      <div class="glass-card">
+        <div class="card-decor top-left"></div>
+        <div class="card-decor top-right"></div>
+        <div class="card-decor-line"></div>
+
+        <div class="brand-header">
+          <h1 class="brand-title">DASH<span>BOARD</span></h1>
+          <p class="brand-subtitle">WELCOME AGENT: <span id="userEmail" style="color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan-glow);">...</span></p>
+        </div>
+
+        <div class="status-bar">
+          <span class="status-indicator online"></span>
+          <span class="status-text">SYSTEM: ACCESS GRANTED</span>
+        </div>
+
+        <button class="btn-submit" id="logoutBtn" style="margin-top: 40px; background: linear-gradient(135deg, var(--color-error), var(--neon-purple));">
+          <span class="btn-text">TERMINATE SESSION</span>
+          <div class="btn-glow"></div>
+          <i class="ph-bold ph-power btn-icon"></i>
+        </button>
+      </div>
+    </main>
+
     <script type="module" src="/src/dashboard.js"></script>
-
-</body>
-
+  </body>
 </html>
