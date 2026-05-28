@@ -16,6 +16,8 @@ let { data: profile, error: profileError } = await supabase
     .eq('id', session.user.id)
     .single()
 
+console.log("Fetched profile:", profile); // Debugging uchun: Supabase'dan kelgan profil ma'lumotlarini tekshiring
+
 if (profileError) console.error("Profile fetch error:", profileError);
 let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null }; // avatar_url ni ham qo'shamiz
 
@@ -23,7 +25,7 @@ if (currentProfile.username && document.getElementById('userEmail')) {
     document.getElementById('userEmail').textContent = currentProfile.username;
 
     // Avatar uchun bosh harfni o'rnatish
-    const avatarEl = document.querySelector('.profile-avatar');
+    const avatarEl = document.getElementById('headerProfileAvatar'); // ID orqali to'g'ri elementni tanlash
     if (avatarEl) {
         if (currentProfile.avatar_url) {
             avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
