@@ -1136,7 +1136,6 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1;
-  font-family: "Phosphor", sans-serif; /* Phosphor ikonka shriftini aniq belgilash */
 }
 
 .btn-close-modal:hover {
