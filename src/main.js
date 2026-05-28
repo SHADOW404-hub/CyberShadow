@@ -316,7 +316,7 @@ if (registerForm) {
       return;
     }
 
-    performRegister(name, email);
+    performRegister(name, email, password);
   });
 }
 
