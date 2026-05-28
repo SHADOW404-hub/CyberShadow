@@ -299,12 +299,12 @@ if (registerForm) {
       hasError = true;
     }
 
-    if (pass.length < 6) {
+    if (password.length < 6) {
       showError(regPassword, regPasswordError, 'Password must be at least 6 characters.');
       hasError = true;
     }
 
-    if (pass !== confirm) {
+    if (password !== confirm) {
       showError(regConfirm, regConfirmError, 'Passwords do not match.');
       hasError = true;
     }
