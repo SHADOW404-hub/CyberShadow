@@ -85,12 +85,36 @@ function showSuccessOverlay(title, subtitle, isLogin = false) {
   });
   p.textContent = subtitle;
 
-  overlay.append(ring, h2, p);
+  const closeButton = document.createElement('button');
+  closeButton.innerHTML = '<i class="ph-bold ph-x"></i>'; // "x" belgisi uchun Phosphor Icons ishlatilgan
+  Object.assign(closeButton.style, {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    background: 'none',
+    border: 'none',
+    color: '#ffffff',
+    fontSize: '24px',
+    cursor: 'pointer',
+    zIndex: '1001',
+    transition: 'color 0.3s ease'
+  });
+  closeButton.addEventListener('mouseenter', () => {
+    closeButton.style.color = '#00f0ff'; // Hoverda neon cyan rang
+  });
+  closeButton.addEventListener('mouseleave', () => {
+    closeButton.style.color = '#ffffff'; // Asl rangga qaytish
+  });
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(overlay); // Tugmani bosganda overlayni yopish
+  });
+
+  overlay.append(ring, h2, p, closeButton); // closeButtonni ham qo'shamiz
   document.body.appendChild(overlay);
   setTimeout(() => (overlay.style.opacity = '1'), 50);
   
   if (!isLogin) {
-    setTimeout(() => location.reload(), 2800);
+    // Ro'yxatdan o'tish muvaffaqiyatli bo'lganda avtomatik qayta yuklash olib tashlandi
   }
 }
 function updateClock() {
