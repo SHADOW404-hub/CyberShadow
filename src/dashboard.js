@@ -12,12 +12,12 @@ if (sessionError || !session) {
 // Username chiqarish (email o'rniga)
 let { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('username, email')
+    .select('username, email, avatar_url') // avatar_url ni ham tanlab olamiz
     .eq('id', session.user.id)
     .single()
 
 if (profileError) console.error("Profile fetch error:", profileError);
-let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com' }; // Supabase'dan olingan profil ma'lumotlarini saqlash
+let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null }; // avatar_url ni ham qo'shamiz
 
 if (currentProfile.username && document.getElementById('userEmail')) {
     document.getElementById('userEmail').textContent = currentProfile.username;
@@ -25,7 +25,12 @@ if (currentProfile.username && document.getElementById('userEmail')) {
     // Avatar uchun bosh harfni o'rnatish
     const avatarEl = document.querySelector('.profile-avatar');
     if (avatarEl) {
-        avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+        if (currentProfile.avatar_url) {
+            avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+            avatarEl.innerHTML = `<i class="ph-bold ph-user"></i>`; // Default icon
+        }
     }
 }
 
@@ -49,6 +54,10 @@ if (profileDisplay && profileDropdown) {
 const editProfileBtn = document.getElementById('editProfileBtn');
 const profileModal = document.getElementById('editProfileModal');
 const cancelModal = document.getElementById('cancelModal');
+const modalProfilePictureInput = document.getElementById('modalProfilePictureInput');
+const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
+const profilePicturePreview = document.getElementById('profilePicturePreview');
+const headerProfileAvatar = document.getElementById('headerProfileAvatar');
 const logoutConfirmModal = document.getElementById('logoutConfirmModal');
 const cancelLogoutBtn = document.getElementById('cancelLogout');
 const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes tugmasi
@@ -71,11 +80,19 @@ if (editProfileBtn && profileModal) {
         
         uInput.value = currentProfile.username || '';
         eInput.value = currentProfile.email || '';
+
+        // Profil rasmini modalda ko'rsatish
+        if (currentProfile.avatar_url) {
+            profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+        } else {
+            profilePicturePreview.style.backgroundImage = 'none';
+            profilePicturePreview.innerHTML = `<i class="ph-bold ph-user" style="font-size: 40px; color: var(--color-text-muted);"></i>`;
+        }
         
         // Modal ochilganda inputlarni yana qulflash
         uInput.readOnly = true;
         eInput.readOnly = true;
-
+        modalProfilePictureInput.value = ''; // Oldingi tanlangan faylni tozalash
         // Tugmani boshlang'ich holatda bloklash
         if (saveProfileBtn) saveProfileBtn.disabled = true;
         
@@ -84,6 +101,31 @@ if (editProfileBtn && profileModal) {
 
     cancelModal?.addEventListener('click', () => {
         profileModal.classList.remove('active');
+    });
+}
+
+// Profil rasmini o'zgartirish tugmasi logikasi
+if (changeProfilePictureBtn && modalProfilePictureInput) {
+    changeProfilePictureBtn.addEventListener('click', () => {
+        modalProfilePictureInput.click(); // Yashirin inputni bosish
+    });
+
+    modalProfilePictureInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                profilePicturePreview.style.backgroundImage = `url('${event.target.result}')`;
+                profilePicturePreview.innerHTML = ''; // Ikonkani olib tashlash
+            };
+            reader.readAsDataURL(file);
+            checkChanges(); // O'zgarishlar borligini tekshirish
+        } else {
+            // Agar fayl tanlanmasa, avvalgi holatga qaytarish
+            if (currentProfile.avatar_url) profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+            else profilePicturePreview.style.backgroundImage = 'none';
+            checkChanges();
+        }
     });
 }
 
@@ -102,6 +144,7 @@ if (logoutBtn && logoutConfirmModal) {
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 document.getElementById('modalUsername')?.addEventListener('input', checkChanges);
 document.getElementById('modalEmail')?.addEventListener('input', checkChanges);
+modalProfilePictureInput?.addEventListener('change', checkChanges);
 
 // Save Changes tugmasi logikasi
 if (saveProfileBtn) {
@@ -109,12 +152,30 @@ if (saveProfileBtn) {
         const uInput = document.getElementById('modalUsername');
         const eInput = document.getElementById('modalEmail');
         
+        const newProfilePictureFile = modalProfilePictureInput.files[0];
         const newUsername = uInput.value.trim();
         const newEmail = eInput.value.trim();
 
         let changesMade = false;
         const updateData = {};
+        let avatarUrlToUpdate = currentProfile.avatar_url;
 
+        if (newProfilePictureFile) {
+            // Rasmni Supabase Storage'ga yuklash
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('avatars') // 'avatars' nomli bucket'ingiz bo'lishi kerak
+                .upload(`${session.user.id}/${newProfilePictureFile.name}`, newProfilePictureFile, {
+                    cacheControl: '3600',
+                    upsert: true
+                });
+            if (uploadError) {
+                alert('Profil rasmini yuklashda xatolik yuz berdi: ' + uploadError.message);
+                return;
+            }
+            avatarUrlToUpdate = supabase.storage.from('avatars').getPublicUrl(uploadData.path).data.publicUrl;
+            updateData.avatar_url = avatarUrlToUpdate;
+            changesMade = true;
+        }
         if (newUsername !== currentProfile.username) {
             updateData.username = newUsername;
             changesMade = true;

@@ -31,7 +31,7 @@
         <div class="user-profile-section">
           <div class="profile-display" id="profileBtn">
             <span id="userEmail">Agent</span>
-            <div class="profile-avatar">
+            <div class="profile-avatar" id="headerProfileAvatar">
               <i class="ph-bold ph-user"></i>
             </div>
           </div>
@@ -66,45 +66,26 @@
         
         <div class="modal-body">
           <div class="info-group">
-            <label>Username</label>
-            <div class="input-action-wrapper">
-              <input type="text" id="modalUsername" placeholder="Username" readonly>
-              <button type="button" class="btn-inline-change" data-target="modalUsername">CHANGE</button>
-            </div>
+            <label>Current Username</label>
+            <p id="modalUsername">---</p>
           </div>
           <div class="info-group">
             <label>Email Address</label>
-            <div class="input-action-wrapper">
-              <input type="email" id="modalEmail" placeholder="Email" readonly>
-              <button type="button" class="btn-inline-change" data-target="modalEmail">CHANGE</button>
-            </div>
+            <p id="modalEmail">---</p>
           </div>
+        </div>
+        <div class="info-group">
+          <label>Profile Picture</label>
+          <div class="input-action-wrapper">
+            <input type="file" id="modalProfilePictureInput" accept="image/*" style="display: none;">
+            <button type="button" class="btn-inline-change" id="changeProfilePictureBtn">CHANGE</button>
+          </div>
+          <div class="profile-avatar-preview" id="profilePicturePreview"></div>
         </div>
 
         <div class="modal-footer">
           <button class="btn-cancel" id="cancelModal">Cancel</button>
           <button class="btn-save" id="saveProfile">Save Changes</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Logout Confirmation Modal -->
-    <div id="logoutConfirmModal" class="modal-overlay">
-      <div class="glass-card modal-content">
-        <div class="card-decor top-left"></div>
-        <div class="card-decor top-right"></div>
-        <div class="card-decor-line"></div>
-        
-        <div class="modal-header">
-          <h3>CONFIRM LOGOUT</h3>
-        </div>
-        
-        <div class="modal-body">
-          <p class="confirm-message">Are you sure you want to log out?</p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" id="cancelLogout">No</button>
-          <button class="btn-save" id="confirmLogout">Yes, Log Out</button>
         </div>
       </div>
     </div>
