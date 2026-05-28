@@ -1,9 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-    'https://fbrrptvtlgsrkrfelqev.supabase.co',
-    'sb_publishable_0oBACFPPkhtNaCUcoa7QRw_WwughQGJ'
-)
+import { supabase } from './supabase.js'
 
 // session tekshirish
 const { data: { session } } =

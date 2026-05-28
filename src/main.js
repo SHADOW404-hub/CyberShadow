@@ -194,12 +194,12 @@ if (loginForm) {
     ]);
 
     const email = usernameInput.value.trim();
-    const pass = passwordInput.value;
+    const pass = passwordInput.value; 
     let hasError = false;
 
-    if (email.length < 3) {
-      showError(usernameInput, usernameError, 'Username must be at least 3 characters.');
-      addLogLine('Error: Username is too short', 'error');
+    if (!email.includes('@')) {
+      showError(usernameInput, usernameError, 'Please enter a valid email address.');
+      addLogLine('Error: Invalid email format', 'error');
       hasError = true;
     }
     if (pass.length < 6) {
@@ -231,6 +231,7 @@ async function performLogin(email, password) {
     'system'
   )
 
+  submitBtn.disabled = true;
   const { data, error } =
     await supabase.auth.signInWithPassword({
       email,
@@ -238,6 +239,7 @@ async function performLogin(email, password) {
     })
 
   submitBtn.classList.remove('loading')
+  submitBtn.disabled = false;
 
   if (error) {
 
@@ -263,7 +265,7 @@ async function performLogin(email, password) {
 
   showSuccessOverlay(
     'LOGIN SUCCESSFUL',
-    'Redirecting to dashboard...'
+    'Redirecting to dashboard...', true
   )
 
   setTimeout(() => {
@@ -282,10 +284,10 @@ if (registerForm) {
       [regConfirm, regConfirmError]
     ]);
 
-    const name = document.getElementById('regName').value.trim()
-    const email = document.getElementById('regEmail').value.trim()
-    const password = document.getElementById('regPassword').value.trim()
-    const confirm = document.getElementById('regConfirm').value.trim()
+    const name = regName.value.trim();
+    const email = regEmail.value.trim();
+    const password = regPassword.value;
+    const confirm = regConfirm.value;
     let hasError = false;
 
     if (name.length < 2) {
@@ -334,6 +336,7 @@ async function performRegister(name, email, password) {
     'system'
   )
 
+  registerBtn.disabled = true;
   const { data, error } =
     await supabase.auth.signUp({
       email: email,
@@ -346,6 +349,7 @@ async function performRegister(name, email, password) {
     })
 
   registerBtn.classList.remove('loading')
+  registerBtn.disabled = false;
 
   if (error) {
 
@@ -371,12 +375,12 @@ async function performRegister(name, email, password) {
 
   showSuccessOverlay(
     'ACCOUNT CREATED',
-    'You can now log in'
+    'You can now log in', false
   )
 }
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
-function showSuccessOverlay(title, subtitle) {
+function showSuccessOverlay(title, subtitle, isLogin = false) {
   const overlay = document.createElement('div');
   Object.assign(overlay.style, {
     position: 'fixed', top: '0', left: '0',
@@ -421,5 +425,9 @@ function showSuccessOverlay(title, subtitle) {
   overlay.append(ring, h2, p);
   document.body.appendChild(overlay);
   setTimeout(() => (overlay.style.opacity = '1'), 50);
-  setTimeout(() => location.reload(), 2800);
+  
+  // Redirect bo'layotgan bo'lsa reload qilmaslik kerak
+  if (!isLogin) {
+    setTimeout(() => location.reload(), 2800);
+  }
 }
