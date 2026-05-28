@@ -69,41 +69,24 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: -2;
   overflow: hidden;
-  background-color: #010205; /* Yanada to'qroq asosiy fon */
-  /* Kengaytirilgan mesh gradient */
+  background-color: #020408;
   background-image: 
-    radial-gradient(at 0% 0%, hsla(186,100%,50%,0.06) 0, transparent 50%), /* Cyan */
-    radial-gradient(at 50% 0%, hsla(271,100%,50%,0.06) 0, transparent 50%), /* Purple */
-    radial-gradient(at 100% 0%, hsla(186,100%,50%,0.06) 0, transparent 50%), /* Cyan */
-    radial-gradient(at 0% 100%, hsla(271,100%,50%,0.06) 0, transparent 50%), /* Purple */
-    radial-gradient(at 100% 100%, hsla(186,100%,50%,0.06) 0, transparent 50%), /* Cyan */
-    radial-gradient(at 25% 75%, hsla(300,100%,50%,0.04) 0, transparent 50%), /* Magenta */
-    radial-gradient(at 75% 25%, hsla(200,100%,50%,0.04) 0, transparent 50%); /* Blue */
-  background-size: 300% 300%; /* Katta o'lcham silliq animatsiya uchun */
-  animation: meshGradient 25s ease infinite alternate; /* Sekinroq va silliqroq animatsiya */
-  perspective: 1800px; /* Chuqurroq 3D perspektiva */
+    repeating-linear-gradient(45deg, rgba(0, 240, 255, 0.01) 0px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(-45deg, rgba(157, 78, 221, 0.01) 0px, transparent 1px, transparent 40px);
 }
 
-/* Floating Particles / Stars layer */
+/* Digital Fog layer */
 .cyber-bg::after {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(1.5px 1.5px at 40% 90%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 60% 30%, rgba(255,255,255,0.4), transparent);
-  background-size: 400px 400px; /* Zarrachalarni zichroq qiladi */
-  opacity: 0.3;
-  animation: starsTwinkle 12s ease-in-out infinite alternate;
+  inset: -100%;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05), transparent 60%);
+  filter: blur(80px);
+  animation: fogDrift 15s ease-in-out infinite alternate;
   pointer-events: none;
   z-index: 0;
 }
