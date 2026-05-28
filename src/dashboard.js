@@ -21,6 +21,12 @@ let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.c
 
 if (currentProfile.username && document.getElementById('userEmail')) {
     document.getElementById('userEmail').textContent = currentProfile.username;
+
+    // Avatar uchun bosh harfni o'rnatish
+    const avatarEl = document.querySelector('.profile-avatar');
+    if (avatarEl) {
+        avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+    }
 }
 
 // Dropdown menyuni ochish/yopish logikasi
@@ -139,6 +145,12 @@ if (saveProfileBtn) {
             } else {
                 currentProfile = data[0]; // Mahalliy holatni bazadan qaytgan ma'lumot bilan yangilash
                 document.getElementById('userEmail').textContent = currentProfile.username; // Headerdagi usernameni yangilash
+                
+                // Avatar harfini yangilash
+                const avatarEl = document.querySelector('.profile-avatar');
+                if (avatarEl) {
+                    avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+                }
                 profileModal.classList.remove('active'); // Modalni yopish
             }
         } else {
