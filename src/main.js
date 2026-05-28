@@ -217,31 +217,58 @@ if (loginForm) {
   });
 }
 
-function performLogin(username, password) {
-  submitBtn.classList.add('loading');
-  updateStatus('processing', 'Verifying credentials...');
-  addLogLine(`Logging in: ${username.toUpperCase()}`, 'system');
+async function performLogin(email, password) {
 
-  const steps = [
-    { delay: 400, log: 'Checking credentials...', type: 'system' },
-    { delay: 900, log: 'Connecting to database...', type: 'system' },
-    { delay: 1400, log: 'Loading your dashboard...', type: 'system' },
-    { delay: 2000, log: 'Login successful!', type: 'success' },
-  ];
-  steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
+  submitBtn.classList.add('loading')
+
+  updateStatus(
+    'processing',
+    'Verifying credentials...'
+  )
+
+  addLogLine(
+    `Logging in: ${email}`,
+    'system'
+  )
+
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    })
+
+  submitBtn.classList.remove('loading')
+
+  if (error) {
+
+    updateStatus(
+      'error',
+      'Login failed'
+    )
+
+    addLogLine(
+      error.message,
+      'error'
+    )
+
+    alert(error.message)
+
+    return
+  }
+
+  updateStatus(
+    'success',
+    'Welcome back!'
+  )
+
+  showSuccessOverlay(
+    'LOGIN SUCCESSFUL',
+    'Redirecting to dashboard...'
+  )
 
   setTimeout(() => {
-    submitBtn.classList.remove('loading');
-    if (password === 'admin1234') {
-      updateStatus('error', 'Login failed');
-      addLogLine('Error: Incorrect password', 'error');
-      showError(passwordInput, passwordError, 'Incorrect password.');
-      triggerShake();
-    } else {
-      updateStatus('success', 'Welcome back!');
-      showSuccessOverlay('LOGIN SUCCESSFUL', 'Redirecting to your dashboard...');
-    }
-  }, 2500);
+    window.location.href = '/dashboard.html'
+  }, 2000)
 }
 
 // ─── REGISTER Form Submit ─────────────────────────────────────────────────────
@@ -293,24 +320,59 @@ if (registerForm) {
   });
 }
 
-function performRegister(name, email) {
-  registerBtn.classList.add('loading');
-  updateStatus('processing', 'Creating your account...');
-  addLogLine(`Registering: ${email}`, 'system');
+async function performRegister(name, email, password) {
 
-  const steps = [
-    { delay: 400, log: 'Validating email address...', type: 'system' },
-    { delay: 900, log: 'Creating user profile...', type: 'system' },
-    { delay: 1400, log: 'Setting up your account...', type: 'system' },
-    { delay: 2000, log: 'Account created successfully!', type: 'success' },
-  ];
-  steps.forEach(s => setTimeout(() => addLogLine(s.log, s.type), s.delay));
+  registerBtn.classList.add('loading')
 
-  setTimeout(() => {
-    registerBtn.classList.remove('loading');
-    updateStatus('success', `Welcome, ${name.split(' ')[0]}!`);
-    showSuccessOverlay('ACCOUNT CREATED', `Welcome, ${name.split(' ')[0]}! Redirecting...`);
-  }, 2500);
+  updateStatus(
+    'processing',
+    'Creating your account...'
+  )
+
+  addLogLine(
+    `Registering: ${email}`,
+    'system'
+  )
+
+  const { data, error } =
+    await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: name
+        }
+      }
+    })
+
+  registerBtn.classList.remove('loading')
+
+  if (error) {
+
+    updateStatus(
+      'error',
+      'Registration failed'
+    )
+
+    addLogLine(
+      error.message,
+      'error'
+    )
+
+    alert(error.message)
+
+    return
+  }
+
+  updateStatus(
+    'success',
+    'Account created successfully'
+  )
+
+  showSuccessOverlay(
+    'ACCOUNT CREATED',
+    'You can now log in'
+  )
 }
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────

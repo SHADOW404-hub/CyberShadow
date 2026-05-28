@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    background: #05070d;
+    color: #00f0ff;
+    font-family: monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+}
+
+.title {
+    font-size: 40px;
+    text-shadow: 0 0 20px #00f0ff;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background: #00f0ff;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
