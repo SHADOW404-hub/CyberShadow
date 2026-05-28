@@ -1,10 +1,11 @@
 import { supabase } from './supabase.js'
 
 // session tekshirish
-const { data: { session } } = await supabase.auth.getSession()
+const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
-if (!session) {
-    window.location.href = '/'
+if (sessionError || !session) {
+    window.location.replace('/') // replace ishlatish back tugmasi bosilganda login loopni oldini oladi
+    return;
 }
 
 // Username chiqarish (email o'rniga)
