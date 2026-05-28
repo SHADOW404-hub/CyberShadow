@@ -434,19 +434,22 @@ async function performRegister(username, email, password) {
   registerBtn.disabled = false;
 
   if (error) {
-
     updateStatus(
       'error',
       'Registration failed'
     )
 
+    let errorMsg = error.message;
+    if (error.status === 429) {
+      errorMsg = "Too many requests. Please try again later or disable email confirmation in Supabase.";
+    }
+
     addLogLine(
-      error.message,
+      errorMsg,
       'error'
     )
 
-    alert(error.message)
-
+    alert(errorMsg)
     return
   }
 
