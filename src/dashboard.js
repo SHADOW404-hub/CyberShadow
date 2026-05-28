@@ -45,8 +45,15 @@ if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
         // Ma'lumotlarni modalga yozish
-        document.getElementById('modalUsername').value = profile?.username || '';
-        document.getElementById('modalEmail').value = profile?.email || '';
+        const uInput = document.getElementById('modalUsername');
+        const eInput = document.getElementById('modalEmail');
+        
+        uInput.value = profile?.username || '';
+        eInput.value = profile?.email || '';
+        
+        // Modal ochilganda inputlarni yana qulflash
+        uInput.readOnly = true;
+        eInput.readOnly = true;
         
         profileModal.classList.add('active');
     });
@@ -61,6 +68,7 @@ document.querySelectorAll('.btn-inline-change').forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-target');
         const input = document.getElementById(targetId);
+        input.readOnly = false; // Tahrirlashga ruxsat berish
         input.focus();
     });
 });
