@@ -882,159 +882,149 @@ body {
    DASHBOARD LAYOUT & STYLES
    ========================================================================== */
 
-.dashboard-layout {
+/* Dashboard Layout */
+.dashboard-wrapper {
   width: 100%;
   height: 100vh;
-  background: transparent;
-  display: flex; /* Make it a flex container */
-  flex-direction: column; /* Stack children vertically */
-  overflow: hidden; /* Animatsiya vaqtidagi qisqa muddatli scrollni cheklaydi */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Scrollbar muammosini hal qilish */
+  background: transparent; /* Orqadagi cyber-bg ko'rinishi uchun */
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 50px;
-  height: 70px;
-  background: rgba(255, 255, 255, 0.02);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  position: sticky;
-  top: 0;
+  padding: 0 40px;
+  height: 65px;
+  background: rgba(13, 16, 27, 0.8); /* To'qroq fon */
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   z-index: 100;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.header-brand {
+.header-brand-logo {
   display: flex;
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  opacity: 0; /* Animatsiya uchun */
-  animation: fadeIn 0.8s ease-out forwards 0.2s;
-}
-
-.brand-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: drop-shadow(0 0 8px var(--neon-cyan-glow));
+  opacity: 0;
+  animation: slideInLeft 0.8s ease-out forwards 0.2s;
 }
 
 .brand-logo img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 8px var(--neon-cyan-glow));
 }
 
-.brand-name {
+.brand-text {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   color: var(--color-text-bright);
 }
 
-.brand-name span {
+.brand-text span {
   background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.header-menu {
+.main-menu {
   display: flex;
-  gap: 35px;
-  opacity: 0; /* Animatsiya uchun */
+  gap: 30px;
+  opacity: 0;
   animation: fadeIn 0.8s ease-out forwards 0.4s;
 }
 
-.menu-item {
+.menu-link {
   text-decoration: none;
   color: var(--color-text-muted);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.8px;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  padding: 8px 15px;
+  border-radius: 6px;
   transition: var(--transition-smooth);
-  position: relative;
-  padding: 10px 0;
 }
 
-.menu-item:hover {
+.menu-link:hover, .menu-link.active {
   color: var(--neon-cyan);
-  text-shadow: 0 0 6px var(--neon-cyan-glow);
-  transform: translateY(-2px);
+  background: rgba(0, 240, 255, 0.08);
+  text-shadow: 0 0 5px var(--neon-cyan-glow);
 }
 
-.header-profile {
+.user-profile-section {
   display: flex;
   align-items: center;
   gap: 15px;
-  opacity: 0; /* Animatsiya uchun */
-  animation: fadeIn 0.8s ease-out forwards 0.6s;
+  opacity: 0;
+  animation: slideInRight 0.8s ease-out forwards 0.6s;
 }
 
-.profile-info {
+.profile-display {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 100px;
   cursor: pointer;
   transition: var(--transition-fast);
-  position: relative;
 }
 
-.profile-info:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--neon-cyan-faint);
+.profile-display:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--neon-cyan);
 }
 
-.profile-info span {
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
+.profile-display span {
+  font-size: 0.85rem;
+  color: var(--color-text-bright);
   font-family: var(--font-mono);
 }
 
 .profile-avatar {
-  width: 26px;
-  height: 26px;
-  background: rgba(0, 240, 255, 0.1);
+  width: 24px;
+  height: 24px;
+  background: var(--neon-cyan);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--neon-cyan);
-  font-size: 0.9rem;
+  color: #000;
+  font-size: 0.8rem;
 }
 
-.btn-logout {
+.btn-logout-icon {
   background: none;
   border: none;
   color: var(--color-text-muted);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: var(--transition-fast);
 }
 
-.btn-logout:hover {
+.btn-logout-icon:hover {
   color: var(--color-error);
   filter: drop-shadow(0 0 5px var(--color-error));
 }
 
-.dashboard-content {
-  padding: 30px 50px; /* Padding is inside the flex item */
-  flex-grow: 1; /* Take up remaining vertical space */
-  overflow-y: auto; /* Faqat kontent qismi scroll bo'ladi, header joyida qoladi */
+.dashboard-main-content {
+  flex-grow: 1;
+  padding: 40px 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   color: var(--color-text-muted);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   opacity: 0;
   animation: fadeIn 1s ease-out forwards 0.8s;
 }
@@ -1043,4 +1033,14 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
 }

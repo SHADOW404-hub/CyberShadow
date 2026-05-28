@@ -15,48 +15,40 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/index.css" />
   </head>
   <body>
-    <div class="dashboard-layout">
+    <div class="dashboard-wrapper">
       <!-- Top Navigation -->
       <header class="dashboard-header">
-        <a href="/dashboard.html" class="header-brand">
-          <div class="brand-logo">
+        <a href="/dashboard.html" class="header-brand-logo">
+          <div class="logo-icon">
             <img src="/favicon.svg" alt="CyberShadow Logo" />
           </div>
-          <span class="brand-name">CYBER<span>SHADOW</span></span>
+          <span class="brand-text">CYBER<span>SHADOW</span></span>
         </a>
         
-        <nav class="header-menu">
-          <a href="#" class="menu-item">Challenge</a>
-          <a href="#" class="menu-item">Scoreboard</a>
+        <nav class="main-menu">
+          <a href="#" class="menu-link">Challenge</a>
+          <a href="#" class="menu-link">Scoreboard</a>
         </nav>
 
-        <div class="header-profile">
-          <div class="profile-info" id="profileBtn">
+        <div class="user-profile-section">
+          <div class="profile-display" id="profileBtn">
             <span id="userEmail">Agent</span>
             <div class="profile-avatar">
               <i class="ph-bold ph-user"></i>
             </div>
           </div>
-          <button class="btn-logout" id="logoutBtn" title="Logout">
+          <button class="btn-logout-icon" id="logoutBtn" title="Logout">
             <i class="ph-bold ph-sign-out"></i>
           </button>
         </div>
       </header>
 
       <!-- Asosiy kontent -->
-      <main class="dashboard-content">
-        <!-- Content will be added here later -->
+      <main class="dashboard-main-content">
+        <p>Welcome to your CyberShadow Dashboard. Select an option from the menu above.</p>
       </main>
     </div>
 
-    <!-- Background Cyber effects -->
-    <!-- This background is likely global and should be in index.html or body style. Removing from here to avoid duplication. -->
-    <div class="cyber-bg">
-      <div class="grid-overlay"></div>
-      <div class="glow-orb orb-1"></div>
-      <div class="glow-orb orb-2"></div>
-      <div class="glow-orb orb-3"></div>
-    </div>
     <script type="module" src="/src/dashboard.js"></script>
   </body>
 </html>
