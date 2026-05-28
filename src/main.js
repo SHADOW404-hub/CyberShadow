@@ -21,11 +21,9 @@ const submitBtn = document.getElementById('submitBtn');
 
 // Register fields
 const regUsername    = document.getElementById('regUsername');
-const regEmail       = document.getElementById('regEmail');
 const regPassword    = document.getElementById('regPassword');
 const regConfirm     = document.getElementById('regConfirm');
 const regUsernameError = document.getElementById('regUsernameError');
-const regEmailError  = document.getElementById('regEmailError');
 const regPasswordError = document.getElementById('regPasswordError');
 const regConfirmError = document.getElementById('regConfirmError');
 const toggleRegPassword = document.getElementById('toggleRegPassword');
@@ -227,7 +225,6 @@ if (showLoginLink) {
     // Clear register errors
     clearErrors([
       [regUsername, regUsernameError],
-      [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
@@ -398,25 +395,17 @@ if (registerForm) {
     e.preventDefault();
     clearErrors([
       [regUsername, regUsernameError],
-      [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
 
     const username = regUsername.value.trim();
-    const email = regEmail.value.trim();
     const password = regPassword.value;
     const confirm = regConfirm.value;
     let hasError = false;
 
     if (username.length < 3) {
       showError(regUsername, regUsernameError, 'Username must be at least 3 characters.');
-      hasError = true;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      showError(regEmail, regEmailError, 'Please enter a valid email address.');
       hasError = true;
     }
 
@@ -437,11 +426,11 @@ if (registerForm) {
       return;
     }
 
-    performRegister(username, email, password);
+    performRegister(username, password);
   });
 }
 
-async function performRegister(username, email, password) {
+async function performRegister(username, password) {
 
   registerBtn.classList.add('loading')
 
@@ -450,12 +439,16 @@ async function performRegister(username, email, password) {
     'Creating your account...'
   )
 
-  addLogLine(`Registering user: ${username} (${email})`, 'system')
+  addLogLine(`Registering user: ${username}`, 'system')
 
   registerBtn.disabled = true;
+
+  // Hozircha email shart emasligi uchun username'dan vaqtinchalik email yasaymiz
+  const fakeEmail = `${username.toLowerCase()}@cybershadow.local`;
+
   const { data, error } =
     await supabase.auth.signUp({
-      email: email,
+      email: fakeEmail,
       password: password,
       options: {
         data: {
@@ -492,7 +485,7 @@ async function performRegister(username, email, password) {
     const { error: profileError } = await supabase
       .from('profiles')
       .insert([
-        { id: data.user.id, username: username, email: email }
+        { id: data.user.id, username: username, email: fakeEmail }
       ]);
 
     if (profileError) {
