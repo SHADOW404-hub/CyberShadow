@@ -282,10 +282,10 @@ if (registerForm) {
       [regConfirm, regConfirmError]
     ]);
 
-    const name = regName.value.trim();
-    const email = regEmail.value.trim();
-    const pass = regPassword.value;
-    const confirm = regConfirm.value;
+    const name = document.getElementById('regName').value.trim()
+    const email = document.getElementById('regEmail').value.trim()
+    const password = document.getElementById('regPassword').value.trim()
+    const confirm = document.getElementById('regConfirm').value.trim()
     let hasError = false;
 
     if (name.length < 2) {
@@ -324,11 +324,8 @@ async function performRegister(name, email, password) {
 
   registerBtn.classList.add('loading')
 
-  console.log({
-    name,
-    email,
-    password
-  })
+  console.log("regPassword element:", regPassword)
+  console.log("regPassword value:", regPassword?.value)
 
   updateStatus(
     'processing',
