@@ -331,10 +331,7 @@ async function performRegister(username, email, password) {
     'Creating your account...'
   )
 
-  addLogLine(
-    `Registering: ${email}`,
-    'system'
-  )
+  addLogLine(`Registering user: ${username} (${email})`, 'system')
 
   registerBtn.disabled = true;
   const { data, error } =
