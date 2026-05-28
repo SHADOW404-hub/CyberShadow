@@ -213,7 +213,7 @@ if (loginForm) {
       return;
     }
 
-    performLogin(user, pass);
+    performLogin(email, pass);
   });
 }
 
@@ -323,9 +323,6 @@ if (registerForm) {
 async function performRegister(name, email, password) {
 
   registerBtn.classList.add('loading')
-
-  console.log("regPassword element:", regPassword)
-  console.log("regPassword value:", regPassword?.value)
 
   updateStatus(
     'processing',
