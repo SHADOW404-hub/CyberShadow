@@ -30,7 +30,7 @@ if (document.getElementById('userEmail')) {
         if (currentProfile.avatar_url) {
             avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
         } else if (currentProfile.username) {
-            avatarEl.innerHTML = currentProfile.username.charAt(0).toUpperCase();
+            avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
         }
     }
 }
@@ -67,8 +67,10 @@ const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes t
 const checkChanges = () => {
     const uInput = document.getElementById('modalUsername');
     const eInput = document.getElementById('modalEmail');
+    const fileInput = document.getElementById('modalProfilePictureInput');
     const hasChanges = uInput.value.trim() !== (currentProfile.username || '') || 
-                       eInput.value.trim() !== (currentProfile.email || '');
+                       eInput.value.trim() !== (currentProfile.email || '') ||
+                       (fileInput && fileInput.files.length > 0);
     if (saveProfileBtn) saveProfileBtn.disabled = !hasChanges;
 };
 
@@ -85,9 +87,10 @@ if (editProfileBtn && profileModal) {
         // Profil rasmini modalda ko'rsatish
         if (currentProfile.avatar_url) {
             profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+            profilePicturePreview.textContent = '';
         } else {
             profilePicturePreview.style.backgroundImage = 'none';
-            profilePicturePreview.innerHTML = `<i class="ph-bold ph-user" style="font-size: 40px; color: var(--color-text-muted);"></i>`;
+            profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
         }
         
         // Modal ochilganda inputlarni yana qulflash
@@ -117,14 +120,17 @@ if (changeProfilePictureBtn && modalProfilePictureInput) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 profilePicturePreview.style.backgroundImage = `url('${event.target.result}')`;
-                profilePicturePreview.innerHTML = ''; // Ikonkani olib tashlash
+                    profilePicturePreview.textContent = ''; // Harfni olib tashlash
             };
             reader.readAsDataURL(file);
             checkChanges(); // O'zgarishlar borligini tekshirish
         } else {
             // Agar fayl tanlanmasa, avvalgi holatga qaytarish
             if (currentProfile.avatar_url) profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
-            else profilePicturePreview.style.backgroundImage = 'none';
+                else {
+                    profilePicturePreview.style.backgroundImage = 'none';
+                    profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
+                }
             checkChanges();
         }
     });
@@ -214,7 +220,7 @@ if (saveProfileBtn) {
                     if (currentProfile.avatar_url) {
                         avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
                     } else {
-                        avatarEl.innerHTML = currentProfile.username.charAt(0).toUpperCase();
+                        avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
                     }
                 }
                 profileModal.classList.remove('active'); // Modalni yopish
