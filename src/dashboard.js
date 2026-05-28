@@ -1,5 +1,4 @@
 import { supabase } from './supabase.js'
-import './style.css';
 
 // session tekshirish
 const { data: { session }, error: sessionError } = await supabase.auth.getSession()

@@ -11,42 +11,81 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Phosphor Icons -->
+    <!-- Phosphor Icons for modern sleek UI iconography -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/index.css" />
   </head>
   <body>
-    <!-- Cyberpunk grid background -->
+    <!-- Main Dashboard Root -->
+    <div class="dashboard-root">
+      <!-- Background decorative layer -->
+      <div class="hud-scanline"></div>
+      
+      <!-- Navigation Sidebar -->
+      <aside class="hud-sidebar">
+        <div class="sidebar-logo">
+          <i class="ph-bold ph-shield-checkered"></i>
+        </div>
+        <nav class="sidebar-nav">
+          <button class="nav-item active"><i class="ph-bold ph-squares-four"></i></button>
+          <button class="nav-item"><i class="ph-bold ph-database"></i></button>
+          <button class="nav-item"><i class="ph-bold ph-shield-chevron"></i></button>
+          <button class="nav-item"><i class="ph-bold ph-terminal-window"></i></button>
+          <button class="nav-item"><i class="ph-bold ph-gear"></i></button>
+        </nav>
+        <button class="nav-item logout" id="logoutBtn"><i class="ph-bold ph-power"></i></button>
+      </aside>
+
+      <!-- Content Canvas -->
+      <main class="hud-canvas">
+        <!-- Header Info -->
+        <header class="hud-header">
+          <div class="header-left">
+            <span class="system-label">STATUS:</span>
+            <span class="system-value online">OPERATIONAL</span>
+            <div class="separator"></div>
+            <span class="system-label">AGENT:</span>
+            <span class="system-value" id="userEmail">...</span>
+          </div>
+          <div class="header-right">
+            <span class="system-clock">NODE_ID: CS_77X</span>
+          </div>
+        </header>
+
+        <!-- Widgets Grid -->
+        <div class="hud-grid">
+          <!-- System Monitor -->
+          <div class="hud-widget col-8 row-2 boot-1">
+            <div class="widget-header">SYSTEM MONITOR</div>
+            <div class="widget-content placeholder-data"></div>
+          </div>
+          <!-- Data Stream -->
+          <div class="hud-widget col-4 row-3 boot-2">
+            <div class="widget-header">NETWORK LOGS</div>
+            <div class="widget-content terminal-mini">
+              <div class="log-entry">> SECURE_LINK established...</div>
+              <div class="log-entry">> Handshake complete.</div>
+              <div class="log-entry">> Watching node: #7712</div>
+            </div>
+          </div>
+          <!-- Stats -->
+          <div class="hud-widget col-4 row-1 boot-3">
+            <div class="widget-header">ENCRYPTION LEVEL</div>
+            <div class="widget-content stats-box">256-AES</div>
+          </div>
+          <div class="hud-widget col-4 row-1 boot-4">
+            <div class="widget-header">CPU_LOAD</div>
+            <div class="widget-content bar-container"><div class="bar" style="width: 65%;"></div></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Background Cyber effects -->
     <div class="cyber-bg">
       <div class="grid-overlay"></div>
       <div class="glow-orb orb-1"></div>
       <div class="glow-orb orb-2"></div>
     </div>
-
-    <!-- Main Dashboard Card -->
-    <main class="login-container">
-      <div class="glass-card">
-        <div class="card-decor top-left"></div>
-        <div class="card-decor top-right"></div>
-        <div class="card-decor-line"></div>
-
-        <div class="brand-header">
-          <h1 class="brand-title">DASH<span>BOARD</span></h1>
-          <p class="brand-subtitle">WELCOME AGENT: <span id="userEmail" style="color: var(--neon-cyan); text-shadow: 0 0 5px var(--neon-cyan-glow);">...</span></p>
-        </div>
-
-        <div class="status-bar">
-          <span class="status-indicator online"></span>
-          <span class="status-text">SYSTEM: ACCESS GRANTED</span>
-        </div>
-
-        <button class="btn-submit" id="logoutBtn" style="margin-top: 40px; background: linear-gradient(135deg, var(--color-error), var(--neon-purple));">
-          <span class="btn-text">TERMINATE SESSION</span>
-          <div class="btn-glow"></div>
-          <i class="ph-bold ph-power btn-icon"></i>
-        </button>
-      </div>
-    </main>
-
     <script type="module" src="/src/dashboard.js"></script>
   </body>
 </html>
