@@ -16,6 +16,8 @@ const { data: profile } = await supabase
     .eq('id', session.user.id)
     .single()
 
+let currentProfile = profile; // Supabase'dan olingan profil ma'lumotlarini saqlash
+
 if (profile && document.getElementById('userEmail')) {
     document.getElementById('userEmail').textContent = profile.username;
 }
@@ -40,6 +42,7 @@ if (profileDisplay && profileDropdown) {
 const editProfileBtn = document.getElementById('editProfileBtn');
 const profileModal = document.getElementById('editProfileModal');
 const cancelModal = document.getElementById('cancelModal');
+const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes tugmasi
 
 if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
@@ -60,6 +63,46 @@ if (editProfileBtn && profileModal) {
 
     cancelModal?.addEventListener('click', () => {
         profileModal.classList.remove('active');
+    });
+}
+
+// Save Changes tugmasi logikasi
+if (saveProfileBtn) {
+    saveProfileBtn.addEventListener('click', async () => {
+        const uInput = document.getElementById('modalUsername');
+        const eInput = document.getElementById('modalEmail');
+        
+        const newUsername = uInput.value.trim();
+        const newEmail = eInput.value.trim();
+
+        let changesMade = false;
+        const updateData = {};
+
+        if (newUsername !== currentProfile.username) {
+            updateData.username = newUsername;
+            changesMade = true;
+        }
+        if (newEmail !== currentProfile.email) {
+            updateData.email = newEmail;
+            changesMade = true;
+        }
+
+        if (changesMade) {
+            const { error } = await supabase
+                .from('profiles')
+                .update(updateData)
+                .eq('id', session.user.id);
+
+            if (error) {
+                alert('Profilni yangilashda xatolik yuz berdi: ' + error.message);
+            } else {
+                currentProfile = { ...currentProfile, ...updateData }; // Mahalliy profilni yangilash
+                document.getElementById('userEmail').textContent = currentProfile.username; // Headerdagi usernameni yangilash
+                profileModal.classList.remove('active'); // Modalni yopish
+            }
+        } else {
+            profileModal.classList.remove('active'); // O'zgarish bo'lmasa ham modalni yopish
+        }
     });
 }
 
