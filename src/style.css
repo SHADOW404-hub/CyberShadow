@@ -915,8 +915,8 @@ body {
 }
 
 .brand-logo img {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   filter: drop-shadow(0 0 8px var(--neon-cyan-glow));
 }
 
