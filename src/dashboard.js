@@ -54,13 +54,6 @@ if (editProfileBtn && profileModal) {
     closeModal.addEventListener('click', () => {
         profileModal.classList.remove('active');
     });
-
-    // Modal tashqarisiga (fonga) bosilganda yopish
-    profileModal.addEventListener('click', (e) => {
-        if (e.target === profileModal) {
-            profileModal.classList.remove('active');
-        }
-    });
 }
 
 // Logout funksiyasi

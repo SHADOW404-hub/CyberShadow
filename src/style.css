@@ -1133,6 +1133,9 @@ body {
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-close-modal:hover {
