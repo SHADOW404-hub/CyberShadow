@@ -35,7 +35,6 @@ const registerBtn = document.getElementById('registerBtn');
 // Shared
 const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
-const terminalLog = document.getElementById('terminalLog');
 const systemTime = document.getElementById('systemTime');
 const glassCard = document.querySelector('.glass-card');
 const showRegisterLink = document.getElementById('showRegister');
@@ -161,7 +160,6 @@ if (togglePassword) {
     const isHidden = passwordInput.type === 'password';
     passwordInput.type = isHidden ? 'text' : 'password';
     toggleIcon.className = isHidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
-    addLogLine(isHidden ? 'Password visibility: Shown' : 'Password visibility: Hidden');
   });
 }
 
@@ -192,7 +190,6 @@ if (showRegisterLink) {
         footerLogin.style.display = 'none';
         footerRegister.style.display = '';
         updateStatus('online', 'READY — Registration mode');
-        addLogLine('Switched to registration mode', 'system');
       }, 10);
     }, 400);
   });
@@ -218,7 +215,6 @@ if (showLoginLink) {
         footerLogin.style.display = '';
         footerRegister.style.display = 'none';
         updateStatus('online', 'READY');
-        addLogLine('Switched to login mode', 'system');
       }, 10);
     }, 400);
 
@@ -246,12 +242,10 @@ if (loginForm) {
 
     if (identifier.length < 3) {
       showError(usernameInput, usernameError, 'Please enter a valid username or email.');
-      addLogLine('Error: Identifier too short', 'error');
       hasError = true;
     }
     if (pass.length < 6) {
       showError(passwordInput, passwordError, 'Password must be at least 6 characters.');
-      addLogLine('Error: Password is too short', 'error');
       hasError = true;
     }
     if (hasError) {
@@ -315,11 +309,6 @@ async function performLogin(identifier, password) {
     'Verifying credentials...'
   )
 
-  addLogLine(
-    `Logging in: ${identifier}`,
-    'system'
-  )
-
   submitBtn.disabled = true;
 
   let email = identifier;
@@ -355,11 +344,6 @@ async function performLogin(identifier, password) {
     updateStatus(
       'error',
       'Login failed'
-    )
-
-    addLogLine(
-      error.message,
-      'error'
     )
 
     alert(error.message)
@@ -416,7 +400,6 @@ if (registerForm) {
     if (hasError) {
       triggerShake();
       updateStatus('error', 'Registration failed — fix the errors');
-      addLogLine('Error: Registration validation failed', 'error');
       return;
     }
 
@@ -432,8 +415,6 @@ async function performRegister(username, email, password) {
     'processing',
     'Creating your account...'
   )
-
-  addLogLine(`Registering user: ${username} (${email})`, 'system')
 
   registerBtn.disabled = true;
 
@@ -464,11 +445,6 @@ async function performRegister(username, email, password) {
       errorMsg = "Supabase-da 'Email signups' o'chirilgan! Authentication -> Providers -> Email bo'limidan 'Allow new users to sign up'ni yoqing.";
     }
 
-    addLogLine(
-      errorMsg,
-      'error'
-    )
-
     alert(errorMsg)
     return
   }
@@ -483,7 +459,6 @@ async function performRegister(username, email, password) {
 
     if (profileError) {
       updateStatus('error', 'Profile creation failed');
-      addLogLine(`Database Error: ${profileError.message}`, 'error');
       alert(`Foydalanuvchi yaratildi, lekin profil bazaga yozilmadi: ${profileError.message}. RLS qoidalarini tekshiring!`);
       return;
     }
