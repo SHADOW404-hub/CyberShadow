@@ -1126,6 +1126,11 @@ body {
 }
 
 .btn-close-modal {
+  position: absolute; /* Tugmani absolut joylashtirish */
+  top: 15px; /* Yuqoridan masofa */
+  right: 15px; /* O'ngdan masofa */
+  z-index: 2001; /* Boshqa elementlardan ustun turishi uchun */
+  background: rgba(255, 0, 0, 0.5); /* Vaqtinchalik fon: tugma ko'rinishini tekshirish uchun */
   background: none;
   border: none;
   color: var(--color-text-bright);
@@ -1136,6 +1141,10 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  width: 30px; /* Tugmaning o'lchami */
+  height: 30px; /* Tugmaning o'lchami */
+  border-radius: 50%; /* Tugmani dumaloq qilish */
+  font-family: "Phosphor", sans-serif; /* Phosphor ikonka shriftini aniq belgilash */
 }
 
 .btn-close-modal:hover {
