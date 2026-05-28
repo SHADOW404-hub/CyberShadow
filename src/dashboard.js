@@ -45,8 +45,8 @@ if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
         // Ma'lumotlarni modalga yozish
-        document.getElementById('modalUsername').textContent = profile?.username || 'N/A';
-        document.getElementById('modalEmail').textContent = profile?.email || 'N/A';
+        document.getElementById('modalUsername').value = profile?.username || '';
+        document.getElementById('modalEmail').value = profile?.email || '';
         
         profileModal.classList.add('active');
     });
@@ -55,6 +55,15 @@ if (editProfileBtn && profileModal) {
         profileModal.classList.remove('active');
     });
 }
+
+// Inline CHANGE tugmalari uchun logika
+document.querySelectorAll('.btn-inline-change').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        input.focus();
+    });
+});
 
 // Logout funksiyasi
 document.getElementById('logoutBtn')?.addEventListener('click', async () => {
