@@ -1127,7 +1127,7 @@ body {
   display: none; /* Default yopiq */
   justify-content: center;
   align-items: flex-start; /* Modal kontenti baland bo'lsa, tepadan kesilmasligi uchun */
-  padding: 60px 20px;
+  padding: 80px 20px;
   overflow-y: auto; /* Kontent sig'masa scroll chiqadi */
 }
 
@@ -1524,52 +1524,48 @@ input[type="number"] {
 
 /* File Input Styling */
 .file-input-wrapper {
-  display: flex;
+  padding-right: 6px !important; /* Tugma uchun o'ngdan joy */
   align-items: center;
-  overflow: hidden;
-  border: 1px solid rgba(0, 240, 255, 0.1) !important;
-  background: rgba(0, 0, 0, 0.3) !important;
-  transition: var(--transition-smooth);
 }
 
 .file-input-wrapper:hover {
-  border-color: var(--neon-cyan) !important;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1), inset 0 0 10px rgba(0, 240, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .file-name-display {
   flex: 1;
-  padding: 0 15px;
-  font-family: var(--font-mono);
-  font-size: 12px;
+  padding: 0 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  height: 40px;
+  display: flex;
+  align-items: center;
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  pointer-events: none; /* Bu joy bosilganda fayl ochilmasligi uchun */
+  pointer-events: none;
 }
 
 .file-trigger {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  background: linear-gradient(to bottom, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.05));
-  border: none;
-  border-right: 1px solid rgba(0, 240, 255, 0.2) !important;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
   color: var(--neon-cyan);
-  padding: 0 16px;
   font-family: var(--font-mono);
   font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 700;
-  transition: var(--transition-fast);
+  padding: 0 15px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
   cursor: pointer;
+  transition: var(--transition-fast);
 }
 
 .file-trigger:hover {
-  background: rgba(0, 240, 255, 0.15);
+  background: rgba(0, 240, 255, 0.2);
   color: var(--color-text-bright);
+  box-shadow: 0 0 10px var(--neon-cyan-faint);
 }
 
 .dropdown-item.logout:hover {
