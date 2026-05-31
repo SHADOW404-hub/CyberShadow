@@ -1532,6 +1532,18 @@ body {
   left: 0;
 }
 
+/* Admin Mode Layout - Kontentni surish */
+.dashboard-wrapper.admin-mode .dashboard-main-content {
+  padding-left: 320px; /* Sidebar (280px) + bo'shliq */
+  transition: var(--transition-smooth);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-wrapper.admin-mode .dashboard-main-content {
+    padding-left: 50px; /* Mobil qurilmalarda surilmaydi */
+  }
+}
+
 .sidebar-header {
   display: flex;
   justify-content: space-between;
