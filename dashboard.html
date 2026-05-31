@@ -239,20 +239,19 @@
             </div>
           </div>
           <div class="info-group">
-            <label>External Link (Optional)</label>
-            <div class="input-action-wrapper">
-              <input type="url" id="challengeLink" placeholder="https://example.com/target">
+            <label>Challenge File (Optional)</label>
+            <div class="input-action-wrapper file-input-wrapper" id="challengeFileWrapper">
+              <div class="file-name-display" id="challengeFileName">No file selected</div>
+              <input type="file" id="challengeFileInput" style="display: none;">
+              <div class="file-controls">
+                  <button type="button" class="file-trigger" id="challengeFileTrigger">UPLOAD</button>
+              </div>
             </div>
           </div>
           <div class="info-group">
-            <label>Challenge File (Optional)</label>
-            <div class="input-action-wrapper file-input-wrapper">
-              <input type="file" id="challengeFile" hidden>
-              <span id="fileNameDisplay" class="file-name-display">NOT_ATTACHED.SYS</span>
-              <div class="file-controls">
-                <button type="button" id="clearFileBtn" class="btn-icon-action" style="display: none;"><i class="ph ph-x"></i></button>
-                <label for="challengeFile" class="file-trigger"><i class="ph-bold ph-plus-square"></i> UPLOAD_DATA</label>
-              </div>
+            <label>External Link (Optional)</label>
+            <div class="input-action-wrapper">
+              <input type="url" id="challengeLink" placeholder="https://example.com/target">
             </div>
           </div>
         </div>

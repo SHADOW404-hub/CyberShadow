@@ -36,8 +36,10 @@ const challengeCategoryInput = document.getElementById('challengeCategory');
 const challengeDifficultyInput = document.getElementById('challengeDifficulty');
 const challengeFlagInput = document.getElementById('challengeFlag');
 const challengeLinkInput = document.getElementById('challengeLink');
-const challengeFileInput = document.getElementById('challengeFile');
-const clearFileBtn = document.getElementById('clearFileBtn');
+const challengeFileInput = document.getElementById('challengeFileInput');
+const challengeFileTrigger = document.getElementById('challengeFileTrigger');
+const challengeFileName = document.getElementById('challengeFileName');
+const challengeFileWrapper = document.getElementById('challengeFileWrapper');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
@@ -143,33 +145,6 @@ challengeNameInput?.addEventListener('input', updateChallengePreview);
 challengePointsInput?.addEventListener('input', updateChallengePreview);
 challengeCategoryInput?.addEventListener('change', updateChallengePreview);
 challengeDifficultyInput?.addEventListener('change', updateChallengePreview);
-
-// Fayl tanlanganda nomini ko'rsatish
-challengeFileInput?.addEventListener('change', () => {
-    const display = document.getElementById('fileNameDisplay');
-    const wrapper = document.querySelector('.file-input-wrapper');
-    
-    if (challengeFileInput.files[0]) {
-        if (display) display.textContent = challengeFileInput.files[0].name;
-        if (clearFileBtn) clearFileBtn.style.display = 'flex';
-        if (wrapper) wrapper.classList.add('has-file');
-    } else {
-        if (display) display.textContent = "NOT_ATTACHED.SYS";
-        if (clearFileBtn) clearFileBtn.style.display = 'none';
-        if (wrapper) wrapper.classList.remove('has-file');
-    }
-});
-
-// Faylni tozalash
-clearFileBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (challengeFileInput) challengeFileInput.value = '';
-    const display = document.getElementById('fileNameDisplay');
-    const wrapper = document.querySelector('.file-input-wrapper');
-    if (display) display.textContent = "No file chosen";
-    if (clearFileBtn) clearFileBtn.style.display = 'none';
-    if (wrapper) wrapper.classList.remove('has-file');
-});
 
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
@@ -433,6 +408,22 @@ cancelAddChallenge?.addEventListener('click', () => {
     addChallengeModal.classList.remove('active');
 });
 
+// Fayl tanlash logikasi
+challengeFileTrigger?.addEventListener('click', () => {
+    challengeFileInput.click();
+});
+
+challengeFileInput?.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        challengeFileName.textContent = file.name;
+        challengeFileWrapper.classList.add('has-file');
+    } else {
+        challengeFileName.textContent = 'No file selected';
+        challengeFileWrapper.classList.remove('has-file');
+    }
+});
+
 saveChallengeBtn?.addEventListener('click', async () => {
     const name = challengeNameInput.value.trim();
     const points = parseInt(challengePointsInput.value);
@@ -440,7 +431,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const difficulty = challengeDifficultyInput.value;
     const flag = challengeFlagInput.value.trim();
     const link = challengeLinkInput.value.trim();
-    const file = challengeFileInput.files[0];
+    const file = challengeFileInput?.files[0];
 
     if (!name || !points || !category || !flag || !difficulty) {
         alert("Barcha maydonlarni to'ldiring!");
@@ -450,21 +441,18 @@ saveChallengeBtn?.addEventListener('click', async () => {
     saveChallengeBtn.disabled = true;
     saveChallengeBtn.textContent = "Deploying...";
 
-    let fileUrl = null;
-
     try {
-        // Agar fayl tanlangan bo'lsa, uni 'challenges' bucket'iga yuklaymiz
+        let file_url = null;
+
         if (file) {
             const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = `files/${fileName}`;
-
+            const safeFileName = `${Date.now()}.${fileExt}`;
             const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('challenges')
-                .upload(filePath, file);
+                .from('challenges') // Supabase'da 'challenges' bucketi bo'lishi shart
+                .upload(`${session.user.id}/${safeFileName}`, file);
 
             if (uploadError) throw uploadError;
-            fileUrl = supabase.storage.from('challenges').getPublicUrl(filePath).data.publicUrl;
+            file_url = supabase.storage.from('challenges').getPublicUrl(uploadData.path).data.publicUrl;
         }
 
     const { error } = await supabase
@@ -476,7 +464,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
             difficulty,
             flag,
             link: link || null,
-            file_url: fileUrl,
+            file_url,
             created_by: session.user.id
         }]);
 
@@ -493,13 +481,10 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeCategoryInput.value = '';
         challengeDifficultyInput.value = '';
         challengeFlagInput.value = '';
-            challengeLinkInput.value = '';
-            challengeFileInput.value = '';
-            
-            // Fayl UI ni reset qilish
-            if (document.getElementById('fileNameDisplay')) document.getElementById('fileNameDisplay').textContent = "NOT_ATTACHED.SYS";
-            if (clearFileBtn) clearFileBtn.style.display = 'none';
-            document.querySelector('.file-input-wrapper')?.classList.remove('has-file');
+        challengeLinkInput.value = '';
+        challengeFileInput.value = '';
+        challengeFileName.textContent = 'No file selected';
+        challengeFileWrapper.classList.remove('has-file');
 
         updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
