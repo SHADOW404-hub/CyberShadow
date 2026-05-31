@@ -144,62 +144,58 @@
         <div class="card-decor top-right"></div>
         <div class="card-decor-line"></div>
         
-        <div class="modal-flex-layout">
-          <!-- Chap tomon: Preview -->
-          <div class="challenge-preview-area">
-            <div class="preview-label">LIVE PREVIEW</div>
-            <div class="challenge-card-horizontal">
-              <div class="preview-main-info">
-                <span id="previewCategory" class="preview-category">CATEGORY</span>
-                <div id="previewName" class="preview-name">CHALLENGE NAME</div>
-              </div>
-              <div class="preview-points-badge">
-                <span id="previewPoints">0</span>
-                <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
-              </div>
+        <!-- Challenge Credit Card Preview -->
+        <div class="challenge-preview-area">
+          <div class="preview-label">PREVIEW HUD</div>
+          <div class="challenge-card-horizontal">
+            <div class="card-chip"></div>
+            <div class="preview-main-info">
+              <span id="previewCategory" class="preview-category">CATEGORY</span>
+              <div id="previewName" class="preview-name">CHALLENGE NAME</div>
+            </div>
+            <div class="preview-points-badge">
+              <span id="previewPoints">0</span>
+              <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
             </div>
           </div>
+        </div>
 
-          <!-- O'ng tomon: Form -->
-          <div class="modal-form-side">
-            <div class="modal-header" style="justify-content: flex-start; margin-bottom: 20px;">
-              <h3>CREATE CHALLENGE</h3>
+        <div class="modal-header">
+          <h3>CREATE CHALLENGE</h3>
+        </div>
+        
+        <div class="modal-body">
+          <div class="info-group">
+            <label>Challenge Name</label>
+            <div class="input-action-wrapper">
+              <input type="text" id="challengeName" placeholder="Enter name...">
             </div>
-            
-            <div class="modal-body">
-              <div class="info-group">
-                <label>Challenge Name</label>
-                <div class="input-action-wrapper">
-                  <input type="text" id="challengeName" placeholder="Enter name...">
-                </div>
-              </div>
-              <div class="info-group">
-                <label>Points</label>
-                <div class="input-action-wrapper">
-                  <input type="number" id="challengePoints" placeholder="Enter points..." min="0">
-                </div>
-              </div>
-              <div class="info-group">
-                <label>Category</label>
-                <div class="input-action-wrapper">
-                  <select id="challengeCategory">
-                    <option value="" disabled selected hidden>Select Category</option>
-                    <option value="Web">Web</option>
-                    <option value="Pwn">Pwn</option>
-                    <option value="Crypto">Crypto</option>
-                    <option value="Forensics">Forensics</option>
-                    <option value="Reverse">Reverse</option>
-                    <option value="OSINT">OSINT</option>
-                    <option value="Misc">Misc</option>
-                  </select>
-                </div>
-              </div>
-              <div class="info-group">
-                <label>Flag</label>
-                <div class="input-action-wrapper">
-                  <input type="text" id="challengeFlag" placeholder="CyberShadow : Flag{}">
-                </div>
-              </div>
+          </div>
+          <div class="info-group">
+            <label>Points</label>
+            <div class="input-action-wrapper">
+              <input type="number" id="challengePoints" placeholder="Enter points..." min="0">
+            </div>
+          </div>
+          <div class="info-group">
+            <label>Category</label>
+            <div class="input-action-wrapper">
+              <select id="challengeCategory">
+                <option value="" disabled selected hidden>Select Category</option>
+                <option value="Web">Web</option>
+                <option value="Pwn">Pwn</option>
+                <option value="Crypto">Crypto</option>
+                <option value="Forensics">Forensics</option>
+                <option value="Reverse">Reverse</option>
+                <option value="OSINT">OSINT</option>
+                <option value="Misc">Misc</option>
+              </select>
+            </div>
+          </div>
+          <div class="info-group">
+            <label>Flag</label>
+            <div class="input-action-wrapper">
+              <input type="text" id="challengeFlag" placeholder="CyberShadow : Flag{}">
             </div>
           </div>
         </div>
