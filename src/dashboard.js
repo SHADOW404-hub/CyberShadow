@@ -41,6 +41,7 @@ const previewName = document.getElementById('previewName');
 const previewPoints = document.getElementById('previewPoints');
 const previewCategory = document.getElementById('previewCategory');
 const previewDifficulty = document.getElementById('previewDifficulty');
+const previewCard = document.querySelector('.challenge-card-horizontal');
 
 // Previewni yangilash funksiyasi
 const updateChallengePreview = () => {
@@ -64,14 +65,32 @@ const updateChallengePreview = () => {
         const diff = challengeDifficultyInput.value;
         previewDifficulty.textContent = diff || 'DIFFICULTY';
         
-        // Qiyinchilikka qarab ranglar
-        const diffColors = {
-            'Easy': 'var(--color-success)',
-            'Medium': 'var(--color-warning)',
-            'Hard': '#ff4757',
-            'Insane': 'var(--neon-magenta)'
+        // Qiyinchilikka qarab mavzular (Mavzu ranglari)
+        const diffThemes = {
+            'Easy': '#00ff66',    // ochiq yashil
+            'Medium': '#ffb703',  // olovrang
+            'Hard': '#ff3366',    // qizil
+            'Insane': '#9d4edd'   // binafsha
         };
-        previewDifficulty.style.color = diffColors[diff] || 'var(--color-text-muted)';
+        
+        const activeColor = diffThemes[diff];
+        previewDifficulty.style.color = activeColor || 'var(--color-text-muted)';
+
+        if (previewCard) {
+            if (activeColor) {
+                // Butun kartaning chegarasi va ichki nuri (glow) o'zgaradi
+                previewCard.style.borderColor = activeColor;
+                previewCard.style.boxShadow = `0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${activeColor}33`;
+                
+                // Ballar nishonchasi (badge) ham moslashadi
+                if (previewPoints) previewPoints.parentElement.style.color = activeColor;
+            } else {
+                // Tanlanmagan holatda standart ranglar
+                previewCard.style.borderColor = 'rgba(0, 240, 255, 0.3)';
+                previewCard.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.05)';
+                if (previewPoints) previewPoints.parentElement.style.color = 'var(--neon-cyan)';
+            }
+        }
     }
 };
 
