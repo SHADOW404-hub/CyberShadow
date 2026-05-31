@@ -41,6 +41,13 @@ const COUNTRIES = [
 
 const populateCountries = () => {
     if (!modalCountrySelect) return;
+    
+    // Boshlang'ich "Not selected" variantini qo'shamiz
+    const placeholder = document.createElement('option');
+    placeholder.value = "";
+    placeholder.textContent = "Select a country";
+    modalCountrySelect.appendChild(placeholder);
+
     COUNTRIES.forEach(country => {
         const option = document.createElement('option');
         option.value = country;
@@ -51,10 +58,16 @@ const populateCountries = () => {
 populateCountries();
 
 // session tekshirish
-const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-
-if (sessionError || !session) {
-    window.location.replace('/')
+let session = null;
+try {
+    const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !currentSession) {
+        window.location.replace('/');
+        return;
+    }
+    session = currentSession;
+} catch (e) {
+    window.location.replace('/');
     return;
 }
 
@@ -75,7 +88,12 @@ const updateHeaderUI = () => {
     // Avatar uchun bosh harfni o'rnatish
     if (headerProfileAvatar) {
         if (currentProfile.avatar_url) {
-            headerProfileAvatar.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            const img = document.createElement('img');
+            img.src = currentProfile.avatar_url;
+            img.alt = "Avatar";
+            img.style.cssText = "width: 100%; height: 100%; border-radius: 50%; object-fit: cover;";
+            headerProfileAvatar.innerHTML = '';
+            headerProfileAvatar.appendChild(img);
         } else {
             headerProfileAvatar.innerHTML = '';
             headerProfileAvatar.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
