@@ -932,7 +932,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Scrollbar muammosini hal qilish */
+  overflow-y: auto; /* Ma'lumotlar ko'payganda scroll chiqadi */
   background: transparent;
 }
 
@@ -1128,6 +1128,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-y: auto; /* Kontent sig'masa scroll chiqadi */
 }
 
 .modal-overlay.active {
