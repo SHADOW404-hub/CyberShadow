@@ -1586,26 +1586,29 @@ input[type="number"] {
 }
 
 .file-trigger {
-  background: rgba(0, 240, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  color: var(--neon-cyan);
+  background: var(--neon-cyan);
+  color: #000;
+  border: none;
   font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 0 15px;
-  height: 30px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 0 20px;
+  height: 32px;
   display: flex;
   align-items: center;
+  gap: 8px;
   justify-content: center;
-  line-height: normal; /* Matn markazda turishi uchun normal holatga qaytarildi */
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: var(--transition-smooth);
+  text-transform: uppercase;
+  box-shadow: 0 0 15px var(--neon-cyan-faint);
 }
 
 .file-trigger:hover {
-  background: rgba(0, 240, 255, 0.2);
-  color: var(--color-text-bright);
-  box-shadow: 0 0 10px var(--neon-cyan-faint);
+  background: #fff;
+  box-shadow: 0 0 25px var(--neon-cyan);
+  transform: translateY(-1px);
 }
 
 .dropdown-item.logout:hover {
