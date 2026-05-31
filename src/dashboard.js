@@ -1,88 +1,86 @@
 import { supabase } from './supabase.js'
 import './style.css';
 
+// DOM elementlarini keshlaymiz
+const userEmailDisplay = document.getElementById('userEmail');
+const headerProfileAvatar = document.getElementById('headerProfileAvatar');
+const profileDisplay = document.querySelector('.profile-display');
+const profileDropdown = document.querySelector('.profile-dropdown');
+const editProfileBtn = document.getElementById('editProfileBtn');
+const profileModal = document.getElementById('editProfileModal');
+const cancelModal = document.getElementById('cancelModal');
+const modalUsernameInput = document.getElementById('modalUsername');
+const modalEmailInput = document.getElementById('modalEmail');
+const modalProfilePictureInput = document.getElementById('modalProfilePictureInput');
+const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
+const profilePicturePreview = document.getElementById('profilePicturePreview');
+const saveProfileBtn = document.getElementById('saveProfile');
+const logoutBtn = document.getElementById('logoutBtn');
+const logoutConfirmModal = document.getElementById('logoutConfirmModal');
+const cancelLogoutBtn = document.getElementById('cancelLogout');
+const confirmLogoutBtn = document.getElementById('confirmLogout');
+
 // session tekshirish
 const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
 if (sessionError || !session) {
-    window.location.replace('/') // replace ishlatish back tugmasi bosilganda login loopni oldini oladi
+    window.location.replace('/')
     return;
 }
 
-// Username chiqarish (email o'rniga)
 let { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('username, email, avatar_url') // avatar_url ni ham tanlab olamiz
+    .select('username, email, avatar_url')
     .eq('id', session.user.id)
     .single()
 
 if (profileError) console.error("Profile fetch error:", profileError);
-let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null }; // avatar_url ni ham qo'shamiz
+let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null };
 
-if (document.getElementById('userEmail')) {
-    document.getElementById('userEmail').textContent = currentProfile.username || 'Agent';
+const updateHeaderUI = () => {
+    if (userEmailDisplay) {
+        userEmailDisplay.textContent = currentProfile.username || 'Agent';
+    }
 
     // Avatar uchun bosh harfni o'rnatish
-    const avatarEl = document.getElementById('headerProfileAvatar'); // ID orqali to'g'ri elementni tanlash
-    if (avatarEl) {
+    if (headerProfileAvatar) {
         if (currentProfile.avatar_url) {
-            avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-        } else if (currentProfile.username) {
-            avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
+            headerProfileAvatar.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            headerProfileAvatar.innerHTML = '';
+            headerProfileAvatar.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
         }
     }
-}
+};
+
+updateHeaderUI();
 
 // Dropdown menyuni ochish/yopish logikasi
-const profileDisplay = document.querySelector('.profile-display');
-const profileDropdown = document.querySelector('.profile-dropdown');
-
 if (profileDisplay && profileDropdown) {
     profileDisplay.addEventListener('click', (e) => {
-        e.stopPropagation(); // Click hodisasi documentga o'tib ketmasligi uchun
+        e.stopPropagation();
         profileDropdown.classList.toggle('show');
     });
 
-    // Tashqariga bosilganda dropdownni yopish
     document.addEventListener('click', () => {
         profileDropdown.classList.remove('show');
     });
 }
 
-// Modal logikasi
-const editProfileBtn = document.getElementById('editProfileBtn');
-const profileModal = document.getElementById('editProfileModal');
-const cancelModal = document.getElementById('cancelModal');
-const modalProfilePictureInput = document.getElementById('modalProfilePictureInput');
-const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
-const profilePicturePreview = document.getElementById('profilePicturePreview');
-const headerProfileAvatar = document.getElementById('headerProfileAvatar');
-const logoutConfirmModal = document.getElementById('logoutConfirmModal');
-const cancelLogoutBtn = document.getElementById('cancelLogout');
-const saveProfileBtn = document.getElementById('saveProfile'); // Save Changes tugmasi
-
 // O'zgarishlarni tekshirish funksiyasi
 const checkChanges = () => {
-    const uInput = document.getElementById('modalUsername');
-    const eInput = document.getElementById('modalEmail');
-    const fileInput = document.getElementById('modalProfilePictureInput');
-    const hasChanges = uInput.value.trim() !== (currentProfile.username || '') || 
-                       eInput.value.trim() !== (currentProfile.email || '') ||
-                       (fileInput && fileInput.files.length > 0);
+    const hasChanges = modalUsernameInput.value.trim() !== (currentProfile.username || '') || 
+                       modalEmailInput.value.trim() !== (currentProfile.email || '') ||
+                       (modalProfilePictureInput && modalProfilePictureInput.files.length > 0);
     if (saveProfileBtn) saveProfileBtn.disabled = !hasChanges;
 };
 
 if (editProfileBtn && profileModal) {
     editProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        // Ma'lumotlarni modalga yozish
-        const uInput = document.getElementById('modalUsername');
-        const eInput = document.getElementById('modalEmail');
-        
-        uInput.value = currentProfile.username || '';
-        eInput.value = currentProfile.email || '';
+        modalUsernameInput.value = currentProfile.username || '';
+        modalEmailInput.value = currentProfile.email || '';
 
-        // Profil rasmini modalda ko'rsatish
         if (currentProfile.avatar_url) {
             profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
             profilePicturePreview.textContent = '';
@@ -91,11 +89,9 @@ if (editProfileBtn && profileModal) {
             profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
         }
         
-        // Modal ochilganda inputlarni yana qulflash
-        uInput.readOnly = true;
-        eInput.readOnly = true;
-        modalProfilePictureInput.value = ''; // Oldingi tanlangan faylni tozalash
-        // Tugmani boshlang'ich holatda bloklash
+        modalUsernameInput.readOnly = true;
+        modalEmailInput.readOnly = true;
+        modalProfilePictureInput.value = '';
         if (saveProfileBtn) saveProfileBtn.disabled = true;
         
         profileModal.classList.add('active');
@@ -118,25 +114,21 @@ if (changeProfilePictureBtn && modalProfilePictureInput) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 profilePicturePreview.style.backgroundImage = `url('${event.target.result}')`;
-                    profilePicturePreview.textContent = ''; // Harfni olib tashlash
+                profilePicturePreview.textContent = '';
             };
             reader.readAsDataURL(file);
-            checkChanges(); // O'zgarishlar borligini tekshirish
+            checkChanges();
         } else {
-            // Agar fayl tanlanmasa, avvalgi holatga qaytarish
-            if (currentProfile.avatar_url) profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
-                else {
-                    profilePicturePreview.style.backgroundImage = 'none';
-                    profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
-                }
+            if (currentProfile.avatar_url) {
+                profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+            } else {
+                profilePicturePreview.style.backgroundImage = 'none';
+                profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
+            }
             checkChanges();
         }
     });
 }
-
-// Logout Confirmation Modal logikasi
-const logoutBtn = document.getElementById('logoutBtn');
-const confirmLogoutBtn = document.getElementById('confirmLogout');
 
 if (logoutBtn && logoutConfirmModal) {
     logoutBtn.addEventListener('click', () => {
