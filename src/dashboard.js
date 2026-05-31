@@ -45,7 +45,9 @@ const previewCard = document.querySelector('.challenge-card-horizontal');
 
 // Previewni yangilash funksiyasi
 const updateChallengePreview = () => {
-    if (previewName) previewName.textContent = challengeNameInput.value.trim() || 'CHALLENGE NAME';
+    if (previewName) {
+        previewName.textContent = challengeNameInput.value.trim() || 'CHALLENGE NAME';
+    }
     if (previewPoints) previewPoints.textContent = challengePointsInput.value || '0';
     if (previewCategory) {
         const val = challengeCategoryInput.value;
@@ -99,11 +101,19 @@ const updateChallengePreview = () => {
                 
                 // Ballar nishonchasi (badge) ham moslashadi
                 if (previewPoints) previewPoints.parentElement.style.color = activeColor;
+                
+                // Name va Category ham qiyinchilik rangiga kiradi
+                if (previewName) previewName.style.color = activeColor;
+                if (previewCategory) previewCategory.style.color = activeColor;
             } else {
                 // Tanlanmagan holatda standart ranglar
                 previewCard.style.borderColor = 'rgba(0, 240, 255, 0.3)';
                 previewCard.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.05)';
                 if (previewPoints) previewPoints.parentElement.style.color = 'var(--neon-cyan)';
+                
+                // Standart ranglarga qaytarish
+                if (previewName) previewName.style.color = 'var(--color-text-bright)';
+                // previewCategory rangi yuqoridagi category blokida o'rnatilgan
             }
         }
     }
