@@ -521,12 +521,12 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
             const glitchClass = ch.difficulty === 'Insane' ? 'glitch-active' : '';
             
             html += `
-                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
+                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33; margin: 0 auto;">
                     <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner bottom-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner bottom-right" style="border-color: ${styles.accent}"></div>
-                    <div class="card-pattern-overlay" style="background-image: ${styles.pattern}; opacity: 0.12; background-size: 65%; background-position: center; background-repeat: no-repeat; animation: iconPulse 4s ease-in-out infinite;"></div>
+                    <div class="card-pattern-overlay" style="background-image: ${styles.pattern}; animation: iconPulse 4s ease-in-out infinite;"></div>
                     <div class="preview-top-left">
                         <div class="preview-difficulty" style="color: ${styles.accent}">${ch.difficulty}</div>
                         <span class="preview-category" style="color: ${styles.accent}">${ch.category}</span>
@@ -534,7 +534,7 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
                     <div class="preview-main-info">
                         <div class="preview-name" style="color: ${styles.accent}">${ch.name}</div>
                     </div>
-                    <div class="preview-points-badge" style="color: ${styles.accent}; background: ${styles.accent}26;">
+                    <div class="preview-points-badge" style="color: ${styles.accent}; background: ${styles.accent}1a; border-color: ${styles.accent}33;">
                         <span>${ch.points}</span>
                         <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
                     </div>
