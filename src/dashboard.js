@@ -143,6 +143,12 @@ challengePointsInput?.addEventListener('input', updateChallengePreview);
 challengeCategoryInput?.addEventListener('change', updateChallengePreview);
 challengeDifficultyInput?.addEventListener('change', updateChallengePreview);
 
+// Fayl tanlanganda nomini ko'rsatish
+challengeFileInput?.addEventListener('change', () => {
+    const display = document.getElementById('fileNameDisplay');
+    if (display) display.textContent = challengeFileInput.files[0] ? challengeFileInput.files[0].name : "No file chosen";
+});
+
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
@@ -467,6 +473,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeFlagInput.value = '';
             challengeLinkInput.value = '';
             challengeFileInput.value = '';
+            if (document.getElementById('fileNameDisplay')) document.getElementById('fileNameDisplay').textContent = "No file chosen";
         updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
     }
