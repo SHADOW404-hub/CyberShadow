@@ -21,6 +21,8 @@ const logoutConfirmModal = document.getElementById('logoutConfirmModal');
 const cancelLogoutBtn = document.getElementById('cancelLogout');
 const confirmLogoutBtn = document.getElementById('confirmLogout');
 const adminTerminalLink = document.getElementById('adminTerminalLink');
+const adminSidebar = document.getElementById('adminSidebar');
+const closeAdminSidebar = document.getElementById('closeAdminSidebar');
 
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
@@ -180,6 +182,28 @@ if (logoutBtn && logoutConfirmModal) {
         logoutConfirmModal.classList.remove('active');
     });
 }
+
+// Admin Sidebar Panel logikasi
+if (adminTerminalLink && adminSidebar) {
+    adminTerminalLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        adminSidebar.classList.add('active');
+    });
+
+    closeAdminSidebar?.addEventListener('click', () => {
+        adminSidebar.classList.remove('active');
+    });
+
+    // Panel tashqarisiga bosilganda yopish
+    document.addEventListener('click', (e) => {
+        if (adminSidebar.classList.contains('active') && 
+            !adminSidebar.contains(e.target) && 
+            !adminTerminalLink.contains(e.target)) {
+            adminSidebar.classList.remove('active');
+        }
+    });
+}
+
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 modalUsernameInput?.addEventListener('input', checkChanges);
 modalEmailInput?.addEventListener('input', checkChanges);
