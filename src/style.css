@@ -1261,9 +1261,10 @@ body {
   transition: var(--transition-fast);
 }
 
-.input-action-wrapper select:disabled {
+.input-action-wrapper select:disabled,
+.input-action-wrapper input[readonly] {
   cursor: default;
-  color: var(--color-text-muted);
+  color: var(--color-text-muted) !important;
   background-image: none; /* Qulflangan holatda belgi ko'rinmaydi */
 }
 
