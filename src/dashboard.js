@@ -42,6 +42,7 @@ const previewPoints = document.getElementById('previewPoints');
 const previewCategory = document.getElementById('previewCategory');
 const previewDifficulty = document.getElementById('previewDifficulty');
 const previewCard = document.querySelector('.challenge-card-horizontal');
+const previewPattern = document.getElementById('previewCardPattern');
 
 // Previewni yangilash funksiyasi
 const updateChallengePreview = () => {
@@ -51,6 +52,30 @@ const updateChallengePreview = () => {
     if (previewPoints) previewPoints.textContent = challengePointsInput.value || '0';
     if (previewCategory) {
         const val = challengeCategoryInput.value;
+        
+        // Kategoriya uchun maxsus HUD naqshlari (SVG data-uris)
+        const categoryPatterns = {
+            'Code': `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='0' y='12' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E101101%3C/text%3E%3Ctext x='15' y='30' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E010110%3C/text%3E%3Ctext x='5' y='50' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E110101%3C/text%3E%3Ctext x='25' y='70' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E001011%3C/text%3E%3C/svg%3E")`,
+            'OSINT': `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")`,
+            'Web': `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E")`,
+            'Pwn': `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2a5 5 0 0 0-5 5v3H6v11a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10h-1V7a5 5 0 0 0-5-5z'/%3E%3C/svg%3E")`,
+            'Crypto': `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='gold' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='3' y='11' width='18' height='11' rx='2' ry='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E")`,
+            'Forensics': `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='cyan' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2'/%3E%3Cpath d='M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0'/%3E%3C/svg%3E")`,
+            'Reverse': `url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83'/%3E%3C/svg%3E")`,
+            'Miscellaneous': `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='0.5' fill='white' opacity='0.3'/%3E%3C/svg%3E")`
+        };
+
+        if (previewPattern) {
+            const pattern = categoryPatterns[val];
+            if (pattern) {
+                previewPattern.style.backgroundImage = pattern;
+                previewPattern.style.opacity = val === 'Code' ? '0.2' : '0.1'; // Code uchun yorqinroq
+                previewPattern.style.backgroundSize = val === 'Code' ? '100px 100px' : '50px 50px';
+            } else {
+                previewPattern.style.opacity = '0';
+            }
+        }
+
         previewCategory.textContent = val || 'CATEGORY';
         
         // Kategoriyaga qarab rangni o'zgartirish
