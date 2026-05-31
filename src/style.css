@@ -1515,13 +1515,13 @@ body {
 
 .admin-sidebar {
   position: fixed;
-  top: 0;
+  top: 65px; /* Header balandligi bilan bir xil */
   left: -300px; /* Off-screen default */
   width: 280px;
-  height: 100vh;
+  height: calc(100vh - 65px); /* Headerdan pastki qismni to'liq egallaydi */
   background: var(--bg-secondary);
   border-right: 1px solid var(--neon-cyan-faint);
-  z-index: 2500;
+  z-index: 99; /* Header (100) dan pastroq, lekin kontentdan yuqori */
   transition: var(--transition-smooth);
   padding: 25px;
   backdrop-filter: blur(20px);
