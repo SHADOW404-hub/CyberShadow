@@ -23,6 +23,7 @@ const confirmLogoutBtn = document.getElementById('confirmLogout');
 const adminTerminalLink = document.getElementById('adminTerminalLink');
 const adminSidebar = document.getElementById('adminSidebar');
 const adminUsersLink = document.getElementById('adminUsersLink');
+const adminChallengesLink = document.getElementById('adminChallengesLink');
 const mainContentArea = document.querySelector('.dashboard-main-content');
 
 // 195 ta davlat ro'yxati
@@ -258,9 +259,31 @@ const fetchAndDisplayUsers = async () => {
     mainContentArea.innerHTML = tableHTML;
 };
 
+// Challenges ko'rsatish funksiyasi (Hozircha placeholder)
+const fetchAndDisplayChallenges = async () => {
+    if (!mainContentArea) return;
+    
+    mainContentArea.innerHTML = `
+        <div class="admin-table-container" style="padding: 60px; text-align: center;">
+            <i class="ph-bold ph-trophy" style="font-size: 4rem; color: var(--neon-cyan); margin-bottom: 20px; display: block;"></i>
+            <div class="stat-value" style="font-size: 1.5rem;">CHALLENGES MANAGEMENT</div>
+            <p style="color: var(--color-text-muted); margin-top: 15px;">Initializing secure connection to challenges database... Stand by, Agent.</p>
+        </div>
+    `;
+};
+
 adminUsersLink?.addEventListener('click', (e) => {
     e.preventDefault();
+    adminChallengesLink?.classList.remove('active');
+    adminUsersLink.classList.add('active');
     fetchAndDisplayUsers();
+});
+
+adminChallengesLink?.addEventListener('click', (e) => {
+    e.preventDefault();
+    adminUsersLink?.classList.remove('active');
+    adminChallengesLink.classList.add('active');
+    fetchAndDisplayChallenges();
 });
 
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
