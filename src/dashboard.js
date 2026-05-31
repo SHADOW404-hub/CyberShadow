@@ -14,6 +14,7 @@ const modalEmailInput = document.getElementById('modalEmail');
 const modalCountrySelect = document.getElementById('modalCountry');
 const modalProfilePictureInput = document.getElementById('modalProfilePictureInput');
 const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
+const removeProfilePictureBtn = document.getElementById('removeProfilePictureBtn');
 const profilePicturePreview = document.getElementById('profilePicturePreview');
 const saveProfileBtn = document.getElementById('saveProfile');
 const logoutBtn = document.getElementById('logoutBtn');
@@ -234,6 +235,18 @@ const updateHeaderUI = () => {
 
 updateHeaderUI();
 
+// Tugmalarni holatiga qarab ko'rsatish funksiyasi
+const updateAvatarButtons = () => {
+    const hasImage = modalProfilePictureInput.files.length > 0 || !!currentProfile.avatar_url;
+    if (hasImage) {
+        changeProfilePictureBtn.style.display = 'none';
+        removeProfilePictureBtn.style.display = 'inline-block';
+    } else {
+        changeProfilePictureBtn.style.display = 'inline-block';
+        removeProfilePictureBtn.style.display = 'none';
+    }
+};
+
 // Dropdown menyuni ochish/yopish logikasi
 if (profileDisplay && profileDropdown) {
     profileDisplay.addEventListener('click', (e) => {
@@ -280,6 +293,8 @@ if (editProfileBtn && profileModal) {
         modalCountrySelect.disabled = true;
         modalProfilePictureInput.value = '';
         if (saveProfileBtn) saveProfileBtn.disabled = true;
+
+        updateAvatarButtons();
         
         profileModal.classList.add('active');
     });
@@ -305,6 +320,7 @@ if (changeProfilePictureBtn && modalProfilePictureInput) {
             };
             reader.readAsDataURL(file);
             checkChanges();
+            updateAvatarButtons();
         } else {
             if (currentProfile.avatar_url) {
                 profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
@@ -313,9 +329,72 @@ if (changeProfilePictureBtn && modalProfilePictureInput) {
                 profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
             }
             checkChanges();
+            updateAvatarButtons();
         }
     });
 }
+
+// Profil rasmini o'chirish logikasi
+removeProfilePictureBtn?.addEventListener('click', async () => {
+    // 1. Agar foydalanuvchi endigina rasm tanlagan bo'lsa (hali saqlamagan)
+    if (modalProfilePictureInput.files.length > 0) {
+        modalProfilePictureInput.value = '';
+        if (currentProfile.avatar_url) {
+            profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
+            profilePicturePreview.textContent = '';
+        } else {
+            profilePicturePreview.style.backgroundImage = 'none';
+            profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
+        }
+        updateAvatarButtons();
+        checkChanges();
+        return;
+    }
+
+    // 2. Agar bazadagi mavjud rasmni o'chirmoqchi bo'lsa
+    if (currentProfile.avatar_url) {
+        if (!confirm("Profil rasmini o'chirishni xohlaysizmi?")) return;
+
+        try {
+            removeProfilePictureBtn.disabled = true;
+            removeProfilePictureBtn.textContent = 'Removing...';
+
+            // Supabase storage'dan fayl yo'lini aniqlash (avatars/USER_ID/FILENAME)
+            const urlParts = currentProfile.avatar_url.split('/');
+            const fileName = urlParts.pop();
+            const userId = urlParts.pop();
+            const filePath = `${userId}/${fileName}`;
+
+            // Storage'dan o'chirish
+            const { error: storageError } = await supabase.storage
+                .from('avatars')
+                .remove([filePath]);
+
+            if (storageError) throw storageError;
+
+            // Bazada avatar_url'ni null qilish
+            const { data, error: dbError } = await supabase
+                .from('profiles')
+                .update({ avatar_url: null })
+                .eq('id', session.user.id)
+                .select();
+
+            if (dbError) throw dbError;
+
+            currentProfile = data[0];
+            updateHeaderUI();
+            profilePicturePreview.style.backgroundImage = 'none';
+            profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
+            updateAvatarButtons();
+            alert('Rasm muvaffaqiyatli o\'chirildi');
+        } catch (err) {
+            alert('Xatolik: ' + err.message);
+        } finally {
+            removeProfilePictureBtn.disabled = false;
+            removeProfilePictureBtn.textContent = 'REMOVE';
+        }
+    }
+});
 
 if (logoutBtn && logoutConfirmModal) {
     logoutBtn.addEventListener('click', () => {
