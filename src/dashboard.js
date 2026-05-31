@@ -170,8 +170,8 @@ if (logoutBtn && logoutConfirmModal) {
     });
 }
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
-document.getElementById('modalUsername')?.addEventListener('input', checkChanges);
-document.getElementById('modalEmail')?.addEventListener('input', checkChanges);
+modalUsernameInput?.addEventListener('input', checkChanges);
+modalEmailInput?.addEventListener('input', checkChanges);
 modalCountrySelect?.addEventListener('change', checkChanges);
 modalProfilePictureInput?.addEventListener('change', checkChanges);
 
