@@ -1127,7 +1127,8 @@ body {
   display: none; /* Default yopiq */
   justify-content: center;
   align-items: flex-start; /* Modal kontenti baland bo'lsa, tepadan kesilmasligi uchun */
-  padding: 60px 20px;
+  padding: 100px 20px; /* Tepadan ko'proq joy qoldiramiz */
+  margin-bottom: 50px;
   overflow-y: auto; /* Kontent sig'masa scroll chiqadi */
 }
 
@@ -1384,8 +1385,8 @@ input[type="number"] {
 
 /* Ikonlar uchun HUD pulsatsiyasi */
 @keyframes iconPulse {
-  0%, 100% { opacity: 0.12; transform: scale(1); }
-  50% { opacity: 0.18; transform: scale(1.06); }
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.28; transform: scale(1.1); }
 }
 
 .preview-top-left {
@@ -1531,7 +1532,7 @@ input[type="number"] {
   border: 1px solid rgba(0, 240, 255, 0.1) !important;
   background: rgba(0, 0, 0, 0.3) !important;
   transition: var(--transition-smooth);
-  height: 40px;
+  height: 48px; /* Boshqa inputlar bilan vizual bir xil bo'lishi uchun (40px + 8px padding) */
 }
 
 .file-input-wrapper:hover {
