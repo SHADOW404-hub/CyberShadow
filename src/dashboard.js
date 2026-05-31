@@ -26,6 +26,15 @@ const adminUsersLink = document.getElementById('adminUsersLink');
 const adminChallengesLink = document.getElementById('adminChallengesLink');
 const mainContentArea = document.querySelector('.dashboard-main-content');
 
+// Add Challenge Modal elementlari
+const addChallengeModal = document.getElementById('addChallengeModal');
+const cancelAddChallenge = document.getElementById('cancelAddChallenge');
+const saveChallengeBtn = document.getElementById('saveChallengeBtn');
+const challengeTitleInput = document.getElementById('challengeTitle');
+const challengePointsInput = document.getElementById('challengePoints');
+const challengeCategoryInput = document.getElementById('challengeCategory');
+const challengeFlagInput = document.getElementById('challengeFlag');
+
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
@@ -259,18 +268,72 @@ const fetchAndDisplayUsers = async () => {
     mainContentArea.innerHTML = tableHTML;
 };
 
-// Challenges ko'rsatish funksiyasi (Hozircha placeholder)
+// Challenges ko'rsatish funksiyasi
 const fetchAndDisplayChallenges = async () => {
     if (!mainContentArea) return;
     
     mainContentArea.innerHTML = `
-        <div class="admin-table-container" style="padding: 60px; text-align: center;">
-            <i class="ph-bold ph-trophy" style="font-size: 4rem; color: var(--neon-cyan); margin-bottom: 20px; display: block;"></i>
+        <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; max-width: 1200px;">
             <div class="stat-value" style="font-size: 1.5rem;">CHALLENGES MANAGEMENT</div>
-            <p style="color: var(--color-text-muted); margin-top: 15px;">Initializing secure connection to challenges database... Stand by, Agent.</p>
+            <button class="btn-submit" id="openAddChallengeBtn" style="width: auto; padding: 10px 25px; margin-top: 0;">
+                <i class="ph-bold ph-plus"></i> ADD CHALLENGE
+            </button>
+        </div>
+        <div class="admin-table-container">
+            <div style="padding: 40px; text-align: center; color: var(--color-text-muted);">
+                <i class="ph-bold ph-database" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                No challenges deployed yet.
+            </div>
         </div>
     `;
+
+    document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
+        addChallengeModal.classList.add('active');
+    });
 };
+
+cancelAddChallenge?.addEventListener('click', () => {
+    addChallengeModal.classList.remove('active');
+});
+
+saveChallengeBtn?.addEventListener('click', async () => {
+    const title = challengeTitleInput.value.trim();
+    const points = parseInt(challengePointsInput.value);
+    const category = challengeCategoryInput.value.trim();
+    const flag = challengeFlagInput.value.trim();
+
+    if (!title || !points || !category || !flag) {
+        alert("Barcha maydonlarni to'ldiring!");
+        return;
+    }
+
+    saveChallengeBtn.disabled = true;
+    saveChallengeBtn.textContent = "Deploying...";
+
+    const { error } = await supabase
+        .from('challenges')
+        .insert([{ 
+            title, 
+            points, 
+            category, 
+            flag,
+            created_by: session.user.id 
+        }]);
+
+    saveChallengeBtn.disabled = false;
+    saveChallengeBtn.textContent = "Deploy";
+
+    if (error) {
+        alert("Xatolik: " + error.message);
+    } else {
+        addChallengeModal.classList.remove('active');
+        challengeTitleInput.value = '';
+        challengePointsInput.value = '';
+        challengeCategoryInput.value = '';
+        challengeFlagInput.value = '';
+        fetchAndDisplayChallenges(); // Ro'yxatni yangilash
+    }
+});
 
 adminUsersLink?.addEventListener('click', (e) => {
     e.preventDefault();
