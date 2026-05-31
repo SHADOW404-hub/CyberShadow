@@ -1126,8 +1126,8 @@ body {
   z-index: 2000;
   display: none; /* Default yopiq */
   justify-content: center;
-  align-items: center;
-  padding: 20px;
+  align-items: flex-start; /* Modal kontenti baland bo'lsa, tepadan kesilmasligi uchun */
+  padding: 60px 20px;
   overflow-y: auto; /* Kontent sig'masa scroll chiqadi */
 }
 
