@@ -1591,12 +1591,12 @@ input[type="number"] {
   color: var(--neon-cyan);
   font-family: var(--font-mono);
   font-size: 10px;
-  padding: 0 15px;
+  padding: 2px 15px 0; /* Matnni vertikal markazlash uchun biroz yuqoridan joy */
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: 0; /* Flexbox bilan yaxshiroq ishlaydi */
   border-radius: 6px;
   cursor: pointer;
   transition: var(--transition-fast);

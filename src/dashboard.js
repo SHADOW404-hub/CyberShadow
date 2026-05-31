@@ -144,13 +144,14 @@ challengePointsInput?.addEventListener('input', updateChallengePreview);
 challengeCategoryInput?.addEventListener('change', updateChallengePreview);
 challengeDifficultyInput?.addEventListener('change', updateChallengePreview);
 
-// Fayl tanlanganda nomini ko'rsatish
-challengeFileInput?.addEventListener('change', () => {
+// Fayl UI holatini yangilash funksiyasi
+const refreshFileUI = () => {
+    const file = challengeFileInput?.files[0];
     const display = document.getElementById('fileNameDisplay');
     const wrapper = document.querySelector('.file-input-wrapper');
     
-    if (challengeFileInput.files[0]) {
-        if (display) display.textContent = challengeFileInput.files[0].name;
+    if (file) {
+        if (display) display.textContent = file.name;
         if (clearFileBtn) clearFileBtn.style.display = 'flex';
         if (wrapper) wrapper.classList.add('has-file');
     } else {
@@ -158,17 +159,18 @@ challengeFileInput?.addEventListener('change', () => {
         if (clearFileBtn) clearFileBtn.style.display = 'none';
         if (wrapper) wrapper.classList.remove('has-file');
     }
-});
+};
+
+// Fayl tanlanganda interfeysni yangilash
+challengeFileInput?.addEventListener('change', refreshFileUI);
 
 // Faylni tozalash
 clearFileBtn?.addEventListener('click', (e) => {
     e.preventDefault();
-    if (challengeFileInput) challengeFileInput.value = '';
-    const display = document.getElementById('fileNameDisplay');
-    const wrapper = document.querySelector('.file-input-wrapper');
-    if (display) display.textContent = "No file chosen";
-    if (clearFileBtn) clearFileBtn.style.display = 'none';
-    if (wrapper) wrapper.classList.remove('has-file');
+    if (challengeFileInput) {
+        challengeFileInput.value = '';
+        refreshFileUI();
+    }
 });
 
 // 195 ta davlat ro'yxati
@@ -442,7 +444,8 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const link = challengeLinkInput.value.trim();
     const file = challengeFileInput.files[0];
 
-    if (!name || !points || !category || !flag || !difficulty) {
+    // Ball 0 bo'lishi mumkinligini hisobga olamiz
+    if (!name || isNaN(points) || !category || !flag || !difficulty) {
         alert("Barcha maydonlarni to'ldiring!");
         return;
     }
@@ -467,43 +470,41 @@ saveChallengeBtn?.addEventListener('click', async () => {
             fileUrl = supabase.storage.from('challenges').getPublicUrl(filePath).data.publicUrl;
         }
 
-    const { error } = await supabase
-        .from('challenges')
-        .insert([{ 
-            name, 
-            points, 
-            category, 
-            difficulty,
-            flag,
-            link: link || null,
-            file_url: fileUrl,
-            created_by: session.user.id
-        }]);
+        const { error } = await supabase
+            .from('challenges')
+            .insert([{ 
+                name, 
+                points, 
+                category, 
+                difficulty,
+                flag,
+                link: link || null,
+                file_url: fileUrl,
+                created_by: session.user.id
+            }]);
 
-    saveChallengeBtn.disabled = false;
-    saveChallengeBtn.textContent = "Deploy";
+        saveChallengeBtn.disabled = false;
+        saveChallengeBtn.textContent = "Deploy";
 
-    if (error) {
-        alert("Xatolik: " + error.message);
-    } else {
-        alert("Challenge muvaffaqiyatli yuklandi!");
-        addChallengeModal.classList.remove('active');
-        challengeNameInput.value = '';
-        challengePointsInput.value = '';
-        challengeCategoryInput.value = '';
-        challengeDifficultyInput.value = '';
-        challengeFlagInput.value = '';
+        if (error) {
+            alert("Xatolik: " + error.message);
+        } else {
+            alert("Challenge muvaffaqiyatli yuklandi!");
+            addChallengeModal.classList.remove('active');
+            
+            // Barcha maydonlarni reset qilish
+            challengeNameInput.value = '';
+            challengePointsInput.value = '';
+            challengeCategoryInput.value = '';
+            challengeDifficultyInput.value = '';
+            challengeFlagInput.value = '';
             challengeLinkInput.value = '';
             challengeFileInput.value = '';
-            
-            // Fayl UI ni reset qilish
-            if (document.getElementById('fileNameDisplay')) document.getElementById('fileNameDisplay').textContent = "No file chosen";
-            if (clearFileBtn) clearFileBtn.style.display = 'none';
-            document.querySelector('.file-input-wrapper')?.classList.remove('has-file');
+            refreshFileUI(); // Fayl UI ni reset qilish
 
-        updateChallengePreview(); // Previewni reset qilish
-        fetchAndDisplayChallenges(); // Ro'yxatni yangilash
-    }
+            updateChallengePreview(); 
+            fetchAndDisplayChallenges();
+        }
     } catch (err) {
         alert("Xatolik: " + err.message);
         saveChallengeBtn.disabled = false;
