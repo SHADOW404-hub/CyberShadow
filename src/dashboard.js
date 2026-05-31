@@ -62,18 +62,18 @@ const updateChallengePreview = () => {
             'Crypto': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='gold' stroke-width='0.7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4' stroke-linecap='round'/%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Ccircle cx='12' cy='16' r='1.2' fill='gold'/%3E%3Cpath d='M12 17.2v1.8' stroke-linecap='round'/%3E%3C/svg%3E")`,
             'Forensics': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='cyan' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0' opacity='0.3'/%3E%3C/svg%3E")`,
             'Reverse': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")`,
-            'Miscellaneous': `url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='0.5' fill='white' opacity='0.3'/%3E%3C/svg%3E")`
+            'Miscellaneous': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E")`
         };
 
         if (previewPattern) {
             const pattern = categoryPatterns[val];
             if (pattern) {
                 previewPattern.style.backgroundImage = pattern;
-                const isTiled = val === 'Code' || val === 'Miscellaneous';
+                const isTiled = val === 'Code';
                 previewPattern.style.opacity = isTiled ? '0.15' : '0.12';
                 previewPattern.style.backgroundRepeat = isTiled ? 'repeat' : 'no-repeat';
                 previewPattern.style.backgroundPosition = isTiled ? '0 0' : 'center';
-                previewPattern.style.backgroundSize = isTiled ? (val === 'Code' ? '100px 100px' : '30px 30px') : '45%';
+                previewPattern.style.backgroundSize = isTiled ? '100px 100px' : '65%';
                 // Animatsiyani faqat tiled (takrorlanuvchi) naqshlar uchun yoqamiz
                 previewPattern.style.animation = isTiled ? 'patternScroll 40s linear infinite' : 'none';
             } else {
