@@ -1332,7 +1332,7 @@ input[type="number"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
 }
 
 .preview-top-left {

@@ -57,9 +57,24 @@ const updateChallengePreview = () => {
             'Pwn': '#ff007f',
             'Crypto': '#9d4edd',
             'Forensics': '#00ff66',
-            'Reverse': '#ffb703'
+            'Reverse': '#ffb703',
+            'OSINT': '#007bff',
+            'Miscellaneous': '#64748b',
+            'Code': '#00ffff'
         };
-        previewCategory.style.color = categoryColors[val] || 'var(--neon-purple)';
+        
+        const activeColor = categoryColors[val];
+        previewCategory.style.color = activeColor || 'var(--neon-purple)';
+
+        if (previewCard) {
+            if (activeColor) {
+                // Juda shaffof rangdan boshlanib to'q kiber-fonga o'tadigan gradient
+                previewCard.style.background = `linear-gradient(135deg, ${activeColor}1a, rgba(15, 18, 32, 0.98))`;
+            } else {
+                // Tanlanmagan holatdagi standart fon
+                previewCard.style.background = 'linear-gradient(135deg, rgba(15, 18, 32, 0.95), rgba(8, 9, 12, 0.98))';
+            }
+        }
     }
     if (previewDifficulty) {
         const diff = challengeDifficultyInput.value;
