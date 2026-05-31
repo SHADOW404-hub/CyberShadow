@@ -1246,6 +1246,16 @@ body {
   font-size: 14px;
 }
 
+.input-action-wrapper select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.input-action-wrapper select option {
+  background-color: var(--bg-secondary);
+  color: var(--color-text-bright);
+}
+
 .input-action-wrapper input:focus {
   outline: none;
 }

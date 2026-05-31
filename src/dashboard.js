@@ -11,6 +11,7 @@ const profileModal = document.getElementById('editProfileModal');
 const cancelModal = document.getElementById('cancelModal');
 const modalUsernameInput = document.getElementById('modalUsername');
 const modalEmailInput = document.getElementById('modalEmail');
+const modalCountrySelect = document.getElementById('modalCountry');
 const modalProfilePictureInput = document.getElementById('modalProfilePictureInput');
 const changeProfilePictureBtn = document.getElementById('changeProfilePictureBtn');
 const profilePicturePreview = document.getElementById('profilePicturePreview');
@@ -19,6 +20,33 @@ const logoutBtn = document.getElementById('logoutBtn');
 const logoutConfirmModal = document.getElementById('logoutConfirmModal');
 const cancelLogoutBtn = document.getElementById('cancelLogout');
 const confirmLogoutBtn = document.getElementById('confirmLogout');
+
+// 195 ta davlat ro'yxati
+const COUNTRIES = [
+    "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+    "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi",
+    "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czechia",
+    "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia",
+    "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+    "Haiti", "Honduras", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Ivory Coast",
+    "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+    "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
+    "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", "North Macedonia", "Norway", "Oman",
+    "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar",
+    "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
+    "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
+];
+
+const populateCountries = () => {
+    if (!modalCountrySelect) return;
+    COUNTRIES.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        modalCountrySelect.appendChild(option);
+    });
+};
+populateCountries();
 
 // session tekshirish
 const { data: { session }, error: sessionError } = await supabase.auth.getSession()
@@ -30,12 +58,12 @@ if (sessionError || !session) {
 
 let { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('username, email, avatar_url')
+    .select('username, email, avatar_url, country')
     .eq('id', session.user.id)
     .single()
 
 if (profileError) console.error("Profile fetch error:", profileError);
-let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null };
+let currentProfile = profile || { username: 'Agent', email: 'agent@cybershadow.com', avatar_url: null, country: null };
 
 const updateHeaderUI = () => {
     if (userEmailDisplay) {
@@ -71,6 +99,7 @@ if (profileDisplay && profileDropdown) {
 const checkChanges = () => {
     const hasChanges = modalUsernameInput.value.trim() !== (currentProfile.username || '') || 
                        modalEmailInput.value.trim() !== (currentProfile.email || '') ||
+                       modalCountrySelect.value !== (currentProfile.country || '') ||
                        (modalProfilePictureInput && modalProfilePictureInput.files.length > 0);
     if (saveProfileBtn) saveProfileBtn.disabled = !hasChanges;
 };
@@ -80,6 +109,7 @@ if (editProfileBtn && profileModal) {
         e.preventDefault();
         modalUsernameInput.value = currentProfile.username || '';
         modalEmailInput.value = currentProfile.email || '';
+        modalCountrySelect.value = currentProfile.country || '';
 
         if (currentProfile.avatar_url) {
             profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
@@ -91,6 +121,7 @@ if (editProfileBtn && profileModal) {
         
         modalUsernameInput.readOnly = true;
         modalEmailInput.readOnly = true;
+        modalCountrySelect.disabled = true;
         modalProfilePictureInput.value = '';
         if (saveProfileBtn) saveProfileBtn.disabled = true;
         
@@ -141,6 +172,7 @@ if (logoutBtn && logoutConfirmModal) {
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 document.getElementById('modalUsername')?.addEventListener('input', checkChanges);
 document.getElementById('modalEmail')?.addEventListener('input', checkChanges);
+modalCountrySelect?.addEventListener('change', checkChanges);
 modalProfilePictureInput?.addEventListener('change', checkChanges);
 
 // Save Changes tugmasi logikasi
@@ -149,6 +181,7 @@ if (saveProfileBtn) {
         const newProfilePictureFile = modalProfilePictureInput.files[0];
         const newUsername = modalUsernameInput.value.trim();
         const newEmail = modalEmailInput.value.trim();
+        const newCountry = modalCountrySelect.value;
 
         let changesMade = false;
         const updateData = {};
@@ -180,6 +213,10 @@ if (saveProfileBtn) {
             }
             if (newEmail !== currentProfile.email) {
                 updateData.email = newEmail;
+                changesMade = true;
+            }
+            if (newCountry !== (currentProfile.country || '')) {
+                updateData.country = newCountry;
                 changesMade = true;
             }
 
@@ -227,7 +264,8 @@ document.querySelectorAll('.btn-inline-change').forEach(btn => {
         if (!targetId) return; // Rasm uchun bo'lgan tugmani chetlab o'tish
         const input = document.getElementById(targetId);
         if (input) {
-            input.readOnly = false; // Tahrirlashga ruxsat berish
+            input.readOnly = false;
+            input.disabled = false; // Select uchun
             input.focus();
         }
     });
