@@ -361,7 +361,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const { error } = await supabase
         .from('challenges')
         .insert([{ 
-            title: name, 
+            name, 
             points, 
             category, 
             difficulty,
