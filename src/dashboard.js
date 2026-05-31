@@ -46,6 +46,9 @@ const populateCountries = () => {
     const placeholder = document.createElement('option');
     placeholder.value = "";
     placeholder.textContent = "Select a country";
+    placeholder.disabled = true; // Uni qayta tanlab bo'lmaydi
+    placeholder.selected = true; // Boshida tanlangan bo'ladi
+    placeholder.hidden = true;   // Ro'yxat ochilganda ko'rinmaydi
     modalCountrySelect.appendChild(placeholder);
 
     COUNTRIES.forEach(country => {
@@ -137,7 +140,7 @@ if (editProfileBtn && profileModal) {
         modalCountrySelect.value = currentProfile.country || '';
 
         // Agar foydalanuvchida allaqachon tanlangan davlat bo'lsa, "Not selected"ni o'chiramiz
-        if (currentProfile.country && modalCountrySelect.options[0]?.value === "") {
+        if (currentProfile.country && modalCountrySelect.options.length > 0 && modalCountrySelect.options[0].value === "") {
             modalCountrySelect.options[0].remove();
         }
 
@@ -214,7 +217,7 @@ modalUsernameInput?.addEventListener('input', checkChanges);
 modalEmailInput?.addEventListener('input', checkChanges);
 modalCountrySelect?.addEventListener('change', () => {
     // Davlat tanlanganda "Not selected" variantini o'chirib tashlash
-    if (modalCountrySelect.value !== "" && modalCountrySelect.options[0]?.value === "") {
+    if (modalCountrySelect.value !== "" && modalCountrySelect.options.length > 0 && modalCountrySelect.options[0].value === "") {
         modalCountrySelect.options[0].remove();
     }
     checkChanges();
