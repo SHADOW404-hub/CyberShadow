@@ -22,7 +22,6 @@ const cancelLogoutBtn = document.getElementById('cancelLogout');
 const confirmLogoutBtn = document.getElementById('confirmLogout');
 const adminTerminalLink = document.getElementById('adminTerminalLink');
 const adminSidebar = document.getElementById('adminSidebar');
-const closeSidebarBtn = document.getElementById('closeSidebarBtn');
 const adminUsersLink = document.getElementById('adminUsersLink');
 const mainContentArea = document.querySelector('.dashboard-main-content');
 
@@ -212,13 +211,6 @@ if (adminTerminalLink && adminSidebar) {
         e.preventDefault();
         adminSidebar.classList.add('active');
         document.querySelector('.dashboard-wrapper').classList.add('admin-mode');
-    });
-}
-
-if (closeSidebarBtn) {
-    closeSidebarBtn.addEventListener('click', () => {
-        adminSidebar.classList.remove('active');
-        document.querySelector('.dashboard-wrapper').classList.remove('admin-mode');
     });
 }
 

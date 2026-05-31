@@ -1561,20 +1561,6 @@ body {
   text-shadow: 0 0 10px var(--neon-cyan-glow);
 }
 
-.btn-close-sidebar {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.btn-close-sidebar:hover {
-  color: var(--color-error);
-  filter: drop-shadow(0 0 5px var(--color-error));
-}
-
 .sidebar-menu {
   display: flex;
   flex-direction: column;
