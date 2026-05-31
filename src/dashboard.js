@@ -437,8 +437,17 @@ if (logoutBtn && logoutConfirmModal) {
 if (adminTerminalLink && adminSidebar) {
     adminTerminalLink.addEventListener('click', (e) => {
         e.preventDefault();
+        // Header menyusidagi barcha faol holatlarni o'chirish va Admin Terminalni belgilash
+        document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+        adminTerminalLink.classList.add('active');
+
         adminSidebar.classList.add('active');
         document.querySelector('.dashboard-wrapper').classList.add('admin-mode');
+
+        // Admin Terminal ochilganda default holatda foydalanuvchilar ro'yxatini yuklash
+        adminChallengesLink?.classList.remove('active');
+        adminUsersLink?.classList.add('active');
+        fetchAndDisplayUsers();
     });
 }
 
@@ -655,11 +664,32 @@ document.querySelector('.menu-link[href="#challenges"]')?.addEventListener('clic
     document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
     e.target.classList.add('active');
     
-    // Admin paneldan chiqish (Sidebarni yashirish)
+    // Sidebar va admin rejimini yopish
     adminSidebar?.classList.remove('active');
     document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
     
     fetchAndDisplayChallenges(false); // User ko'rinishi
+});
+
+// Headerdagi "Scoreboard" havolasi uchun listener
+document.querySelectorAll('.menu-link').forEach(link => {
+    if (link.textContent.trim() === 'Scoreboard') {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            
+            // Sidebar va admin rejimini yopish
+            adminSidebar?.classList.remove('active');
+            document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
+            
+            if (mainContentArea) {
+                mainContentArea.innerHTML = `
+                    <div class="stat-value" style="font-size: 1.5rem;">SCOREBOARD COMING SOON...</div>
+                `;
+            }
+        });
+    }
 });
 
 adminChallengesLink?.addEventListener('click', (e) => {
