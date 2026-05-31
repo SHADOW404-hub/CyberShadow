@@ -46,112 +46,91 @@ const previewPattern = document.getElementById('previewCardPattern');
 
 // Previewni yangilash funksiyasi
 const updateChallengePreview = () => {
-    if (previewName) {
-        previewName.textContent = challengeNameInput.value.trim() || 'CHALLENGE NAME';
-    }
-    if (previewPoints) previewPoints.textContent = challengePointsInput.value || '0';
-    if (previewCategory) {
-        const val = challengeCategoryInput.value;
-        
-        // Kategoriya uchun maxsus HUD naqshlari (SVG data-uris)
-        const categoryPatterns = {
-            'Code': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16'/%3E%3C/svg%3E")`,
-            'OSINT': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")`,
-            'Web': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E")`,
-            'Pwn': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 17l6-5-6-5'/%3E%3Cpath d='M12 18h8'/%3E%3C/svg%3E")`,
-            'Crypto': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='gold' stroke-width='0.7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4' stroke-linecap='round'/%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Ccircle cx='12' cy='16' r='1.2' fill='gold'/%3E%3Cpath d='M12 17.2v1.8' stroke-linecap='round'/%3E%3C/svg%3E")`,
-            'Forensics': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='cyan' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0' opacity='0.3'/%3E%3C/svg%3E")`,
-            'Reverse': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='5' width='14' height='14' rx='1'/%3E%3Cpath d='M12 9v6M9 12h6'/%3E%3Cpath d='M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2'/%3E%3C/svg%3E")`,
-            'Miscellaneous': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E")`
-        };
+    const name = challengeNameInput.value.trim() || 'CHALLENGE NAME';
+    const points = challengePointsInput.value || '0';
+    const cat = challengeCategoryInput.value;
+    const diff = challengeDifficultyInput.value;
 
-        if (previewPattern) {
-            const pattern = categoryPatterns[val];
-            if (pattern) {
-                previewPattern.style.backgroundImage = pattern;
-                // Barcha ikonlar uchun yagona mantiq
-                previewPattern.style.opacity = '0.12';
-                previewPattern.style.backgroundRepeat = 'no-repeat';
-                previewPattern.style.backgroundPosition = 'center';
-                previewPattern.style.backgroundSize = '65%';
-                previewPattern.style.animation = 'iconPulse 4s ease-in-out infinite';
-            } else {
-                previewPattern.style.opacity = '0';
-            }
-        }
+    if (previewName) previewName.textContent = name;
+    if (previewPoints) previewPoints.textContent = points;
+    if (previewCategory) previewCategory.textContent = cat || 'CATEGORY';
+    if (previewDifficulty) previewDifficulty.textContent = diff || 'DIFFICULTY';
 
-        previewCategory.textContent = val || 'CATEGORY';
-        
-        // Kategoriyaga qarab rangni o'zgartirish
-        const categoryColors = {
-            'Web': '#00f0ff',
-            'Pwn': '#ff007f',
-            'Crypto': '#9d4edd',
-            'Forensics': '#00ff66',
-            'Reverse': '#ffb703',
-            'OSINT': '#007bff',
-            'Miscellaneous': '#64748b',
-            'Code': '#00ffff'
-        };
-        
-        const activeColor = categoryColors[val];
-        previewCategory.style.color = activeColor || 'var(--neon-purple)';
+    const categoryPatterns = {
+        'Code': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16'/%3E%3C/svg%3E")`,
+        'OSINT': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")`,
+        'Web': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E")`,
+        'Pwn': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 17l6-5-6-5'/%3E%3Cpath d='M12 18h8'/%3E%3C/svg%3E")`,
+        'Crypto': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='gold' stroke-width='0.7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4' stroke-linecap='round'/%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Ccircle cx='12' cy='16' r='1.2' fill='gold'/%3E%3Cpath d='M12 17.2v1.8' stroke-linecap='round'/%3E%3C/svg%3E")`,
+        'Forensics': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='cyan' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0' opacity='0.3'/%3E%3C/svg%3E")`,
+        'Reverse': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='5' width='14' height='14' rx='1'/%3E%3Cpath d='M12 9v6M9 12h6'/%3E%3Cpath d='M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2'/%3E%3C/svg%3E")`,
+        'Miscellaneous': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E")`
+    };
 
-        if (previewCard) {
-            if (activeColor) {
-                // Juda shaffof rangdan boshlanib to'q kiber-fonga o'tadigan gradient
-                previewCard.style.background = `linear-gradient(135deg, ${activeColor}1a, rgba(15, 18, 32, 0.98))`;
-            } else {
-                // Tanlanmagan holatdagi standart fon
-                previewCard.style.background = 'linear-gradient(135deg, rgba(15, 18, 32, 0.95), rgba(8, 9, 12, 0.98))';
-            }
+    const categoryColors = {
+        'Web': '#00f0ff',
+        'Pwn': '#ff007f',
+        'Crypto': '#9d4edd',
+        'Forensics': '#00ff66',
+        'Reverse': '#ffb703',
+        'OSINT': '#007bff',
+        'Miscellaneous': '#64748b',
+        'Code': '#00ffff'
+    };
+
+    const diffThemes = {
+        'Easy': '#00ff66',
+        'Medium': '#ffb703',
+        'Hard': '#ff3366',
+        'Insane': '#9d4edd'
+    };
+
+    const catColor = categoryColors[cat];
+    const activeColor = diffThemes[diff];
+
+    if (previewPattern) {
+        const pattern = categoryPatterns[cat];
+        if (pattern) {
+            previewPattern.style.backgroundImage = pattern;
+            previewPattern.style.opacity = '0.12';
+            previewPattern.style.backgroundRepeat = 'no-repeat';
+            previewPattern.style.backgroundPosition = 'center';
+            previewPattern.style.backgroundSize = '65%';
+            previewPattern.style.animation = 'iconPulse 4s ease-in-out infinite';
+        } else {
+            previewPattern.style.opacity = '0';
+            previewPattern.style.animation = 'none';
         }
     }
-    if (previewDifficulty) {
-        const diff = challengeDifficultyInput.value;
-        previewDifficulty.textContent = diff || 'DIFFICULTY';
-        
-        // Qiyinchilikka qarab mavzular (Mavzu ranglari)
-        const diffThemes = {
-            'Easy': '#00ff66',    // ochiq yashil
-            'Medium': '#ffb703',  // olovrang
-            'Hard': '#ff3366',    // qizil
-            'Insane': '#9d4edd'   // binafsha
-        };
-        
-        const activeColor = diffThemes[diff];
-        previewDifficulty.style.color = activeColor || 'var(--color-text-muted)';
 
-        if (previewCard) {
-            if (activeColor) {
-                // Butun kartaning chegarasi va ichki nuri (glow) o'zgaradi
-                previewCard.style.borderColor = activeColor;
-                previewCard.style.boxShadow = `0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${activeColor}33`;
-                
-                // Ballar nishonchasi (badge) ham moslashadi
-                if (previewPoints) previewPoints.parentElement.style.color = activeColor;
-                
-                // Name va Category ham qiyinchilik rangiga kiradi
-                if (previewName) previewName.style.color = activeColor;
-                if (previewCategory) previewCategory.style.color = activeColor;
+    if (previewCard) {
+        // Background logic
+        previewCard.style.background = catColor 
+            ? `linear-gradient(135deg, ${catColor}1a, rgba(15, 18, 32, 0.98))`
+            : 'linear-gradient(135deg, rgba(15, 18, 32, 0.95), rgba(8, 9, 12, 0.98))';
 
-                // Burchaklar rangini yangilash
-                document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = activeColor);
-                
-                // Insane uchun glitch qo'shish
-                if (diff === 'Insane') previewCard.classList.add('glitch-active');
-                else previewCard.classList.remove('glitch-active');
-            } else {
-                // Tanlanmagan holatda standart ranglar
-                previewCard.style.borderColor = 'rgba(0, 240, 255, 0.3)';
-                previewCard.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.05)';
-                if (previewPoints) previewPoints.parentElement.style.color = 'var(--neon-cyan)';
-                previewCard.classList.remove('glitch-active');
-
-                // Standart ranglarga qaytarish
-                if (previewName) previewName.style.color = 'var(--color-text-bright)';
-                document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = 'var(--neon-cyan)');
-            }
+        // Accent logic based on Difficulty
+        if (activeColor) {
+            previewCard.style.borderColor = activeColor;
+            previewCard.style.boxShadow = `0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${activeColor}33`;
+            if (previewPoints) previewPoints.parentElement.style.color = activeColor;
+            if (previewName) previewName.style.color = activeColor;
+            if (previewCategory) previewCategory.style.color = activeColor;
+            if (previewDifficulty) previewDifficulty.style.color = activeColor;
+            document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = activeColor);
+            
+            if (diff === 'Insane') previewCard.classList.add('glitch-active');
+            else previewCard.classList.remove('glitch-active');
+        } else {
+            // Reset state
+            previewCard.style.borderColor = 'rgba(0, 240, 255, 0.3)';
+            previewCard.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 240, 255, 0.05)';
+            if (previewPoints) previewPoints.parentElement.style.color = 'var(--neon-cyan)';
+            if (previewName) previewName.style.color = 'var(--color-text-bright)';
+            if (previewCategory) previewCategory.style.color = catColor || 'var(--neon-purple)';
+            if (previewDifficulty) previewDifficulty.style.color = 'var(--color-text-muted)';
+            document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = 'var(--neon-cyan)');
+            previewCard.classList.remove('glitch-active');
         }
     }
 };
@@ -215,7 +194,7 @@ try {
 
 let { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('username, email, avatar_url, country')
+    .select('username, email, avatar_url, country, role')
     .eq('id', session.user.id)
     .single()
 
@@ -244,7 +223,7 @@ const updateHeaderUI = () => {
 
     // Admin Terminal linkini faqat "SHADOW" useri uchun ko'rsatish
     if (adminTerminalLink) {
-        adminTerminalLink.style.display = currentProfile.username === 'SHADOW' ? 'inline-block' : 'none';
+        adminTerminalLink.style.display = currentProfile.role === 'admin' ? 'inline-block' : 'none';
     }
 };
 
