@@ -1600,3 +1600,50 @@ body {
   color: var(--neon-cyan);
   text-shadow: 0 0 8px var(--neon-cyan-glow);
 }
+
+/* Admin Table Styles */
+.admin-table-container {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body);
+}
+
+.admin-table th {
+    background: rgba(0, 240, 255, 0.05);
+    color: var(--neon-cyan);
+    text-align: left;
+    padding: 15px 20px;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+}
+
+.admin-table td {
+    padding: 12px 20px;
+    color: var(--color-text);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+}
+
+.admin-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.table-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--neon-cyan-faint);
+}

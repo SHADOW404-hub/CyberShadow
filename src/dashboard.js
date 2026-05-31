@@ -22,6 +22,9 @@ const cancelLogoutBtn = document.getElementById('cancelLogout');
 const confirmLogoutBtn = document.getElementById('confirmLogout');
 const adminTerminalLink = document.getElementById('adminTerminalLink');
 const adminSidebar = document.getElementById('adminSidebar');
+const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+const adminUsersLink = document.getElementById('adminUsersLink');
+const mainContentArea = document.querySelector('.dashboard-main-content');
 
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
@@ -208,10 +211,66 @@ if (adminTerminalLink && adminSidebar) {
     adminTerminalLink.addEventListener('click', (e) => {
         e.preventDefault();
         adminSidebar.classList.add('active');
-        // Asosiy wrapperga klass qo'shish orqali kontentni suramiz
         document.querySelector('.dashboard-wrapper').classList.add('admin-mode');
     });
 }
+
+if (closeSidebarBtn) {
+    closeSidebarBtn.addEventListener('click', () => {
+        adminSidebar.classList.remove('active');
+        document.querySelector('.dashboard-wrapper').classList.remove('admin-mode');
+    });
+}
+
+// Foydalanuvchilarni yuklash va ko'rsatish funksiyasi
+const fetchAndDisplayUsers = async () => {
+    if (!mainContentArea) return;
+    
+    mainContentArea.innerHTML = `<div class="stat-value" style="font-size: 1.5rem;">ACCESSING DATABASE...</div>`;
+
+    const { data: users, error } = await supabase
+        .from('profiles')
+        .select('username, email, avatar_url, country');
+
+    if (error) {
+        mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
+        return;
+    }
+
+    let tableHTML = `
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>AVATAR</th>
+                        <th>USERNAME</th>
+                        <th>EMAIL</th>
+                        <th>COUNTRY</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${users.map(u => `
+                        <tr>
+                            <td>
+                                ${u.avatar_url ? `<img src="${u.avatar_url}" class="table-avatar">` : `<div class="profile-avatar" style="width:30px; height:30px; font-size:12px;">${(u.username || 'A').charAt(0)}</div>`}
+                            </td>
+                            <td style="color: var(--neon-cyan)">${u.username || 'N/A'} ${u.username === 'SHADOW' ? '⚡' : ''}</td>
+                            <td>${u.email}</td>
+                            <td>${u.country || 'Unknown'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+    mainContentArea.innerHTML = tableHTML;
+};
+
+adminUsersLink?.addEventListener('click', (e) => {
+    e.preventDefault();
+    fetchAndDisplayUsers();
+});
+
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 modalUsernameInput?.addEventListener('input', checkChanges);
 modalEmailInput?.addEventListener('input', checkChanges);
