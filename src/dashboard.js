@@ -375,6 +375,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     if (error) {
         alert("Xatolik: " + error.message);
     } else {
+        alert("Challenge muvaffaqiyatli yuklandi!");
         addChallengeModal.classList.remove('active');
         challengeNameInput.value = '';
         challengePointsInput.value = '';
