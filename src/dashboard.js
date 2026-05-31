@@ -654,6 +654,11 @@ document.querySelector('.menu-link[href="#challenges"]')?.addEventListener('clic
     e.preventDefault();
     document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
     e.target.classList.add('active');
+    
+    // Admin paneldan chiqish (Sidebarni yashirish)
+    adminSidebar?.classList.remove('active');
+    document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
+    
     fetchAndDisplayChallenges(false); // User ko'rinishi
 });
 
