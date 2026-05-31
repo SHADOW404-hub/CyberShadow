@@ -1135,7 +1135,7 @@ body {
 }
 
 .modal-content {
-  max-width: 650px;
+  max-width: 850px; /* Yanada kengroq modal */
   position: relative; /* "X" tugmasi modal ichida qolishi uchun */
   padding: 30px;
   animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1302,10 +1302,23 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* Modal Flex Layout */
+.modal-flex-layout {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap; /* Kichik ekranlarda ustunma-ustun tushadi */
+  align-items: flex-start;
+}
+
+.modal-form-side {
+  flex: 1;
+  min-width: 280px;
+}
+
 /* Challenge Preview Area Styles */
 .challenge-preview-area {
-  margin-bottom: 40px;
-  width: 100%;
+  flex: 1.2;
+  min-width: 350px;
   animation: fadeIn 0.5s ease-out;
 }
 
