@@ -1353,6 +1353,54 @@ input[type="number"] {
   transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease, transform 0.3s ease;
 }
 
+/* Admin Overlay inside Challenge Card */
+.admin-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 9, 12, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  opacity: 0;
+  transition: var(--transition-smooth);
+  z-index: 10;
+}
+
+.challenge-card-horizontal:hover .admin-card-overlay {
+  opacity: 1;
+}
+
+.challenge-stats {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-bright);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-delete-challenge {
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-delete-challenge:hover {
+  background: var(--color-error);
+  color: #fff;
+  box-shadow: 0 0 15px var(--color-error-glow);
+}
+
 /* Scanline effekti */
 .challenge-card-horizontal::after {
   content: "";

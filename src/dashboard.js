@@ -530,6 +530,7 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
             const styles = getChallengeStyles(ch.category, ch.difficulty);
             const cardBg = `linear-gradient(135deg, ${styles.color}1a, rgba(15, 18, 32, 0.98))`;
             const glitchClass = ch.difficulty === 'Insane' ? 'glitch-active' : '';
+            const solveCount = ch.solves_count || 0; // Agar bazada yechimlar soni bo'lsa
             
             html += `
                 <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
@@ -549,6 +550,16 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
                         <span>${ch.points}</span>
                         <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
                     </div>
+                    ${isAdmin ? `
+                    <div class="admin-card-overlay">
+                        <div class="challenge-stats">
+                            <i class="ph-bold ph-check-square"></i> <span>${solveCount} SOLVES</span>
+                        </div>
+                        <button class="btn-delete-challenge" data-id="${ch.id}" data-file="${ch.file_url}" title="Delete Challenge">
+                            <i class="ph-bold ph-trash"></i> DELETE
+                        </button>
+                    </div>
+                    ` : ''}
                 </div>`;
         });
     }
@@ -560,6 +571,42 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
         updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
         addChallengeModal.classList.add('active');
     });
+
+    // O'chirish logikasi (Admin uchun)
+    if (isAdmin) {
+        mainContentArea.querySelectorAll('.btn-delete-challenge').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.getAttribute('data-id');
+                const fileUrl = btn.getAttribute('data-file');
+                
+                if (!confirm("Haqiqatdan ham ushbu challengeni butunlay o'chirib tashlamoqchimisiz? Bu amalni ortga qaytarib bo'lmaydi.")) return;
+
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="ph-bold ph-spinner-gap"></i> DELETING...';
+
+                    // 1. Faylni storagedan o'chirish (agar bo'lsa)
+                    if (fileUrl && fileUrl !== 'null') {
+                        const path = fileUrl.split('challenges/')[1];
+                        if (path) {
+                            await supabase.storage.from('challenges').remove([path]);
+                        }
+                    }
+
+                    // 2. Bazadan o'chirish
+                    const { error } = await supabase.from('challenges').delete().eq('id', id);
+                    if (error) throw error;
+
+                    alert("Challenge muvaffaqiyatli yo'q qilindi.");
+                    fetchAndDisplayChallenges(true); // Ro'yxatni yangilash
+                } catch (err) {
+                    alert("Xatolik: " + err.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="ph-bold ph-trash"></i> DELETE';
+                }
+            });
+        });
+    }
 };
 
 cancelAddChallenge?.addEventListener('click', () => {
