@@ -73,7 +73,11 @@ body {
   height: 100%;
   z-index: -2;
   overflow: hidden;
-  background-color: #010204; /* O'ta to'q asos */
+  background-color: #010204;
+  /* Texnik nuqtali pattern */
+  background-image: radial-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-attachment: fixed;
   filter: contrast(110%) brightness(100%);
 }
 
@@ -913,6 +917,11 @@ body {
   40%, 80% { transform: translateX(6px); }
 }
 
+@keyframes auraPulse {
+  0% { opacity: 0.3; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1.1); }
+}
+
 /* ==========================================================================
    DASHBOARD LAYOUT & STYLES
    ========================================================================== */
@@ -1354,6 +1363,13 @@ body {
   font-size: 1.2rem;
   opacity: 0;
   animation: fadeIn 1s ease-out forwards 0.8s;
+  /* Blueprint grid foni */
+  background-image: 
+    linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* Dashboard Grid & Cards */
