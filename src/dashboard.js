@@ -708,7 +708,7 @@ adminUsersLink?.addEventListener('click', (e) => {
     fetchAndDisplayUsers();
 });
 
-document.querySelector('.menu-link[href="#challenges"]')?.addEventListener('click', (e) => {
+document.querySelector('.menu-link[href="#"]')?.addEventListener('click', (e) => {
     e.preventDefault();
     document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
     e.target.classList.add('active');
