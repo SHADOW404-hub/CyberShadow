@@ -1358,6 +1358,14 @@ input[type="number"] {
   letter-spacing: 1px;
 }
 
+.preview-difficulty {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 2px;
+}
+
 .preview-points-badge {
   position: absolute;
   top: 30px;

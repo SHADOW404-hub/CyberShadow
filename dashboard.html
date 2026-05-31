@@ -149,6 +149,7 @@
           <div class="preview-label">PREVIEW</div>
           <div class="challenge-card-horizontal">
             <div class="preview-main-info">
+              <div id="previewDifficulty" class="preview-difficulty">DIFFICULTY</div>
               <span id="previewCategory" class="preview-category">CATEGORY</span>
               <div id="previewName" class="preview-name">CHALLENGE NAME</div>
             </div>
@@ -177,6 +178,18 @@
             </div>
           </div>
           <div class="info-group">
+            <label>Difficulty</label>
+            <div class="input-action-wrapper">
+              <select id="challengeDifficulty">
+                <option value="" disabled selected hidden>Select Difficulty</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+                <option value="Insane">Insane</option>
+              </select>
+            </div>
+          </div>
+          <div class="info-group">
             <label>Category</label>
             <div class="input-action-wrapper">
               <select id="challengeCategory">
@@ -188,6 +201,7 @@
                 <option value="Reverse">Reverse</option>
                 <option value="OSINT">OSINT</option>
                 <option value="Misc">Misc</option>
+                <option value="Misc">Code</option>
               </select>
             </div>
           </div>

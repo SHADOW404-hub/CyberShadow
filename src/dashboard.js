@@ -33,12 +33,14 @@ const saveChallengeBtn = document.getElementById('saveChallengeBtn');
 const challengeNameInput = document.getElementById('challengeName');
 const challengePointsInput = document.getElementById('challengePoints');
 const challengeCategoryInput = document.getElementById('challengeCategory');
+const challengeDifficultyInput = document.getElementById('challengeDifficulty');
 const challengeFlagInput = document.getElementById('challengeFlag');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
 const previewPoints = document.getElementById('previewPoints');
 const previewCategory = document.getElementById('previewCategory');
+const previewDifficulty = document.getElementById('previewDifficulty');
 
 // Previewni yangilash funksiyasi
 const updateChallengePreview = () => {
@@ -58,12 +60,26 @@ const updateChallengePreview = () => {
         };
         previewCategory.style.color = categoryColors[val] || 'var(--neon-purple)';
     }
+    if (previewDifficulty) {
+        const diff = challengeDifficultyInput.value;
+        previewDifficulty.textContent = diff || 'DIFFICULTY';
+        
+        // Qiyinchilikka qarab ranglar
+        const diffColors = {
+            'Easy': 'var(--color-success)',
+            'Medium': 'var(--color-warning)',
+            'Hard': '#ff4757',
+            'Insane': 'var(--neon-magenta)'
+        };
+        previewDifficulty.style.color = diffColors[diff] || 'var(--color-text-muted)';
+    }
 };
 
 // Inputlarga listenerlar qo'shish
 challengeNameInput?.addEventListener('input', updateChallengePreview);
 challengePointsInput?.addEventListener('input', updateChallengePreview);
 challengeCategoryInput?.addEventListener('change', updateChallengePreview);
+challengeDifficultyInput?.addEventListener('change', updateChallengePreview);
 
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
@@ -331,9 +347,10 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const name = challengeNameInput.value.trim();
     const points = parseInt(challengePointsInput.value);
     const category = challengeCategoryInput.value.trim();
+    const difficulty = challengeDifficultyInput.value;
     const flag = challengeFlagInput.value.trim();
 
-    if (!name || !points || !category || !flag) {
+    if (!name || !points || !category || !flag || !difficulty) {
         alert("Barcha maydonlarni to'ldiring!");
         return;
     }
@@ -347,6 +364,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
             title: name, 
             points, 
             category, 
+            difficulty,
             flag,
             created_by: session.user.id 
         }]);
@@ -361,6 +379,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeNameInput.value = '';
         challengePointsInput.value = '';
         challengeCategoryInput.value = '';
+        challengeDifficultyInput.value = '';
         challengeFlagInput.value = '';
         updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
