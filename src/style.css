@@ -1135,6 +1135,11 @@ body {
   display: flex;
 }
 
+.modal-overlay.modal-centered {
+  align-items: center; /* Vertikal markazlash */
+  padding: 20px;       /* Paddingni kamaytiramiz */
+}
+
 .modal-content {
   max-width: 520px;
   position: relative; /* "X" tugmasi modal ichida qolishi uchun */
