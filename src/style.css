@@ -1302,6 +1302,87 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* Challenge Preview Area Styles */
+.challenge-preview-area {
+  margin-bottom: 25px;
+  width: 100%;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.preview-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--neon-cyan);
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  opacity: 0.6;
+  text-align: left;
+}
+
+.challenge-card-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 240, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  padding: 14px 20px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.05);
+}
+
+.challenge-card-horizontal::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--neon-cyan), var(--neon-purple));
+}
+
+.preview-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.preview-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-text-bright);
+  text-transform: uppercase;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-category {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.preview-points-badge {
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--neon-cyan-faint);
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--neon-cyan);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: baseline;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
 .input-action-wrapper select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath fill='%2364748b' d='m213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32'/%3E%3C/svg%3E");

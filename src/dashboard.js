@@ -35,6 +35,36 @@ const challengePointsInput = document.getElementById('challengePoints');
 const challengeCategoryInput = document.getElementById('challengeCategory');
 const challengeFlagInput = document.getElementById('challengeFlag');
 
+// Challenge Preview elementlari
+const previewName = document.getElementById('previewName');
+const previewPoints = document.getElementById('previewPoints');
+const previewCategory = document.getElementById('previewCategory');
+
+// Previewni yangilash funksiyasi
+const updateChallengePreview = () => {
+    if (previewName) previewName.textContent = challengeNameInput.value.trim() || 'CHALLENGE NAME';
+    if (previewPoints) previewPoints.textContent = challengePointsInput.value || '0';
+    if (previewCategory) {
+        const val = challengeCategoryInput.value;
+        previewCategory.textContent = val || 'CATEGORY';
+        
+        // Kategoriyaga qarab rangni o'zgartirish
+        const categoryColors = {
+            'Web': '#00f0ff',
+            'Pwn': '#ff007f',
+            'Crypto': '#9d4edd',
+            'Forensics': '#00ff66',
+            'Reverse': '#ffb703'
+        };
+        previewCategory.style.color = categoryColors[val] || 'var(--neon-purple)';
+    }
+};
+
+// Inputlarga listenerlar qo'shish
+challengeNameInput?.addEventListener('input', updateChallengePreview);
+challengePointsInput?.addEventListener('input', updateChallengePreview);
+challengeCategoryInput?.addEventListener('change', updateChallengePreview);
+
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
     "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
@@ -288,6 +318,7 @@ const fetchAndDisplayChallenges = async () => {
     `;
 
     document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
+        updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
         addChallengeModal.classList.add('active');
     });
 };
@@ -331,6 +362,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengePointsInput.value = '';
         challengeCategoryInput.value = '';
         challengeFlagInput.value = '';
+        updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
     }
 });
