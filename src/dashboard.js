@@ -20,6 +20,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const logoutConfirmModal = document.getElementById('logoutConfirmModal');
 const cancelLogoutBtn = document.getElementById('cancelLogout');
 const confirmLogoutBtn = document.getElementById('confirmLogout');
+const adminTerminalLink = document.getElementById('adminTerminalLink');
 
 // 195 ta davlat ro'yxati
 const COUNTRIES = [
@@ -78,6 +79,11 @@ const updateHeaderUI = () => {
             headerProfileAvatar.innerHTML = '';
             headerProfileAvatar.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
         }
+    }
+
+    // Admin Terminal linkini faqat "SHADOW" useri uchun ko'rsatish
+    if (adminTerminalLink) {
+        adminTerminalLink.style.display = currentProfile.username === 'SHADOW' ? 'inline-block' : 'none';
     }
 };
 
