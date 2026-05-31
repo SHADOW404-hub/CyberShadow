@@ -35,6 +35,8 @@ const challengePointsInput = document.getElementById('challengePoints');
 const challengeCategoryInput = document.getElementById('challengeCategory');
 const challengeDifficultyInput = document.getElementById('challengeDifficulty');
 const challengeFlagInput = document.getElementById('challengeFlag');
+const challengeLinkInput = document.getElementById('challengeLink');
+const challengeFileInput = document.getElementById('challengeFile');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
@@ -221,7 +223,7 @@ const updateHeaderUI = () => {
         }
     }
 
-    // Admin Terminal linkini faqat "SHADOW" useri uchun ko'rsatish
+    // Admin Terminal linkini faqat useri uchun ko'rsatish
     if (adminTerminalLink) {
         adminTerminalLink.style.display = currentProfile.role === 'admin' ? 'inline-block' : 'none';
     }
@@ -409,6 +411,8 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const category = challengeCategoryInput.value.trim();
     const difficulty = challengeDifficultyInput.value;
     const flag = challengeFlagInput.value.trim();
+    const link = challengeLinkInput.value.trim();
+    const file = challengeFileInput.files[0];
 
     if (!name || !points || !category || !flag || !difficulty) {
         alert("Barcha maydonlarni to'ldiring!");
@@ -418,6 +422,23 @@ saveChallengeBtn?.addEventListener('click', async () => {
     saveChallengeBtn.disabled = true;
     saveChallengeBtn.textContent = "Deploying...";
 
+    let fileUrl = null;
+
+    try {
+        // Agar fayl tanlangan bo'lsa, uni 'challenges' bucket'iga yuklaymiz
+        if (file) {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `files/${fileName}`;
+
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('challenges')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+            fileUrl = supabase.storage.from('challenges').getPublicUrl(filePath).data.publicUrl;
+        }
+
     const { error } = await supabase
         .from('challenges')
         .insert([{ 
@@ -426,7 +447,9 @@ saveChallengeBtn?.addEventListener('click', async () => {
             category, 
             difficulty,
             flag,
-            created_by: session.user.id 
+            link: link || null,
+            file_url: fileUrl,
+            created_by: session.user.id
         }]);
 
     saveChallengeBtn.disabled = false;
@@ -442,8 +465,15 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeCategoryInput.value = '';
         challengeDifficultyInput.value = '';
         challengeFlagInput.value = '';
+            challengeLinkInput.value = '';
+            challengeFileInput.value = '';
         updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
+    }
+    } catch (err) {
+        alert("Xatolik: " + err.message);
+        saveChallengeBtn.disabled = false;
+        saveChallengeBtn.textContent = "Deploy";
     }
 });
 
