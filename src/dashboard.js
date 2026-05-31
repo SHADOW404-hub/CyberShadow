@@ -123,7 +123,8 @@ const updateChallengePreview = () => {
             if (previewName) previewName.style.color = activeColor;
             if (previewCategory) previewCategory.style.color = activeColor;
             if (previewDifficulty) previewDifficulty.style.color = activeColor;
-            document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = activeColor);
+            // Faqat preview kartasi burchaklarini bo'yash
+            previewCard?.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = activeColor);
             
             if (diff === 'Insane') previewCard.classList.add('glitch-active');
             else previewCard.classList.remove('glitch-active');
@@ -135,7 +136,8 @@ const updateChallengePreview = () => {
             if (previewName) previewName.style.color = 'var(--color-text-bright)';
             if (previewCategory) previewCategory.style.color = catColor || 'var(--neon-purple)';
             if (previewDifficulty) previewDifficulty.style.color = 'var(--color-text-muted)';
-            document.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = 'var(--neon-cyan)');
+            // Burchaklarni standart rangga qaytarish
+            previewCard?.querySelectorAll('.card-corner').forEach(c => c.style.borderColor = 'var(--neon-cyan)');
             previewCard.classList.remove('glitch-active');
         }
     }

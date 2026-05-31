@@ -1151,6 +1151,17 @@ body {
     0 0 20px var(--neon-cyan-faint);
 }
 
+/* Specific Modal Overrides (Kelajakda alohida o'zgartirish uchun) */
+.profile-modal {
+  /* Masalan, profil modalini biroz kichikroq saqlaymiz */
+  max-width: 520px;
+}
+
+.challenge-editor-modal {
+  /* Challenge modalini preview yaxshi ko'rinishi uchun kengroq qilish imkoniyati */
+  max-width: 580px; 
+}
+
 .modal-header {
   display: flex;
   justify-content: center;
