@@ -141,6 +141,34 @@ const updateChallengePreview = () => {
     }
 };
 
+// Challenge kartasi uchun stil va ma'lumotlarni generatsiya qilish yordamchisi
+const getChallengeStyles = (cat, diff) => {
+    const categoryColors = {
+        'Web': '#00f0ff', 'Pwn': '#ff007f', 'Crypto': '#9d4edd',
+        'Forensics': '#00ff66', 'Reverse': '#ffb703', 'OSINT': '#007bff',
+        'Miscellaneous': '#64748b', 'Code': '#00ffff'
+    };
+    const diffThemes = {
+        'Easy': '#00ff66', 'Medium': '#ffb703', 'Hard': '#ff3366', 'Insane': '#9d4edd'
+    };
+    const categoryPatterns = {
+        'Code': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16'/%3E%3C/svg%3E")`,
+        'OSINT': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")`,
+        'Web': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E")`,
+        'Pwn': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 17l6-5-6-5'/%3E%3Cpath d='M12 18h8'/%3E%3C/svg%3E")`,
+        'Crypto': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='gold' stroke-width='0.7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4' stroke-linecap='round'/%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Ccircle cx='12' cy='16' r='1.2' fill='gold'/%3E%3Cpath d='M12 17.2v1.8' stroke-linecap='round'/%3E%3C/svg%3E")`,
+        'Forensics': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='cyan' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0' opacity='0.3'/%3E%3C/svg%3E")`,
+        'Reverse': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='orange' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='5' width='14' height='14' rx='1'/%3E%3Cpath d='M12 9v6M9 12h6'/%3E%3Cpath d='M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2'/%3E%3C/svg%3E")`,
+        'Miscellaneous': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/%3E%3Cpath d='m3.3 7 8.7 5 8.7-5'/%3E%3Cpath d='M12 22V12'/%3E%3C/svg%3E")`
+    };
+
+    return {
+        color: categoryColors[cat] || '#64748b',
+        accent: diffThemes[diff] || 'var(--neon-cyan)',
+        pattern: categoryPatterns[cat] || null
+    };
+};
+
 // Inputlarga listenerlar qo'shish
 challengeNameInput?.addEventListener('input', updateChallengePreview);
 challengePointsInput?.addEventListener('input', updateChallengePreview);
@@ -459,23 +487,63 @@ const fetchAndDisplayUsers = async () => {
 };
 
 // Challenges ko'rsatish funksiyasi
-const fetchAndDisplayChallenges = async () => {
+const fetchAndDisplayChallenges = async (isAdmin = true) => {
     if (!mainContentArea) return;
     
-    mainContentArea.innerHTML = `
-        <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; width: 100%; max-width: 1200px;">
+    mainContentArea.innerHTML = `<div class="stat-value" style="font-size: 1.5rem;">LOADING CHALLENGES...</div>`;
+
+    const { data: challenges, error } = await supabase
+        .from('challenges')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
+        return;
+    }
+
+    let html = isAdmin ? `
+        <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; width: 100%; max-width: 1200px;">
             <div class="stat-value" style="font-size: 1.5rem;">CHALLENGES MANAGEMENT</div>
             <button class="btn-submit" id="openAddChallengeBtn" style="width: auto; padding: 10px 25px; margin-top: 0;">
                 <i class="ph-bold ph-plus"></i> ADD CHALLENGE
             </button>
-        </div>
-        <div class="admin-table-container">
-            <div style="padding: 40px; text-align: center; color: var(--color-text-muted);">
-                <i class="ph-bold ph-database" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                No challenges deployed yet.
-            </div>
-        </div>
-    `;
+        </div>` : '';
+
+    html += `<div class="dashboard-grid">`;
+
+    if (challenges.length === 0) {
+        html += `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--color-text-muted);">No challenges found.</div>`;
+    } else {
+        challenges.forEach(ch => {
+            const styles = getChallengeStyles(ch.category, ch.difficulty);
+            const cardBg = `linear-gradient(135deg, ${styles.color}1a, rgba(15, 18, 32, 0.98))`;
+            const glitchClass = ch.difficulty === 'Insane' ? 'glitch-active' : '';
+            
+            html += `
+                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
+                    <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
+                    <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
+                    <div class="card-corner bottom-left" style="border-color: ${styles.accent}"></div>
+                    <div class="card-corner bottom-right" style="border-color: ${styles.accent}"></div>
+                    <div class="card-pattern-overlay" style="background-image: ${styles.pattern}; opacity: 0.12; background-size: 65%; background-position: center; background-repeat: no-repeat; animation: iconPulse 4s ease-in-out infinite;"></div>
+                    <div class="preview-top-left">
+                        <div class="preview-difficulty" style="color: ${styles.accent}">${ch.difficulty}</div>
+                        <span class="preview-category" style="color: ${styles.accent}">${ch.category}</span>
+                    </div>
+                    <div class="preview-main-info">
+                        <div class="preview-name" style="color: ${styles.accent}">${ch.name}</div>
+                    </div>
+                    <div class="preview-points-badge" style="color: ${styles.accent}; background: ${styles.accent}26;">
+                        <span>${ch.points}</span>
+                        <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
+                    </div>
+                </div>`;
+        });
+    }
+
+    html += `</div>`;
+    mainContentArea.innerHTML = html;
 
     document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
         updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
@@ -580,6 +648,13 @@ adminUsersLink?.addEventListener('click', (e) => {
     adminChallengesLink?.classList.remove('active');
     adminUsersLink.classList.add('active');
     fetchAndDisplayUsers();
+});
+
+document.querySelector('.menu-link[href="#challenges"]')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+    e.target.classList.add('active');
+    fetchAndDisplayChallenges(false); // User ko'rinishi
 });
 
 adminChallengesLink?.addEventListener('click', (e) => {
