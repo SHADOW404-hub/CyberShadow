@@ -442,7 +442,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const difficulty = challengeDifficultyInput.value;
     const flag = challengeFlagInput.value.trim();
     const link = challengeLinkInput.value.trim();
-    const file = challengeFileInput.files[0];
+    const file = challengeFileInput?.files[0];
 
     // Ball 0 bo'lishi mumkinligini hisobga olamiz
     if (!name || isNaN(points) || !category || !flag || !difficulty) {
@@ -499,7 +499,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
             challengeDifficultyInput.value = '';
             challengeFlagInput.value = '';
             challengeLinkInput.value = '';
-            challengeFileInput.value = '';
+            if (challengeFileInput) challengeFileInput.value = '';
             refreshFileUI(); // Fayl UI ni reset qilish
 
             updateChallengePreview(); 

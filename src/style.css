@@ -1893,3 +1893,83 @@ input[type="number"] {
     object-fit: cover;
     border: 1px solid var(--neon-cyan-faint);
 }
+
+/* File Input Styling */
+.file-input-wrapper {
+  padding: 4px 6px 4px 4px !important;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.file-input-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.file-input-wrapper.has-file {
+  border-color: var(--neon-cyan-faint) !important;
+  background: rgba(0, 240, 255, 0.04) !important;
+}
+
+.file-name-display {
+  flex: 1;
+  padding: 0 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.file-input-wrapper.has-file .file-name-display {
+  color: var(--color-text-bright);
+}
+
+.file-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon-action {
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.2);
+  color: var(--color-error);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.file-trigger {
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 0 15px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.file-trigger:hover {
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--color-text-bright);
+  box-shadow: 0 0 10px var(--neon-cyan-faint);
+}
