@@ -933,7 +933,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Scrollbar muammosini hal qilish */
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 .dashboard-header {
@@ -942,7 +942,7 @@ body {
   align-items: center;
   padding: 0 40px;
   height: 65px;
-  background: var(--bg-secondary);
+  background: rgba(15, 18, 29, 0.8);
   border-bottom: 1px solid rgba(0, 240, 255, 0.1);
   backdrop-filter: blur(15px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
