@@ -1524,19 +1524,27 @@ input[type="number"] {
 
 /* File Input Styling */
 .file-input-wrapper {
-  padding-right: 6px !important; /* Tugma uchun o'ngdan joy */
+  padding-right: 6px !important;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  transition: var(--transition-smooth);
 }
 
 .file-input-wrapper:hover {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--neon-cyan-faint);
+}
+
+.file-input-wrapper.has-file {
+  border-color: var(--neon-cyan-glow);
+  background: rgba(0, 240, 255, 0.02) !important;
 }
 
 .file-name-display {
   flex: 1;
-  padding: 0 12px;
-  font-family: var(--font-body);
-  font-size: 14px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 12px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -1545,6 +1553,36 @@ input[type="number"] {
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+}
+
+.file-input-wrapper.has-file .file-name-display {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan-faint);
+}
+
+.file-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon-action {
+  background: rgba(255, 51, 102, 0.1);
+  border: 1px solid rgba(255, 51, 102, 0.2);
+  color: var(--color-error);
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-icon-action:hover {
+  background: rgba(255, 51, 102, 0.2);
+  box-shadow: 0 0 10px var(--color-error-glow);
 }
 
 .file-trigger {

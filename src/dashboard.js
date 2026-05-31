@@ -37,6 +37,7 @@ const challengeDifficultyInput = document.getElementById('challengeDifficulty');
 const challengeFlagInput = document.getElementById('challengeFlag');
 const challengeLinkInput = document.getElementById('challengeLink');
 const challengeFileInput = document.getElementById('challengeFile');
+const clearFileBtn = document.getElementById('clearFileBtn');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
@@ -146,7 +147,28 @@ challengeDifficultyInput?.addEventListener('change', updateChallengePreview);
 // Fayl tanlanganda nomini ko'rsatish
 challengeFileInput?.addEventListener('change', () => {
     const display = document.getElementById('fileNameDisplay');
-    if (display) display.textContent = challengeFileInput.files[0] ? challengeFileInput.files[0].name : "No file chosen";
+    const wrapper = document.querySelector('.file-input-wrapper');
+    
+    if (challengeFileInput.files[0]) {
+        if (display) display.textContent = challengeFileInput.files[0].name;
+        if (clearFileBtn) clearFileBtn.style.display = 'flex';
+        if (wrapper) wrapper.classList.add('has-file');
+    } else {
+        if (display) display.textContent = "No file chosen";
+        if (clearFileBtn) clearFileBtn.style.display = 'none';
+        if (wrapper) wrapper.classList.remove('has-file');
+    }
+});
+
+// Faylni tozalash
+clearFileBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (challengeFileInput) challengeFileInput.value = '';
+    const display = document.getElementById('fileNameDisplay');
+    const wrapper = document.querySelector('.file-input-wrapper');
+    if (display) display.textContent = "No file chosen";
+    if (clearFileBtn) clearFileBtn.style.display = 'none';
+    if (wrapper) wrapper.classList.remove('has-file');
 });
 
 // 195 ta davlat ro'yxati
@@ -473,7 +495,12 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeFlagInput.value = '';
             challengeLinkInput.value = '';
             challengeFileInput.value = '';
+            
+            // Fayl UI ni reset qilish
             if (document.getElementById('fileNameDisplay')) document.getElementById('fileNameDisplay').textContent = "No file chosen";
+            if (clearFileBtn) clearFileBtn.style.display = 'none';
+            document.querySelector('.file-input-wrapper')?.classList.remove('has-file');
+
         updateChallengePreview(); // Previewni reset qilish
         fetchAndDisplayChallenges(); // Ro'yxatni yangilash
     }
