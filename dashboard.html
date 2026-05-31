@@ -126,7 +126,10 @@
           <div class="avatar-edit-container">
             <div class="profile-avatar-preview" id="profilePicturePreview"></div>
             <input type="file" id="modalProfilePictureInput" accept="image/*" style="display: none;">
-            <button type="button" class="btn-inline-change" id="changeProfilePictureBtn" style="height: 30px; padding: 0 20px;">CHANGE</button>
+            <div class="avatar-controls">
+              <button type="button" class="btn-inline-change" id="changeProfilePictureBtn" style="height: 30px; padding: 0 20px;">CHANGE</button>
+              <button type="button" class="btn-inline-change" id="removeProfilePictureBtn" style="height: 30px; padding: 0 20px; display: none; background: rgba(255, 51, 102, 0.1); border-color: var(--color-error); color: var(--color-error);">REMOVE</button>
+            </div>
           </div>
         </div>
 
@@ -145,7 +148,7 @@
         <div class="card-decor-line"></div>
         
         <div class="modal-header">
-          <h3>CONFIRM LOGOUT</h3>
+          <h3>TERMINATE SESSION</h3>
         </div>
         <div class="modal-body">
           <p class="confirm-message" style="color: var(--color-text-muted); margin-bottom: 20px;">Are you sure you want to log out?</p>
