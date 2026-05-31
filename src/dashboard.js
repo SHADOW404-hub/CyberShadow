@@ -30,7 +30,7 @@ const mainContentArea = document.querySelector('.dashboard-main-content');
 const addChallengeModal = document.getElementById('addChallengeModal');
 const cancelAddChallenge = document.getElementById('cancelAddChallenge');
 const saveChallengeBtn = document.getElementById('saveChallengeBtn');
-const challengeTitleInput = document.getElementById('challengeTitle');
+const challengeNameInput = document.getElementById('challengeName');
 const challengePointsInput = document.getElementById('challengePoints');
 const challengeCategoryInput = document.getElementById('challengeCategory');
 const challengeFlagInput = document.getElementById('challengeFlag');
@@ -297,12 +297,12 @@ cancelAddChallenge?.addEventListener('click', () => {
 });
 
 saveChallengeBtn?.addEventListener('click', async () => {
-    const title = challengeTitleInput.value.trim();
+    const name = challengeNameInput.value.trim();
     const points = parseInt(challengePointsInput.value);
     const category = challengeCategoryInput.value.trim();
     const flag = challengeFlagInput.value.trim();
 
-    if (!title || !points || !category || !flag) {
+    if (!name || !points || !category || !flag) {
         alert("Barcha maydonlarni to'ldiring!");
         return;
     }
@@ -313,7 +313,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const { error } = await supabase
         .from('challenges')
         .insert([{ 
-            title, 
+            title: name, 
             points, 
             category, 
             flag,
@@ -327,7 +327,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
         alert("Xatolik: " + error.message);
     } else {
         addChallengeModal.classList.remove('active');
-        challengeTitleInput.value = '';
+        challengeNameInput.value = '';
         challengePointsInput.value = '';
         challengeCategoryInput.value = '';
         challengeFlagInput.value = '';
