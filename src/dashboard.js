@@ -55,7 +55,7 @@ const updateChallengePreview = () => {
         
         // Kategoriya uchun maxsus HUD naqshlari (SVG data-uris)
         const categoryPatterns = {
-            'Code': `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='0' y='12' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E101101%3C/text%3E%3Ctext x='15' y='30' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E010110%3C/text%3E%3Ctext x='5' y='50' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E110101%3C/text%3E%3Ctext x='25' y='70' fill='%2300ff66' font-family='monospace' font-size='10' opacity='0.5'%3E001011%3C/text%3E%3C/svg%3E")`,
+            'Code': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16'/%3E%3C/svg%3E")`,
             'OSINT': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")`,
             'Web': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='0.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='2' y1='12' x2='22' y2='12'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E")`,
             'Pwn': `url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='0.6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 17l6-5-6-5'/%3E%3Cpath d='M12 18h8'/%3E%3C/svg%3E")`,
@@ -69,13 +69,12 @@ const updateChallengePreview = () => {
             const pattern = categoryPatterns[val];
             if (pattern) {
                 previewPattern.style.backgroundImage = pattern;
-                const isTiled = val === 'Code';
-                previewPattern.style.opacity = isTiled ? '0.15' : '0.12';
-                previewPattern.style.backgroundRepeat = isTiled ? 'repeat' : 'no-repeat';
-                previewPattern.style.backgroundPosition = isTiled ? '0 0' : 'center';
-                previewPattern.style.backgroundSize = isTiled ? '100px 100px' : '65%';
-                // Animatsiyani faqat tiled (takrorlanuvchi) naqshlar uchun yoqamiz
-                previewPattern.style.animation = isTiled ? 'patternScroll 40s linear infinite' : 'none';
+                // Barcha ikonlar uchun yagona mantiq
+                previewPattern.style.opacity = '0.12';
+                previewPattern.style.backgroundRepeat = 'no-repeat';
+                previewPattern.style.backgroundPosition = 'center';
+                previewPattern.style.backgroundSize = '65%';
+                previewPattern.style.animation = 'iconPulse 4s ease-in-out infinite';
             } else {
                 previewPattern.style.opacity = '0';
             }

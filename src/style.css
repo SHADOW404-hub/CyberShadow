@@ -1382,6 +1382,12 @@ input[type="number"] {
   to { background-position: 200px 200px; }
 }
 
+/* Ikonlar uchun HUD pulsatsiyasi */
+@keyframes iconPulse {
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50% { opacity: 0.18; transform: scale(1.06); }
+}
+
 .preview-top-left {
   position: absolute;
   top: 30px;
