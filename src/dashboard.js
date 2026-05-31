@@ -146,43 +146,48 @@ modalProfilePictureInput?.addEventListener('change', checkChanges);
 // Save Changes tugmasi logikasi
 if (saveProfileBtn) {
     saveProfileBtn.addEventListener('click', async () => {
-        const uInput = document.getElementById('modalUsername');
-        const eInput = document.getElementById('modalEmail');
-        
         const newProfilePictureFile = modalProfilePictureInput.files[0];
-        const newUsername = uInput.value.trim();
-        const newEmail = eInput.value.trim();
+        const newUsername = modalUsernameInput.value.trim();
+        const newEmail = modalEmailInput.value.trim();
 
         let changesMade = false;
         const updateData = {};
         let avatarUrlToUpdate = currentProfile.avatar_url;
 
-        if (newProfilePictureFile) {
-            // Rasmni Supabase Storage'ga yuklash
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('avatars') // 'avatars' nomli bucket'ingiz bo'lishi kerak
-                .upload(`${session.user.id}/${newProfilePictureFile.name}`, newProfilePictureFile, {
-                    cacheControl: '3600',
-                    upsert: true
-                });
-            if (uploadError) {
-                alert('Profil rasmini yuklashda xatolik yuz berdi: ' + uploadError.message);
+        try {
+            if (newProfilePictureFile) {
+                // Fayl nomidagi maxsus belgi va joylarni chetlab o'tish uchun vaqt tamg'asidan foydalanamiz
+                const fileExt = newProfilePictureFile.name.split('.').pop();
+                const safeFileName = `${Date.now()}.${fileExt}`;
+
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('avatars')
+                    .upload(`${session.user.id}/${safeFileName}`, newProfilePictureFile, {
+                        cacheControl: '3600',
+                        upsert: true
+                    });
+                
+                if (uploadError) throw uploadError;
+
+                avatarUrlToUpdate = supabase.storage.from('avatars').getPublicUrl(uploadData.path).data.publicUrl;
+                updateData.avatar_url = avatarUrlToUpdate;
+                changesMade = true;
+            }
+
+            if (newUsername !== currentProfile.username) {
+                updateData.username = newUsername;
+                changesMade = true;
+            }
+            if (newEmail !== currentProfile.email) {
+                updateData.email = newEmail;
+                changesMade = true;
+            }
+
+            if (!changesMade) {
+                profileModal.classList.remove('active');
                 return;
             }
-            avatarUrlToUpdate = supabase.storage.from('avatars').getPublicUrl(uploadData.path).data.publicUrl;
-            updateData.avatar_url = avatarUrlToUpdate;
-            changesMade = true;
-        }
-        if (newUsername !== currentProfile.username) {
-            updateData.username = newUsername;
-            changesMade = true;
-        }
-        if (newEmail !== currentProfile.email) {
-            updateData.email = newEmail;
-            changesMade = true;
-        }
 
-        if (changesMade) {
             // Tugmani vaqtincha bloklash
             saveProfileBtn.disabled = true;
             saveProfileBtn.textContent = 'Saving...';
@@ -196,27 +201,21 @@ if (saveProfileBtn) {
             saveProfileBtn.disabled = false;
             saveProfileBtn.textContent = 'Save Changes';
 
-            if (error) {
-                alert('Profilni yangilashda xatolik yuz berdi: ' + error.message);
-            } else if (!data || data.length === 0) {
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
                 alert('Xatolik: Ma\'lumot saqlanmadi. Supabase RLS (Row Level Security) politsiyalarini tekshiring!');
-            } else {
-                currentProfile = data[0]; // Mahalliy holatni bazadan qaytgan ma'lumot bilan yangilash
-                document.getElementById('userEmail').textContent = currentProfile.username; // Headerdagi usernameni yangilash
-                
-                // Avatar harfini yangilash
-                const avatarEl = document.getElementById('headerProfileAvatar'); // Use the ID for the header avatar
-                if (avatarEl) {
-                    if (currentProfile.avatar_url) {
-                        avatarEl.innerHTML = `<img src="${currentProfile.avatar_url}" alt="Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-                    } else {
-                        avatarEl.textContent = currentProfile.username.charAt(0).toUpperCase();
-                    }
-                }
-                profileModal.classList.remove('active'); // Modalni yopish
+                return;
             }
-        } else {
-            profileModal.classList.remove('active'); // O'zgarish bo'lmasa ham modalni yopish
+
+            currentProfile = data[0];
+            updateHeaderUI(); // Headerdagi ma'lumotlarni yangilash funksiyasini chaqiramiz
+            profileModal.classList.remove('active');
+
+        } catch (err) {
+            alert('Xatolik yuz berdi: ' + err.message);
+            saveProfileBtn.disabled = false;
+            saveProfileBtn.textContent = 'Save Changes';
         }
     });
 }
