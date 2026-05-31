@@ -1334,6 +1334,15 @@ input[type="number"] {
   justify-content: center;
 }
 
+.preview-top-left {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .preview-main-info {
   text-align: center;
 }
