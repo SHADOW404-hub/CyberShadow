@@ -111,6 +111,11 @@ if (editProfileBtn && profileModal) {
         modalEmailInput.value = currentProfile.email || '';
         modalCountrySelect.value = currentProfile.country || '';
 
+        // Agar foydalanuvchida allaqachon tanlangan davlat bo'lsa, "Not selected"ni o'chiramiz
+        if (currentProfile.country && modalCountrySelect.options[0]?.value === "") {
+            modalCountrySelect.options[0].remove();
+        }
+
         if (currentProfile.avatar_url) {
             profilePicturePreview.style.backgroundImage = `url('${currentProfile.avatar_url}')`;
             profilePicturePreview.textContent = '';
@@ -172,7 +177,13 @@ if (logoutBtn && logoutConfirmModal) {
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
 modalUsernameInput?.addEventListener('input', checkChanges);
 modalEmailInput?.addEventListener('input', checkChanges);
-modalCountrySelect?.addEventListener('change', checkChanges);
+modalCountrySelect?.addEventListener('change', () => {
+    // Davlat tanlanganda "Not selected" variantini o'chirib tashlash
+    if (modalCountrySelect.value !== "" && modalCountrySelect.options[0]?.value === "") {
+        modalCountrySelect.options[0].remove();
+    }
+    checkChanges();
+});
 modalProfilePictureInput?.addEventListener('change', checkChanges);
 
 // Save Changes tugmasi logikasi
