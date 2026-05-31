@@ -514,9 +514,9 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
     }
 
     let html = isAdmin ? `
-        <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; width: 100%; max-width: 1200px;">
-            <div class="stat-value" style="font-size: 1.5rem;">CHALLENGES MANAGEMENT</div>
-            <button class="btn-submit" id="openAddChallengeBtn" style="width: auto; padding: 10px 25px; margin-top: 0;">
+        <div class="admin-section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 45px; width: 100%; max-width: 1200px;">
+            <div class="stat-value" style="font-size: 1.6rem; text-shadow: 0 0 15px var(--neon-cyan-glow);">CHALLENGES MANAGEMENT</div>
+            <button class="btn-submit" id="openAddChallengeBtn" style="width: auto; padding: 12px 25px; margin: 0; font-size: 12px; border-radius: 6px;">
                 <i class="ph-bold ph-plus"></i> ADD CHALLENGE
             </button>
         </div>` : '';
@@ -524,7 +524,7 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
     html += `<div class="dashboard-grid">`;
 
     if (challenges.length === 0) {
-        html += `<div style="grid-column: 1/-1; padding: 40px; text-align: center; color: var(--color-text-muted);">No challenges found.</div>`;
+        html += `<div style="grid-column: 1/-1; padding: 60px; text-align: center; color: var(--color-text-muted); font-family: var(--font-mono); letter-spacing: 2px;">[ NO CHALLENGES DEPLOYED ]</div>`;
     } else {
         challenges.forEach(ch => {
             const styles = getChallengeStyles(ch.category, ch.difficulty);

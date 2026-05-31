@@ -1641,8 +1641,9 @@ input[type="number"] {
   flex-grow: 1;
   padding: 60px 50px;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column; /* Elementlarni ustun qilib joylaymiz */
+  align-items: center;    /* Markazga tekislaymiz */
+  justify-content: flex-start;
   color: var(--color-text-muted);
   font-size: 1.2rem;
   opacity: 0;
@@ -1874,6 +1875,7 @@ input[type="number"] {
 /* Admin Table Styles */
 .admin-table-container {
     width: 100%;
+    max-width: 1200px; /* Grid bilan bir xil kenglik */
     background: var(--bg-card);
     border: 1px solid rgba(0, 240, 255, 0.1);
     border-radius: 12px;
