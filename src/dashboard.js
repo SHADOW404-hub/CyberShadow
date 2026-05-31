@@ -97,7 +97,7 @@ const updateChallengePreview = () => {
             previewPattern.style.opacity = '0.12';
             previewPattern.style.backgroundRepeat = 'no-repeat';
             previewPattern.style.backgroundPosition = 'center';
-            previewPattern.style.backgroundSize = '85%'; /* Ikonkani yanada kattalashtirdik */
+            previewPattern.style.backgroundSize = '65%';
             previewPattern.style.animation = 'iconPulse 4s ease-in-out infinite';
         } else {
             previewPattern.style.opacity = '0';
