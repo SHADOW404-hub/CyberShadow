@@ -120,6 +120,7 @@ body {
   transform: rotateX(50deg);
   transform-origin: center center;
   z-index: 1;
+  will-change: background-position;
   pointer-events: none;
   animation: gridTravel 20s linear infinite;
 }
@@ -149,6 +150,7 @@ body {
   opacity: 0.45;
   mix-blend-mode: screen;
   z-index: 0;
+  will-change: transform;
   pointer-events: none;
 }
 
@@ -1349,6 +1351,7 @@ input[type="number"] {
   margin: 0 auto;
   width: 100%;
   position: relative;
+  will-change: transform, border-color;
   overflow: hidden;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 240, 255, 0.03);
   display: flex;
@@ -1727,6 +1730,7 @@ input[type="number"] {
   background-size: 80px 80px;
   transform: perspective(500px) rotateX(70deg);
   animation: floorScroll 12s linear infinite;
+  will-change: background-position;
   mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
   -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
 }

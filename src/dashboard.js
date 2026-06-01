@@ -1,6 +1,49 @@
 import { supabase } from './supabase.js'
 import './style.css';
 
+// --- DOIMIY QIYMATLAR (CONSTANTS) ---
+const CATEGORY_CONFIG = {
+    'Code': { color: '#00ffff', pattern: 'M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16' },
+    'OSINT': { color: '#007bff', pattern: 'M11 11m-8 0a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M21 21l-4.35-4.35' },
+    'Web': { color: '#00f0ff', pattern: 'M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z' },
+    'Pwn': { color: '#ff007f', pattern: 'M4 17l6-5-6-5M12 18h8' },
+    'Crypto': { color: '#9d4edd', pattern: 'M7 11V7a5 5 0 0 1 10 0v4M5 11h14v10H5zM12 16m-1.2 0a1.2 1.2 0 1 0 2.4 0a1.2 1.2 0 1 0 -2.4 0M12 17.2v1.8' },
+    'Forensics': { color: '#00ff66', pattern: 'M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0' },
+    'Reverse': { color: '#ffb703', pattern: 'M5 5h14v14H5zM12 9v6M9 12h6M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2' },
+    'Miscellaneous': { color: '#64748b', pattern: 'M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16ZM3.3 7l8.7 5 8.7-5M12 22V12' }
+};
+
+const DIFF_THEMES = {
+    'Easy': '#00ff66',
+    'Medium': '#ffb703',
+    'Hard': '#ff3366',
+    'Insane': '#9d4edd'
+};
+
+// --- YORDAMCHI FUNKSIYALAR ---
+const escapeHTML = (str) => {
+    if (!str) return "";
+    return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+};
+
+const getPatternSVG = (cat) => {
+    const config = CATEGORY_CONFIG[cat];
+    if (!config) return null;
+    return `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22${encodeURIComponent(config.color)}%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22${config.pattern}%22/%3E%3C/svg%3E')`;
+};
+
+const notify = (message, type = 'info') => {
+    const statusBar = document.querySelector('.status-bar');
+    if (statusBar) {
+        const text = statusBar.querySelector('.status-text');
+        if (text) text.textContent = `[ ${type.toUpperCase()} ] ${message}`;
+        // Alert o'rniga vizual signal berish mumkin
+    }
+    console.log(`[${type}] ${message}`);
+};
+
 // DOM elementlarini keshlaymiz
 const userEmailDisplay = document.getElementById('userEmail');
 const headerProfileAvatar = document.getElementById('headerProfileAvatar');
@@ -62,40 +105,12 @@ const updateChallengePreview = () => {
     if (previewCategory) previewCategory.textContent = cat || 'CATEGORY';
     if (previewDifficulty) previewDifficulty.textContent = diff || 'DIFFICULTY';
 
-    const categoryPatterns = {
-        'Code': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16%22/%3E%3C/svg%3E')`,
-        'OSINT': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2211%22 cy=%2211%22 r=%228%22/%3E%3Cline x1=%2221%22 y1=%2221%22 x2=%2216.65%22 y2=%2216.65%22/%3E%3C/svg%3E')`,
-        'Web': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2210%22/%3E%3Cline x1=%222%22 y1=%2212%22 x2=%2222%22 y2=%2212%22/%3E%3Cpath d=%22M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z%22/%3E%3C/svg%3E')`,
-        'Pwn': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22red%22 stroke-width=%220.6%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M4 17l6-5-6-5%22/%3E%3Cpath d=%22M12 18h8%22/%3E%3C/svg%3E')`,
-        'Crypto': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22gold%22 stroke-width=%220.7%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M7 11V7a5 5 0 0 1 10 0v4%22 stroke-linecap=%22round%22/%3E%3Crect x=%225%22 y=%2211%22 width=%2214%22 height=%2210%22 rx=%222%22/%3E%3Ccircle cx=%2212%22 cy=%2216%22 r=%221.2%22 fill=%22gold%22/%3E%3Cpath d=%22M12 17.2v1.8%22 stroke-linecap=%22round%22/%3E%3C/svg%3E')`,
-        'Forensics': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22cyan%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2%22/%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%223%22/%3E%3Cpath d=%22M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0%22 opacity=%220.3%22/%3E%3C/svg%3E')`,
-        'Reverse': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22orange%22 stroke-width=%220.6%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect x=%225%22 y=%225%22 width=%2214%22 height=%2214%22 rx=%221%22/%3E%3Cpath d=%22M12 9v6M9 12h6%22/%3E%3Cpath d=%22M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2%22/%3E%3C/svg%3E')`,
-        'Miscellaneous': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z%22/%3E%3Cpath d=%22m3.3 7 8.7 5 8.7-5%22/%3E%3Cpath d=%22M12 22V12%22/%3E%3C/svg%3E')`
-    };
-
-    const categoryColors = {
-        'Web': '#00f0ff',
-        'Pwn': '#ff007f',
-        'Crypto': '#9d4edd',
-        'Forensics': '#00ff66',
-        'Reverse': '#ffb703',
-        'OSINT': '#007bff',
-        'Miscellaneous': '#64748b',
-        'Code': '#00ffff'
-    };
-
-    const diffThemes = {
-        'Easy': '#00ff66',
-        'Medium': '#ffb703',
-        'Hard': '#ff3366',
-        'Insane': '#9d4edd'
-    };
-
-    const catColor = categoryColors[cat];
-    const activeColor = diffThemes[diff];
+    const catConfig = CATEGORY_CONFIG[cat];
+    const catColor = catConfig?.color;
+    const activeColor = DIFF_THEMES[diff];
 
     if (previewPattern) {
-        const pattern = categoryPatterns[cat];
+        const pattern = getPatternSVG(cat);
         if (pattern) {
             previewPattern.style.backgroundImage = pattern;
             previewPattern.style.opacity = '0.12';
@@ -145,29 +160,10 @@ const updateChallengePreview = () => {
 
 // Challenge kartasi uchun stil va ma'lumotlarni generatsiya qilish yordamchisi
 const getChallengeStyles = (cat, diff) => {
-    const categoryColors = {
-        'Web': '#00f0ff', 'Pwn': '#ff007f', 'Crypto': '#9d4edd',
-        'Forensics': '#00ff66', 'Reverse': '#ffb703', 'OSINT': '#007bff',
-        'Miscellaneous': '#64748b', 'Code': '#00ffff'
-    };
-    const diffThemes = {
-        'Easy': '#00ff66', 'Medium': '#ffb703', 'Hard': '#ff3366', 'Insane': '#9d4edd'
-    };
-    const categoryPatterns = {
-        'Code': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16%22/%3E%3C/svg%3E')`,
-        'OSINT': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2211%22 cy=%2211%22 r=%228%22/%3E%3Cline x1=%2221%22 y1=%2221%22 x2=%2216.65%22 y2=%2216.65%22/%3E%3C/svg%3E')`,
-        'Web': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%2210%22/%3E%3Cline x1=%222%22 y1=%2212%22 x2=%2222%22 y2=%2212%22/%3E%3Cpath d=%22M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10z%22/%3E%3C/svg%3E')`,
-        'Pwn': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22red%22 stroke-width=%220.6%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M4 17l6-5-6-5%22/%3E%3Cpath d=%22M12 18h8%22/%3E%3C/svg%3E')`,
-        'Crypto': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22gold%22 stroke-width=%220.7%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M7 11V7a5 5 0 0 1 10 0v4%22 stroke-linecap=%22round%22/%3E%3Crect x=%225%22 y=%2211%22 width=%2214%22 height=%2210%22 rx=%222%22/%3E%3Ccircle cx=%2212%22 cy=%2216%22 r=%221.2%22 fill=%22gold%22/%3E%3Cpath d=%22M12 17.2v1.8%22 stroke-linecap=%22round%22/%3E%3C/svg%3E')`,
-        'Forensics': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22cyan%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M2 12c0 5.5 4.5 10 10 10s10-4.5 10-10S17.5 2 12 2%22/%3E%3Ccircle cx=%2212%22 cy=%2212%22 r=%223%22/%3E%3Cpath d=%22M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0%22 opacity=%220.3%22/%3E%3C/svg%3E')`,
-        'Reverse': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22orange%22 stroke-width=%220.6%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Crect x=%225%22 y=%225%22 width=%2214%22 height=%2214%22 rx=%221%22/%3E%3Cpath d=%22M12 9v6M9 12h6%22/%3E%3Cpath d=%22M8 5V3m4 2V3m4 2V3M8 21v-2m4 2v-2m4 2v-2M5 8H3m2 4H3m2 4H3m18-8h-2m2 4h-2m2 4h-2%22/%3E%3C/svg%3E')`,
-        'Miscellaneous': `url('data:image/svg+xml,%3Csvg viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22white%22 stroke-width=%220.5%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cpath d=%22M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z%22/%3E%3Cpath d=%22m3.3 7 8.7 5 8.7-5%22/%3E%3Cpath d=%22M12 22V12%22/%3E%3C/svg%3E')`
-    };
-
     return {
-        color: categoryColors[cat] || '#64748b',
-        accent: diffThemes[diff] || 'var(--neon-cyan)',
-        pattern: categoryPatterns[cat] || null
+        color: CATEGORY_CONFIG[cat]?.color || '#64748b',
+        accent: DIFF_THEMES[diff] || 'var(--neon-cyan)',
+        pattern: getPatternSVG(cat)
     };
 };
 
@@ -483,11 +479,11 @@ const fetchAndDisplayUsers = async () => {
                     ${users.map(u => `
                         <tr>
                             <td>
-                                ${u.avatar_url ? `<img src="${u.avatar_url}" class="table-avatar">` : `<div class="profile-avatar" style="width:30px; height:30px; font-size:12px;">${(u.username || 'A').charAt(0)}</div>`}
+                                ${u.avatar_url ? `<img src="${escapeHTML(u.avatar_url)}" class="table-avatar">` : `<div class="profile-avatar" style="width:30px; height:30px; font-size:12px;">${escapeHTML((u.username || 'A').charAt(0).toUpperCase())}</div>`}
                             </td>
-                            <td style="color: var(--neon-cyan)">${u.username || 'N/A'} ${u.username === 'SHADOW' ? '⚡' : ''}</td>
-                            <td>${u.email}</td>
-                            <td>${u.country || 'Unknown'}</td>
+                            <td style="color: var(--neon-cyan)">${escapeHTML(u.username || 'N/A')} ${u.username === 'SHADOW' ? '⚡' : ''}</td>
+                            <td>${escapeHTML(u.email)}</td>
+                            <td>${escapeHTML(u.country || 'Unknown')}</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -541,14 +537,14 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
                     <div class="card-pattern-overlay" style="background-image: ${styles.pattern || 'none'}; animation: iconPulse 4s ease-in-out infinite;"></div>
                     <div class="preview-top-left">
                         <div class="preview-difficulty" style="color: ${styles.accent}">${ch.difficulty}</div>
-                        <span class="preview-category" style="color: ${styles.accent}">${ch.category}</span>
+                        <span class="preview-category" style="color: ${styles.accent}">${escapeHTML(ch.category)}</span>
                     </div>
                     <div class="preview-main-info">
-                        <div class="preview-name" style="color: ${styles.accent}">${ch.name}</div>
+                        <div class="preview-name" style="color: ${styles.accent}">${escapeHTML(ch.name)}</div>
                     </div>
                     <div class="preview-points-badge" style="color: ${styles.accent}; background: ${styles.accent}1a; border-color: ${styles.accent}33;">
-                        <span>${ch.points}</span>
-                        <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">PTS</small>
+                        <span>${parseInt(ch.points)}</span>
+                        <small style="font-size: 0.6rem; margin-left: 4px; opacity: 0.8;">${escapeHTML('PTS')}</small>
                     </div>
                     ${isAdmin ? `
                     <div class="admin-card-overlay">
