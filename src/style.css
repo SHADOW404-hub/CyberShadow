@@ -150,7 +150,7 @@ body {
   opacity: 0.45;
   mix-blend-mode: screen;
   z-index: 0;
-  will-change: transform;
+  will-change: transform, opacity;
   pointer-events: none;
 }
 
@@ -1791,6 +1791,7 @@ input[type="number"] {
   padding: 30px;
   position: relative;
   backdrop-filter: blur(15px);
+  will-change: transform;
   transition: var(--transition-smooth);
   cursor: default;
 }

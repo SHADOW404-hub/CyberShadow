@@ -414,7 +414,7 @@ removeProfilePictureBtn?.addEventListener('click', async () => {
             updateAvatarButtons();
             alert('Rasm muvaffaqiyatli o\'chirildi');
         } catch (err) {
-            alert('Xatolik: ' + err.message);
+            notify(err.message, 'error');
         } finally {
             removeProfilePictureBtn.disabled = false;
             removeProfilePictureBtn.textContent = 'REMOVE';
@@ -457,7 +457,8 @@ const fetchAndDisplayUsers = async () => {
 
     const { data: users, error } = await supabase
         .from('profiles')
-        .select('username, email, avatar_url, country');
+        .select('username, email, avatar_url, country')
+        .limit(50); // Scalability: Dastlabki 50ta foydalanuvchi
 
     if (error) {
         mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
@@ -494,7 +495,7 @@ const fetchAndDisplayUsers = async () => {
 };
 
 // Challenges ko'rsatish funksiyasi
-const fetchAndDisplayChallenges = async (isAdmin = true) => {
+const fetchAndDisplayChallenges = async (isAdmin = false) => {
     if (!mainContentArea) return;
     
     mainContentArea.innerHTML = `<div class="stat-value" style="font-size: 1.5rem;">LOADING CHALLENGES...</div>`;
@@ -502,6 +503,7 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
     const { data: challenges, error } = await supabase
         .from('challenges')
         .select('*')
+        .limit(50) // Scalability: Dastlabki 50ta challenge
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -593,10 +595,10 @@ const fetchAndDisplayChallenges = async (isAdmin = true) => {
                     const { error } = await supabase.from('challenges').delete().eq('id', id);
                     if (error) throw error;
 
-                    alert("Challenge muvaffaqiyatli yo'q qilindi.");
+                    notify("Challenge neutralized", "success");
                     fetchAndDisplayChallenges(true); // Ro'yxatni yangilash
                 } catch (err) {
-                    alert("Xatolik: " + err.message);
+                    notify(err.message, "error");
                     btn.disabled = false;
                     btn.innerHTML = '<i class="ph-bold ph-trash"></i> DELETE';
                 }
@@ -635,7 +637,7 @@ saveChallengeBtn?.addEventListener('click', async () => {
     const file = challengeFileInput?.files[0];
 
     if (!name || !points || !category || !flag || !difficulty) {
-        alert("Barcha maydonlarni to'ldiring!");
+        notify("All mandatory fields must be filled", "error");
         return;
     }
 
@@ -673,9 +675,9 @@ saveChallengeBtn?.addEventListener('click', async () => {
     saveChallengeBtn.textContent = "Deploy";
 
     if (error) {
-        alert("Xatolik: " + error.message);
+        notify(error.message, "error");
     } else {
-        alert("Challenge muvaffaqiyatli yuklandi!");
+        notify("Challenge deployed to grid", "success");
         addChallengeModal.classList.remove('active');
         challengeNameInput.value = '';
         challengePointsInput.value = '';
@@ -688,10 +690,10 @@ saveChallengeBtn?.addEventListener('click', async () => {
         challengeFileWrapper.classList.remove('has-file');
 
         updateChallengePreview(); // Previewni reset qilish
-        fetchAndDisplayChallenges(); // Ro'yxatni yangilash
+        fetchAndDisplayChallenges(true); // Ro'yxatni yangilash
     }
     } catch (err) {
-        alert("Xatolik: " + err.message);
+        notify(err.message, "error");
         saveChallengeBtn.disabled = false;
         saveChallengeBtn.textContent = "Deploy";
     }
@@ -741,7 +743,7 @@ adminChallengesLink?.addEventListener('click', (e) => {
     e.preventDefault();
     adminUsersLink?.classList.remove('active');
     adminChallengesLink.classList.add('active');
-    fetchAndDisplayChallenges();
+    fetchAndDisplayChallenges(true);
 });
 
 // Inputlarga o'zgarishlarni kuzatish uchun listener qo'shish
@@ -822,16 +824,16 @@ if (saveProfileBtn) {
             if (error) throw error;
             
             if (!data || data.length === 0) {
-                alert('Xatolik: Ma\'lumot saqlanmadi. Supabase RLS (Row Level Security) politsiyalarini tekshiring!');
+                notify('Update failed. Check RLS policies.', 'error');
                 return;
             }
 
             currentProfile = data[0];
             updateHeaderUI(); // Headerdagi ma'lumotlarni yangilash funksiyasini chaqiramiz
             profileModal.classList.remove('active');
-
+            notify('Profile synced successfully', 'success');
         } catch (err) {
-            alert('Xatolik yuz berdi: ' + err.message);
+            notify(err.message, 'error');
             saveProfileBtn.disabled = false;
             saveProfileBtn.textContent = 'Save Changes';
         }
