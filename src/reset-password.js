@@ -1,6 +1,5 @@
 import { supabase } from './supabase.js'
 import './style.css';
-import { showNotification, updateClock as utilsUpdateClock, updateStatusUI } from './utils.js';
 
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');

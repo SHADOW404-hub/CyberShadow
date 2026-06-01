@@ -2,6 +2,34 @@ import { supabase } from './supabase.js'
 import './style.css';
 
 // --- DOIMIY QIYMATLAR (CONSTANTS) ---
+const escapeHTML = (str) => {
+    if (!str) return "";
+    return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+};
+
+let notificationQueue = [];
+let isNotificationShowing = false;
+
+const processQueue = () => {
+    if (notificationQueue.length === 0 || isNotificationShowing) return;
+    isNotificationShowing = true;
+    const { message, type } = notificationQueue.shift();
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'cyber-notification';
+        document.body.appendChild(notification);
+    }
+    notification.textContent = message.toUpperCase();
+    notification.className = `notification-overlay show notification-${type}`;
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => { isNotificationShowing = false; processQueue(); }, 400);
+    }, 3000);
+};
+
 const CATEGORY_CONFIG = {
     'Code': { color: '#00ffff', pattern: 'M7 8l-4 4 4 4M17 8l4 4-4 4M13 4l-2 16' },
     'OSINT': { color: '#007bff', pattern: 'M11 11m-8 0a8 8 0 1 0 16 0a8 8 0 1 0 -16 0M21 21l-4.35-4.35' },

@@ -88,11 +88,42 @@ const validatePassword = (password) => {
 };
 
 // ─── Notification System ──────────────────────────────────────────────────────
+const escapeHTML = (str) => {
+  if (!str) return "";
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+};
+
+const updateStatus = (state, text) => {
+  if (statusIndicator) statusIndicator.className = `status-indicator ${state}`;
+  if (statusConsole) statusConsole.textContent = `SYSTEM: ${text.toUpperCase()}`;
+};
+
+let notificationQueue = [];
+let isNotificationShowing = false;
+const processQueue = () => {
+  if (notificationQueue.length === 0 || isNotificationShowing) return;
+  isNotificationShowing = true;
+  const { message, type } = notificationQueue.shift();
+  let notification = document.getElementById('cyber-notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'cyber-notification';
+    document.body.appendChild(notification);
+  }
+  notification.textContent = message.toUpperCase();
+  notification.className = `notification-overlay show notification-${type}`;
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => { isNotificationShowing = false; processQueue(); }, 400);
+  }, 3000);
+};
+
 const notify = (message, type = 'info') => {
   const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
   updateStatus(stateClass, message.toUpperCase());
   addLogLine(message, type);
-  
   notificationQueue.push({ message, type });
   processQueue();
 };
