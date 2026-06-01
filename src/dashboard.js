@@ -35,6 +35,7 @@ const getPatternSVG = (cat) => {
 };
 
 const notify = (message, type = 'info') => {
+    // Status bar update
     const statusBar = document.querySelector('.status-bar');
     if (statusBar) {
         const text = statusBar.querySelector('.status-text');
@@ -45,7 +46,18 @@ const notify = (message, type = 'info') => {
             indicator.className = `status-indicator ${type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online')}`;
         }
     }
-    console.log(`[${type}] ${message}`);
+
+    // Central Notification
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'cyber-notification';
+        document.body.appendChild(notification);
+    }
+    notification.textContent = message;
+    notification.className = `notification-overlay show notification-${type}`;
+    
+    setTimeout(() => notification.classList.remove('show'), 3000);
 };
 
 // DOM elementlarini keshlaymiz
