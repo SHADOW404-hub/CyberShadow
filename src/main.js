@@ -354,9 +354,7 @@ if (forgotPasswordLink) {
       email = profile.email;
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/dashboard.html',
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
 
     if (error) {
       updateStatus('error', 'Reset failed');
