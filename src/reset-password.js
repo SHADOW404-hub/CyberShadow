@@ -62,11 +62,15 @@ resetForm.addEventListener('submit', async (e) => {
 
     updateStatus('success', 'Password updated');
     
-    // Central notification
-    let notification = document.createElement('div');
-    notification.className = 'notification-overlay show notification-success';
+    // Notification display
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+      notification = document.createElement('div');
+      notification.id = 'cyber-notification';
+      document.body.appendChild(notification);
+    }
     notification.textContent = 'PASSWORD SECURED. REDIRECTING...';
-    document.body.appendChild(notification);
+    notification.className = 'notification-overlay show notification-success';
 
     setTimeout(() => {
       window.location.replace('/');
@@ -76,10 +80,25 @@ resetForm.addEventListener('submit', async (e) => {
     updateStatus('error', 'Update failed');
     resetBtn.classList.remove('loading');
     resetBtn.disabled = false;
-    showNotification(err.message, 'error');
+    
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+      notification = document.createElement('div');
+      notification.id = 'cyber-notification';
+      document.body.appendChild(notification);
+    }
+    notification.textContent = err.message.toUpperCase();
+    notification.className = 'notification-overlay show notification-error';
+    setTimeout(() => notification.classList.remove('show'), 3000);
   }
 });
 
 // Clock update
-const updateClock = () => utilsUpdateClock('systemTime');
+const updateClock = () => {
+  const el = document.getElementById('systemTime');
+  if (!el) return;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  el.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+};
 setInterval(updateClock, 1000); updateClock();

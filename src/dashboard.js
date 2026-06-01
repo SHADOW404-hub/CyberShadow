@@ -1,6 +1,5 @@
 import { supabase } from './supabase.js'
 import './style.css';
-import { escapeHTML, showNotification } from './utils.js';
 
 // --- DOIMIY QIYMATLAR (CONSTANTS) ---
 const CATEGORY_CONFIG = {
@@ -22,6 +21,41 @@ const DIFF_THEMES = {
 };
 
 // --- YORDAMCHI FUNKSIYALAR ---
+const escapeHTML = (str) => {
+    if (!str) return "";
+    return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[m]);
+};
+
+let notificationQueue = [];
+let isNotificationShowing = false;
+
+const processQueue = () => {
+    if (notificationQueue.length === 0 || isNotificationShowing) return;
+
+    isNotificationShowing = true;
+    const { message, type } = notificationQueue.shift();
+
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'cyber-notification';
+        document.body.appendChild(notification);
+    }
+
+    notification.textContent = message.toUpperCase();
+    notification.className = `notification-overlay show notification-${type}`;
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            isNotificationShowing = false;
+            processQueue();
+        }, 400); // Fade-out animatsiyasi uchun kutish
+    }, 3000);
+};
+
 const getPatternSVG = (cat) => {
     const config = CATEGORY_CONFIG[cat];
     if (!config) return null;
