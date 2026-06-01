@@ -581,7 +581,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
             const solveCount = ch.solves_count || 0; // Agar bazada yechimlar soni bo'lsa
             
             html += `
-                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
                 <div class="challenge-card-horizontal ${glitchClass}" data-id="${ch.id}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33; cursor: pointer;">
                     <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
