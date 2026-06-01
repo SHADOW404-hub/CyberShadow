@@ -903,6 +903,3 @@ confirmLogoutBtn?.addEventListener('click', async () => {
     await supabase.auth.signOut()
     window.location.href = '/'
 })
-
-// Topshiriqlarni sahifa yuklanganda ko'rsatish
-fetchAndDisplayChallenges(false);
