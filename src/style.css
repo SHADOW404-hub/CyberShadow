@@ -614,6 +614,10 @@ body {
   transition: var(--transition-fast);
 }
 
+.checkbox-box:active {
+  transform: scale(0.9);
+}
+
 .check-icon {
   font-size: 11px;
   color: var(--neon-cyan);
@@ -624,13 +628,19 @@ body {
 
 .custom-checkbox input:checked ~ .checkbox-box {
   border-color: var(--neon-cyan);
-  background: rgba(0, 240, 255, 0.05);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.15);
+  background: rgba(0, 240, 255, 0.15);
+  box-shadow: 0 0 15px var(--neon-cyan-glow), inset 0 0 5px var(--neon-cyan-glow);
 }
 
 .custom-checkbox input:checked ~ .checkbox-box .check-icon {
   opacity: 1;
   transform: scale(1);
+}
+
+.custom-checkbox input:checked ~ .checkbox-label {
+  color: var(--color-text-bright);
+  text-shadow: 0 0 8px var(--neon-cyan-glow);
+  transition: var(--transition-smooth);
 }
 
 .custom-checkbox input:focus-visible ~ .checkbox-box {
