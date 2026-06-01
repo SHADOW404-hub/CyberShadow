@@ -418,6 +418,23 @@ async function performLogin(identifier, password) {
     return
   }
 
+  // ─── Self-Healing Profile Check (Muammo #2 yechimi) ────────────────────────
+  // Agar foydalanuvchi authdan o'tgan bo'lsa-yu, profiles jadvalida qator bo'lmasa,
+  // uni metadata asosida avtomatik tiklaymiz.
+  const { data: existingProfile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', data.user.id)
+    .maybeSingle();
+
+  if (!existingProfile && data.user) {
+    const recoveryUsername = data.user.user_metadata?.username || 'Agent';
+    await supabase.from('profiles').insert([
+      { id: data.user.id, username: recoveryUsername, email: data.user.email }
+    ]);
+    addLogLine('System: Profile sync restored from metadata', 'system');
+  }
+
   updateStatus(
     'success',
     `Welcome back, ${escapeHTML(identifier)}!`
@@ -520,7 +537,7 @@ async function performRegister(username, email, password) {
 
       if (profileError) {
         console.error("Critical: Auth succeeded but profile failed:", profileError);
-        throw new Error('Auth successful, but profile sync failed. Contact admin.');
+        throw new Error('Identity secured, but profile sync failed. Please log in with your email to repair.');
       }
     }
 
