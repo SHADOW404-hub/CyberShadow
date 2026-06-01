@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js'
 import './style.css';
+import { showNotification, updateClock as utilsUpdateClock, updateStatusUI } from './utils.js';
 
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');
@@ -10,10 +11,7 @@ const resetBtn = document.getElementById('resetBtn');
 const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
 
-const updateStatus = (state, text) => {
-  statusIndicator.className = `status-indicator ${state}`;
-  statusConsole.textContent = `SYSTEM: ${text.toUpperCase()}`;
-};
+const updateStatus = (state, text) => updateStatusUI(state, text);
 
 // Password toggle
 document.getElementById('togglePassword').addEventListener('click', () => {
@@ -76,18 +74,10 @@ resetForm.addEventListener('submit', async (e) => {
     updateStatus('error', 'Update failed');
     resetBtn.classList.remove('loading');
     resetBtn.disabled = false;
-    
-    let notification = document.createElement('div');
-    notification.className = 'notification-overlay show notification-error';
-    notification.textContent = err.message.toUpperCase();
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
+    showNotification(err.message, 'error');
   }
 });
 
 // Clock update
-const updateClock = () => {
-  const now = new Date();
-  document.getElementById('systemTime').textContent = `TIME: ${now.toISOString().slice(0, 19).replace('T', ' ')}`;
-};
+const updateClock = () => utilsUpdateClock('systemTime');
 setInterval(updateClock, 1000); updateClock();

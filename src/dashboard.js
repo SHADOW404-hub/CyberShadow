@@ -1,5 +1,6 @@
 import { supabase } from './supabase.js'
 import './style.css';
+import { escapeHTML, showNotification } from './utils.js';
 
 // --- DOIMIY QIYMATLAR (CONSTANTS) ---
 const CATEGORY_CONFIG = {
