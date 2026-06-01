@@ -39,7 +39,11 @@ const notify = (message, type = 'info') => {
     if (statusBar) {
         const text = statusBar.querySelector('.status-text');
         if (text) text.textContent = `[ ${type.toUpperCase()} ] ${message}`;
-        // Alert o'rniga vizual signal berish mumkin
+
+        const indicator = statusBar.querySelector('.status-indicator');
+        if (indicator) {
+            indicator.className = `status-indicator ${type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online')}`;
+        }
     }
     console.log(`[${type}] ${message}`);
 };

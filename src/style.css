@@ -2056,34 +2056,3 @@ input[type="number"] {
   color: var(--color-text-bright);
   box-shadow: 0 0 10px var(--neon-cyan-faint);
 }
-
-/* --- CUSTOM NOTIFICATION SYSTEM --- */
-.notification-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.9);
-  background: rgba(8, 10, 15, 0.95);
-  border: 1px solid var(--neon-cyan);
-  padding: 24px 45px;
-  border-radius: 8px;
-  z-index: 10000;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 20px var(--neon-cyan-glow);
-  pointer-events: none;
-  opacity: 0;
-  transition: var(--transition-smooth);
-  font-family: var(--font-display);
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.notification-overlay.show {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.notification-error { border-color: var(--color-error); box-shadow: 0 0 30px var(--color-error-glow); color: var(--color-error); }
-.notification-success { border-color: var(--color-success); box-shadow: 0 0 30px var(--color-success-glow); color: var(--color-success); }
-.notification-info { border-color: var(--neon-cyan); color: var(--neon-cyan); }

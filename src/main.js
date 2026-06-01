@@ -46,17 +46,9 @@ const forgotPasswordLink = document.getElementById('forgotPassword');
 
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
-  updateStatus(type === 'error' ? 'error' : 'success', message);
-  
-  let notification = document.getElementById('cyber-notification');
-  if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'cyber-notification';
-    document.body.appendChild(notification);
-  }
-  notification.textContent = message.toUpperCase();
-  notification.className = `notification-overlay show notification-${type}`;
-  setTimeout(() => notification.classList.remove('show'), 3000);
+  const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
+  updateStatus(stateClass, message);
+  addLogLine(message, type);
 };
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
