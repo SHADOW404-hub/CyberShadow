@@ -43,6 +43,7 @@ const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
+const rememberMeCheckbox = document.getElementById('rememberMe');
 
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
@@ -120,6 +121,16 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
+
+// ─── Check for Remembered User ────────────────────────────────────────────────
+function checkRememberedUser() {
+  const savedUser = localStorage.getItem('rememberedUser');
+  if (savedUser && usernameInput) {
+    usernameInput.value = savedUser;
+    if (rememberMeCheckbox) rememberMeCheckbox.checked = true;
+  }
+}
+checkRememberedUser();
 
 // ─── Terminal Log Helper ──────────────────────────────────────────────────────
 function addLogLine(text, type = '') {
@@ -374,6 +385,14 @@ async function performLogin(identifier, password) {
     notify(error.message, 'error');
 
     return
+  }
+
+  // Handle Remember Me logic
+  const rememberMe = rememberMeCheckbox?.checked;
+  if (rememberMe) {
+    localStorage.setItem('rememberedUser', identifier);
+  } else {
+    localStorage.removeItem('rememberedUser');
   }
 
   updateStatus(
