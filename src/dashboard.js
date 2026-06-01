@@ -498,6 +498,7 @@ if (adminTerminalLink && adminSidebar) {
 }
 
 let activeChallenges = [];
+let selectedCh = null;
 
 // Foydalanuvchilarni yuklash va ko'rsatish funksiyasi
 const fetchAndDisplayUsers = async () => {
@@ -580,6 +581,7 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
             const solveCount = ch.solves_count || 0; // Agar bazada yechimlar soni bo'lsa
             
             html += `
+                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
                 <div class="challenge-card-horizontal ${glitchClass}" data-id="${ch.id}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33; cursor: pointer;">
                     <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
@@ -614,7 +616,7 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
     html += `</div>`;
     mainContentArea.innerHTML = html;
 
-    // Challenge kartasiga bosilganda modal ochish logikasi
+    // Challenge kartasiga bosilganda modal ochish
     mainContentArea.querySelectorAll('.challenge-card-horizontal').forEach(card => {
         card.addEventListener('click', (e) => {
             if (e.target.closest('.btn-delete-challenge')) return;
@@ -648,32 +650,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
             }
         });
     });
-};
-
-closeViewChModal?.addEventListener('click', () => {
-    viewChModal.classList.remove('active');
-    selectedCh = null;
-});
-
-openChLink?.addEventListener('click', () => {
-    if (viewChLink.value) window.open(viewChLink.value, '_blank');
-});
-
-downloadChFile?.addEventListener('click', () => {
-    if (selectedCh?.file_url) window.open(selectedCh.file_url, '_blank');
-});
-
-submitFlagBtn?.addEventListener('click', () => {
-    const input = chFlagInput.value.trim();
-    if (!selectedCh) return;
-
-    if (input === selectedCh.flag) {
-        notify("IDENTITY VERIFIED. ACCESS GRANTED.", "success");
-        viewChModal.classList.remove('active');
-    } else {
-        notify("INVALID PROTOCOL. ACCESS DENIED.", "error");
-    }
-});
 
     document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
         updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
@@ -716,6 +692,32 @@ submitFlagBtn?.addEventListener('click', () => {
         });
     }
 };
+
+closeViewChModal?.addEventListener('click', () => {
+    viewChModal.classList.remove('active');
+    selectedCh = null;
+});
+
+openChLink?.addEventListener('click', () => {
+    if (viewChLink.value) window.open(viewChLink.value, '_blank');
+});
+
+downloadChFile?.addEventListener('click', () => {
+    if (selectedCh?.file_url) window.open(selectedCh.file_url, '_blank');
+});
+
+submitFlagBtn?.addEventListener('click', () => {
+    const input = chFlagInput.value.trim();
+    if (!selectedCh) return;
+
+    if (input === selectedCh.flag) {
+        notify("IDENTITY VERIFIED. ACCESS GRANTED.", "success");
+        viewChModal.classList.remove('active');
+        // Ballarni saqlash tizimini bu yerda qo'shish mumkin
+    } else {
+        notify("INVALID PROTOCOL. ACCESS DENIED.", "error");
+    }
+});
 
 cancelAddChallenge?.addEventListener('click', () => {
     addChallengeModal.classList.remove('active');
@@ -888,99 +890,6 @@ if (saveProfileBtn) {
                         const userId = urlParts.pop();
                         const filePath = `${userId}/${fileName}`;
                         await supabase.storage.from('avatars').remove([filePath]);
-                    } catch (e) {
-                        console.error("Eski avatarni o'chirishda xatolik:", e);
-                    }
-                }
-
-                // Fayl nomidagi maxsus belgi va joylarni chetlab o'tish uchun vaqt tamg'asidan foydalanamiz
-                const fileExt = newProfilePictureFile.name.split('.').pop();
-                const safeFileName = `${Date.now()}.${fileExt}`;
-
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('avatars')
-                    .upload(`${session.user.id}/${safeFileName}`, newProfilePictureFile, {
-                        cacheControl: '3600',
-                        upsert: true
-                    });
-                
-                if (uploadError) throw uploadError;
-
-                avatarUrlToUpdate = supabase.storage.from('avatars').getPublicUrl(uploadData.path).data.publicUrl;
-                updateData.avatar_url = avatarUrlToUpdate;
-                changesMade = true;
-            }
-
-            if (newUsername !== currentProfile.username) {
-                updateData.username = newUsername;
-                changesMade = true;
-            }
-            if (newEmail !== currentProfile.email) {
-                updateData.email = newEmail;
-                changesMade = true;
-            }
-            if (newCountry !== (currentProfile.country || '')) {
-                updateData.country = newCountry;
-                changesMade = true;
-            }
-
-
-            if (!changesMade) {
-                profileModal.classList.remove('active');
-                return;
-            }
-
-            // Tugmani vaqtincha bloklash
-            saveProfileBtn.disabled = true;
-            saveProfileBtn.textContent = 'Saving...';
-
-            const { data, error } = await supabase
-                .from('profiles')
-                .upsert({ id: session.user.id, ...updateData })
-                .select(); // Yangilangan qatorni qaytarib olish
-
-            saveProfileBtn.disabled = false;
-            saveProfileBtn.textContent = 'Save Changes';
-
-            if (error) throw error;
-            
-            if (!data || data.length === 0) {
-                notify('Update failed. Check RLS policies.', 'error');
-                return;
-            }
-
-            currentProfile = data[0];
-            updateHeaderUI(); // Headerdagi ma'lumotlarni yangilash funksiyasini chaqiramiz
-            profileModal.classList.remove('active');
-            notify('Profile synced successfully', 'success');
-        } catch (err) {
-            notify(err.message, 'error');
-            saveProfileBtn.disabled = false;
-            saveProfileBtn.textContent = 'Save Changes';
-        }
-    });
-}
-
-// Inline CHANGE tugmalari uchun logika
-document.querySelectorAll('.btn-inline-change').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        if (!targetId) return; // Rasm uchun bo'lgan tugmani chetlab o'tish
-        const input = document.getElementById(targetId);
-        if (input) {
-            input.readOnly = false;
-            input.disabled = false; // Select uchun
-            input.focus();
-        }
-    });
-});
-
-
-// Confirm Logout funksiyasi
-confirmLogoutBtn?.addEventListener('click', async () => {
-    await supabase.auth.signOut()
-    window.location.href = '/'
-})                      await supabase.storage.from('avatars').remove([filePath]);
                     } catch (e) {
                         console.error("Eski avatarni o'chirishda xatolik:", e);
                     }
