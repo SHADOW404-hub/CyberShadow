@@ -2021,13 +2021,18 @@ input[type="number"] {
 /* Fullscreen Challenge View */
 .challenge-fullscreen-view {
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  /* max-width va margin: 0 auto olib tashlandi, butun ekranni egallashi uchun */
   display: flex;
   flex-direction: column;
   gap: 40px;
   padding: 40px 0;
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Challenge faol bo'lganda asosiy kontent maydonini to'liq ekran qilish */
+.dashboard-main-content.challenge-active {
+  padding: 20px; /* Kamroq padding */
+  align-items: stretch; /* Kontentni yoyish */
 }
 
 .challenge-header-large {
