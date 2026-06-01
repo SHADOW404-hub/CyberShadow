@@ -457,8 +457,7 @@ const fetchAndDisplayUsers = async () => {
 
     const { data: users, error } = await supabase
         .from('profiles')
-        .select('username, email, avatar_url, country')
-        .limit(50); // Scalability: Dastlabki 50ta foydalanuvchi
+        .select('username, email, avatar_url, country');
 
     if (error) {
         mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
@@ -503,7 +502,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
     const { data: challenges, error } = await supabase
         .from('challenges')
         .select('*')
-        .limit(50) // Scalability: Dastlabki 50ta challenge
         .order('created_at', { ascending: false });
 
     if (error) {
