@@ -7,9 +7,19 @@ import './style.css';
 
 // ─── Auth Session Check ───────────────────────────────────────────────────────
 const { data: { session: activeSession } } = await supabase.auth.getSession();
-if (activeSession) {
+
+// Agar sessiya bo'lsa va u parolni tiklash havolasidan kelgan bo'lsa
+if (activeSession && (window.location.hash.includes('type=recovery') || window.location.href.includes('type=recovery'))) {
+  window.location.replace('/reset-password.html');
+} else if (activeSession) {
   window.location.replace('/dashboard.html');
 }
+
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    window.location.replace('/reset-password.html');
+  }
+});
 
 // ─── DOM Elements ─────────────────────────────────────────────────────────────
 const loginForm = document.getElementById('loginForm');
