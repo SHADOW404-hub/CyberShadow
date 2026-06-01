@@ -22,13 +22,6 @@ const DIFF_THEMES = {
 };
 
 // --- YORDAMCHI FUNKSIYALAR ---
-const escapeHTML = (str) => {
-    if (!str) return "";
-    return String(str).replace(/[&<>"']/g, m => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    })[m]);
-};
-
 const getPatternSVG = (cat) => {
     const config = CATEGORY_CONFIG[cat];
     if (!config) return null;
@@ -47,18 +40,7 @@ const notify = (message, type = 'info') => {
             indicator.className = `status-indicator ${type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online')}`;
         }
     }
-
-    // Central Notification
-    let notification = document.getElementById('cyber-notification');
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.id = 'cyber-notification';
-        document.body.appendChild(notification);
-    }
-    notification.textContent = message;
-    notification.className = `notification-overlay show notification-${type}`;
-    
-    setTimeout(() => notification.classList.remove('show'), 3000);
+    showNotification(message, type);
 };
 
 // DOM elementlarini keshlaymiz

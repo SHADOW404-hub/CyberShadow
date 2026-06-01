@@ -91,18 +91,9 @@ const validatePassword = (password) => {
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
   const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
-  updateStatus(stateClass, message.toUpperCase());
+  updateStatusUI(stateClass, message);
   addLogLine(message, type);
-
-  let notification = document.getElementById('cyber-notification');
-  if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'cyber-notification';
-    document.body.appendChild(notification);
-  }
-  notification.textContent = message.toUpperCase();
-  notification.className = `notification-overlay show notification-${type}`;
-  setTimeout(() => notification.classList.remove('show'), 3000);
+  showNotification(message, type);
 };
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
