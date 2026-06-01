@@ -1,6 +1,5 @@
 import { supabase } from './supabase.js'
 import './style.css';
-import { showNotification, updateClock as utilsUpdateClock, updateStatusUI } from './utils.js';
 
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');
@@ -11,7 +10,10 @@ const resetBtn = document.getElementById('resetBtn');
 const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
 
-const updateStatus = (state, text) => updateStatusUI(state, text);
+const updateStatus = (state, text) => {
+  statusIndicator.className = `status-indicator ${state}`;
+  statusConsole.textContent = `SYSTEM: ${text.toUpperCase()}`;
+};
 
 // Password toggle
 document.getElementById('togglePassword').addEventListener('click', () => {

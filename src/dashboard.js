@@ -40,7 +40,8 @@ const notify = (message, type = 'info') => {
             indicator.className = `status-indicator ${type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online')}`;
         }
     }
-    showNotification(message, type);
+    notificationQueue.push({ message, type });
+    processQueue();
 };
 
 // DOM elementlarini keshlaymiz

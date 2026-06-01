@@ -4,7 +4,6 @@
 
 import { supabase } from './supabase.js'
 import './style.css';
-import { escapeHTML, showNotification, updateClock as utilsUpdateClock, updateStatusUI } from './utils.js';
 
 // ─── Auth Session Check ───────────────────────────────────────────────────────
 const { data: { session: activeSession } } = await supabase.auth.getSession();
@@ -88,12 +87,41 @@ const validatePassword = (password) => {
   return password.length >= 6 && /\d/.test(password);
 };
 
+let notificationQueue = [];
+let isNotificationShowing = false;
+
+const processQueue = () => {
+  if (notificationQueue.length === 0 || isNotificationShowing) return;
+
+  isNotificationShowing = true;
+  const { message, type } = notificationQueue.shift();
+
+  let notification = document.getElementById('cyber-notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'cyber-notification';
+    document.body.appendChild(notification);
+  }
+
+  notification.textContent = message.toUpperCase();
+  notification.className = `notification-overlay show notification-${type}`;
+
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => {
+      isNotificationShowing = false;
+      processQueue();
+    }, 400);
+  }, 3000);
+};
+
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
   const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
-  updateStatusUI(stateClass, message);
+  updateStatus(stateClass, message.toUpperCase());
   addLogLine(message, type);
-  showNotification(message, type);
+  notificationQueue.push({ message, type });
+  processQueue();
 };
 
 // ─── Success Overlay ──────────────────────────────────────────────────────────
@@ -148,7 +176,10 @@ function showSuccessOverlay(title, subtitle, isLogin = false) {
   }
 }
 function updateClock() {
-  utilsUpdateClock('systemTime');
+  if (!systemTime) return;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  systemTime.textContent = `TIME: ${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -164,6 +195,11 @@ function addLogLine(text, type = '') {
 }
 
 // ─── Status Bar Update ───────────────────────────────────────────────────────
+function updateStatus(stateClass, text) {
+  if (!statusIndicator || !statusConsole) return;
+  statusIndicator.className = `status-indicator ${stateClass}`;
+  statusConsole.textContent = `SYSTEM: ${text}`;
+}
 // ─── Error Helpers ────────────────────────────────────────────────────────────
 function showError(inputEl, errorEl, message) {
   inputEl.parentElement.parentElement.classList.add('has-error');
