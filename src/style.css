@@ -619,7 +619,7 @@ body {
 }
 
 .check-icon {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--neon-cyan);
   opacity: 0;
   transform: scale(0.6);
@@ -633,8 +633,10 @@ body {
 }
 
 .custom-checkbox input:checked ~ .checkbox-box .check-icon {
-  opacity: 1;
-  transform: scale(1);
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  color: #ffffff;
+  filter: drop-shadow(0 0 5px var(--neon-cyan));
 }
 
 .custom-checkbox input:checked ~ .checkbox-label {
