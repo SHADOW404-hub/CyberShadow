@@ -45,10 +45,44 @@ const footerRegister = document.getElementById('footerRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
 const rememberMeCheckbox = document.getElementById('rememberMe');
 
+// ─── Security Helpers ─────────────────────────────────────────────────────────
+const escapeHTML = (str) => {
+  if (!str) return "";
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[m]);
+};
+
+const mapAuthError = (error) => {
+  if (!error) return 'An unknown error occurred.';
+  const msg = error.message.toLowerCase();
+
+  if (msg.includes('invalid login credentials')) return 'Access Denied: Invalid identification.';
+  if (msg.includes('email not confirmed')) return 'Security: Identity verification required via email.';
+  if (msg.includes('user already registered')) return 'Registry Error: Identity already exists.';
+  if (msg.includes('rate limit')) return 'System: Too many attempts. Connection throttled.';
+  if (msg.includes('database') || msg.includes('server')) return 'System: Internal link failure.';
+  
+  return 'System Error: Authentication sequence failed.';
+};
+
+const validateEmail = (email) => {
+  return String(email)
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+};
+
+const validatePassword = (password) => {
+  // Kamida 6 ta belgi va kamida bitta raqam
+  return password.length >= 6 && /\d/.test(password);
+};
+
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
   const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
-  updateStatus(stateClass, message);
+  updateStatus(stateClass, message.toUpperCase());
   addLogLine(message, type);
 
   let notification = document.getElementById('cyber-notification');
@@ -274,10 +308,15 @@ if (loginForm) {
     if (identifier.length < 3) {
       showError(usernameInput, usernameError, 'Please enter a valid username or email.');
       hasError = true;
-    }
-    if (pass.length < 6) {
-      showError(passwordInput, passwordError, 'Password must be at least 6 characters.');
+    } else if (identifier.includes('@') && !validateEmail(identifier)) {
+      showError(usernameInput, usernameError, 'Email format is invalid.');
       hasError = true;
+    }
+
+    if (!validatePassword(pass)) {
+      showError(passwordInput, passwordError, 'Password verification failed.');
+      hasError = true;
+      notify('Security policy: Min 6 chars with at least one digit', 'error');
     }
     if (hasError) {
       triggerShake();
@@ -313,8 +352,8 @@ if (forgotPasswordLink) {
         .single();
       
       if (!profile) {
-        updateStatus('error', 'User not found');
-        notify('Username not found', 'error');
+        // Generic message to prevent account enumeration
+        notify('If user exists, a link will be sent', 'info');
         return;
       }
       email = profile.email;
@@ -325,8 +364,8 @@ if (forgotPasswordLink) {
     if (error) {
       updateStatus('error', 'Reset failed');
     } else {
-      updateStatus('success', 'Reset link sent');
-      notify('Reset link sent to your email!', 'success');
+      updateStatus('success', 'Sequence complete');
+      notify('Recovery link transmitted to your terminal', 'success');
     }
   });
 }
@@ -377,12 +416,9 @@ async function performLogin(identifier, password) {
       'Login failed'
     )
 
-    addLogLine(
-      error.message,
-      'error'
-    )
-
-    notify(error.message, 'error');
+    const safeMessage = mapAuthError(error);
+    addLogLine(safeMessage, 'error');
+    notify(safeMessage, 'error');
 
     return
   }
@@ -397,7 +433,7 @@ async function performLogin(identifier, password) {
 
   updateStatus(
     'success',
-    'Welcome back!'
+    `Welcome back, ${escapeHTML(identifier)}!`
   )
 
   showSuccessOverlay(
@@ -432,13 +468,13 @@ if (registerForm) {
       hasError = true;
     }
 
-    if (!email.includes('@')) {
+    if (!validateEmail(email)) {
       showError(regEmail, regEmailError, 'Please enter a valid email address.');
       hasError = true;
     }
 
-    if (password.length < 6) {
-      showError(regPassword, regPasswordError, 'Password must be at least 6 characters.');
+    if (!validatePassword(password)) {
+      showError(regPassword, regPasswordError, 'Use at least 6 chars and one number.');
       hasError = true;
     }
 
@@ -458,69 +494,58 @@ if (registerForm) {
 }
 
 async function performRegister(username, email, password) {
-
   registerBtn.classList.add('loading')
-
-  updateStatus(
-    'processing',
-    'Creating your account...'
-  )
-
+  updateStatus('processing', 'Checking username availability...')
   registerBtn.disabled = true;
 
-  const { data, error } =
-    await supabase.auth.signUp({
+  try {
+    // 1. Check if username is already taken
+    const { data: existingUser, error: checkError } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .maybeSingle();
+
+    if (checkError) throw checkError;
+    if (existingUser) {
+      throw new Error('This username is already taken. Please choose another.');
+    }
+
+    updateStatus('processing', 'Establishing secure link...');
+
+    // 2. Perform Supabase Auth SignUp
+    const { data, error: authError } = await supabase.auth.signUp({
       email: email,
       password: password,
-      options: {
-        data: {
-          username: username
-        }
+      options: { data: { username: username } }
+    });
+
+    if (authError) {
+      if (authError.status === 429) throw new Error("Too many requests. Please try again later.");
+      throw authError;
+    }
+
+    // 3. Create profile entry if user was created
+    if (data && data.user) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([{ id: data.user.id, username: username, email: email }]);
+
+      if (profileError) {
+        console.error("Critical: Auth succeeded but profile failed:", profileError);
+        throw new Error('Auth successful, but profile sync failed. Contact admin.');
       }
-    })
-
-  registerBtn.classList.remove('loading')
-  registerBtn.disabled = false;
-
-  if (error) {
-    updateStatus(
-      'error',
-      'Registration failed'
-    )
-
-    let errorMsg = error.message;
-    if (error.status === 429) {
-      errorMsg = "Too many requests. Please try again later or disable email confirmation in Supabase.";
-    } else if (error.message.includes("Email signups are disabled")) {
-      errorMsg = "Supabase-da 'Email signups' o'chirilgan! Authentication -> Providers -> Email bo'limidan 'Allow new users to sign up'ni yoqing.";
     }
 
-    notify(errorMsg, 'error');
-    return
+    updateStatus('success', `Welcome, ${escapeHTML(username)}!`);
+    showSuccessOverlay('ACCOUNT CREATED', `Identity verified. You can now log in.`, false);
+
+  } catch (err) {
+    const safeMessage = mapAuthError(err);
+    updateStatus('error', 'Registration aborted');
+    notify(safeMessage, 'error');
+  } finally {
+    registerBtn.classList.remove('loading')
+    registerBtn.disabled = false;
   }
-
-  // Agar ro'yxatdan o'tish muvaffaqiyatli bo'lsa, 'profiles' jadvaliga ma'lumot qo'shamiz
-  if (data && data.user) {
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        { id: data.user.id, username: username, email: email }
-      ]);
-
-    if (profileError) {
-      updateStatus('error', 'Profile creation failed');
-      notify('Profile creation failed. Check RLS.', 'error');
-      return;
-    }
-  }
-
-  updateStatus(
-    'success',
-    `Welcome, ${username}!`
-  )
-
-  showSuccessOverlay(
-    'ACCOUNT CREATED',
-    `Welcome, ${username}! You can now log in.`, false
-  )
 }
