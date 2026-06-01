@@ -35,13 +35,24 @@ const getPatternSVG = (cat) => {
 };
 
 const notify = (message, type = 'info') => {
+    // Status bar update (pastki qism)
     const statusBar = document.querySelector('.status-bar');
     if (statusBar) {
         const text = statusBar.querySelector('.status-text');
         if (text) text.textContent = `[ ${type.toUpperCase()} ] ${message}`;
-        // Alert o'rniga vizual signal berish mumkin
     }
-    console.log(`[${type}] ${message}`);
+
+    // Central Notification (markazdagi xabar)
+    let notification = document.getElementById('cyber-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'cyber-notification';
+        document.body.appendChild(notification);
+    }
+    notification.textContent = message;
+    notification.className = `notification-overlay show notification-${type}`;
+    
+    setTimeout(() => notification.classList.remove('show'), 3000);
 };
 
 // DOM elementlarini keshlaymiz
@@ -412,7 +423,7 @@ removeProfilePictureBtn?.addEventListener('click', async () => {
             profilePicturePreview.style.backgroundImage = 'none';
             profilePicturePreview.textContent = (currentProfile.username || 'A').charAt(0).toUpperCase();
             updateAvatarButtons();
-            alert('Rasm muvaffaqiyatli o\'chirildi');
+            notify('Avatar removed successfully', 'success');
         } catch (err) {
             notify(err.message, 'error');
         } finally {

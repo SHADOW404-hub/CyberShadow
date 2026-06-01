@@ -43,6 +43,22 @@ const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
+
+// ─── Notification System ──────────────────────────────────────────────────────
+const notify = (message, type = 'info') => {
+  updateStatus(type === 'error' ? 'error' : 'success', message);
+  
+  let notification = document.getElementById('cyber-notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'cyber-notification';
+    document.body.appendChild(notification);
+  }
+  notification.textContent = message.toUpperCase();
+  notification.className = `notification-overlay show notification-${type}`;
+  setTimeout(() => notification.classList.remove('show'), 3000);
+};
+
 // ─── Success Overlay ──────────────────────────────────────────────────────────
 function showSuccessOverlay(title, subtitle, isLogin = false) {
   const overlay = document.createElement('div');
@@ -285,7 +301,7 @@ if (forgotPasswordLink) {
       
       if (!profile) {
         updateStatus('error', 'User not found');
-        alert('Username topilmadi');
+        notify('Username not found', 'error');
         return;
       }
       email = profile.email;
@@ -297,7 +313,7 @@ if (forgotPasswordLink) {
       updateStatus('error', 'Reset failed');
     } else {
       updateStatus('success', 'Reset link sent');
-      alert('Parolni tiklash havolasi yuborildi!');
+      notify('Reset link sent to your email!', 'success');
     }
   });
 }
@@ -326,7 +342,7 @@ async function performLogin(identifier, password) {
       updateStatus('error', 'User not found');
       submitBtn.classList.remove('loading');
       submitBtn.disabled = false;
-      alert('Username topilmadi');
+      notify('Access denied: User not found', 'error');
       return;
     }
     email = profile.email;
@@ -353,7 +369,7 @@ async function performLogin(identifier, password) {
       'error'
     )
 
-    alert(error.message)
+    notify(error.message, 'error');
 
     return
   }
@@ -458,7 +474,7 @@ async function performRegister(username, email, password) {
       errorMsg = "Supabase-da 'Email signups' o'chirilgan! Authentication -> Providers -> Email bo'limidan 'Allow new users to sign up'ni yoqing.";
     }
 
-    alert(errorMsg)
+    notify(errorMsg, 'error');
     return
   }
 
@@ -472,7 +488,7 @@ async function performRegister(username, email, password) {
 
     if (profileError) {
       updateStatus('error', 'Profile creation failed');
-      alert(`Foydalanuvchi yaratildi, lekin profil bazaga yozilmadi: ${profileError.message}. RLS qoidalarini tekshiring!`);
+      notify('Profile creation failed. Check RLS.', 'error');
       return;
     }
   }
