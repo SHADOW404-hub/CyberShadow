@@ -119,19 +119,11 @@ const challengeFileTrigger = document.getElementById('challengeFileTrigger');
 const challengeFileName = document.getElementById('challengeFileName');
 const challengeFileWrapper = document.getElementById('challengeFileWrapper');
 
-// View Challenge Modal elementlari
-const viewChModal = document.getElementById('viewChModal');
-const closeViewChModal = document.getElementById('closeViewChModal');
-const viewChName = document.getElementById('viewChName');
-const viewChPoints = document.getElementById('viewChPoints');
-const viewChCat = document.getElementById('viewChCat');
-const viewChLinkArea = document.getElementById('viewChLinkArea');
-const viewChLink = document.getElementById('viewChLink');
-const openChLink = document.getElementById('openChLink');
-const viewChFileArea = document.getElementById('viewChFileArea');
-const downloadChFile = document.getElementById('downloadChFile');
-const chFlagInput = document.getElementById('chFlagInput');
-const submitFlagBtn = document.getElementById('submitFlagBtn');
+// Challenge View Navigation
+const mainMenu = document.querySelector('.main-menu');
+const profileSection = document.querySelector('.user-profile-section');
+const challengeNavActions = document.getElementById('challengeNavActions');
+const backToDashboardBtn = document.getElementById('backToDashboardBtn');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
@@ -691,32 +683,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
         });
     }
 };
-
-closeViewChModal?.addEventListener('click', () => {
-    viewChModal.classList.remove('active');
-    selectedCh = null;
-});
-
-openChLink?.addEventListener('click', () => {
-    if (viewChLink.value) window.open(viewChLink.value, '_blank');
-});
-
-downloadChFile?.addEventListener('click', () => {
-    if (selectedCh?.file_url) window.open(selectedCh.file_url, '_blank');
-});
-
-submitFlagBtn?.addEventListener('click', () => {
-    const input = chFlagInput.value.trim();
-    if (!selectedCh) return;
-
-    if (input === selectedCh.flag) {
-        notify("IDENTITY VERIFIED. ACCESS GRANTED.", "success");
-        viewChModal.classList.remove('active');
-        // Ballarni saqlash tizimini bu yerda qo'shish mumkin
-    } else {
-        notify("INVALID PROTOCOL. ACCESS DENIED.", "error");
-    }
-});
 
 cancelAddChallenge?.addEventListener('click', () => {
     addChallengeModal.classList.remove('active');
