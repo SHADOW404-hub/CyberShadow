@@ -1,6 +1,18 @@
 import { supabase } from './supabase.js'
 import './style.css';
 
+// ─── Auth Session Check ───────────────────────────────────────────────────────
+const { data: { session: initialSession } } = await supabase.auth.getSession();
+if (!initialSession) {
+  window.location.replace('/');
+}
+
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT' || !session) {
+    window.location.replace('/');
+  }
+});
+
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');
 const confirmPasswordInput = document.getElementById('confirmPassword');
