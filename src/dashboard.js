@@ -35,24 +35,13 @@ const getPatternSVG = (cat) => {
 };
 
 const notify = (message, type = 'info') => {
-    // Status bar update (pastki qism)
     const statusBar = document.querySelector('.status-bar');
     if (statusBar) {
         const text = statusBar.querySelector('.status-text');
         if (text) text.textContent = `[ ${type.toUpperCase()} ] ${message}`;
+        // Alert o'rniga vizual signal berish mumkin
     }
-
-    // Central Notification (markazdagi xabar)
-    let notification = document.getElementById('cyber-notification');
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.id = 'cyber-notification';
-        document.body.appendChild(notification);
-    }
-    notification.textContent = message;
-    notification.className = `notification-overlay show notification-${type}`;
-    
-    setTimeout(() => notification.classList.remove('show'), 3000);
+    console.log(`[${type}] ${message}`);
 };
 
 // DOM elementlarini keshlaymiz
