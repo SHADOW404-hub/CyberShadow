@@ -51,6 +51,7 @@ const registerBtn = document.getElementById('registerBtn');
 // Shared
 const statusConsole = document.getElementById('statusConsole');
 const statusIndicator = document.querySelector('.status-indicator');
+const terminalLog = document.getElementById('terminalLog');
 const systemTime = document.getElementById('systemTime');
 const glassCard = document.querySelector('.glass-card');
 const showRegisterLink = document.getElementById('showRegister');
@@ -58,14 +59,6 @@ const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
-
-// Helper to escape HTML tags to prevent XSS
-const escapeHTML = (str) => {
-  if (!str) return "";
-  return String(str).replace(/[&<>"']/g, m => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[m]);
-};
 
 // ─── Security Helpers ─────────────────────────────────────────────────────────
 const mapAuthError = (error) => {
@@ -94,38 +87,12 @@ const validatePassword = (password) => {
   return password.length >= 6 && /\d/.test(password);
 };
 
-let notificationQueue = [];
-let isNotificationShowing = false;
-
-const processQueue = () => {
-  if (notificationQueue.length === 0 || isNotificationShowing) return;
-
-  isNotificationShowing = true;
-  const { message, type } = notificationQueue.shift();
-
-  let notification = document.getElementById('cyber-notification');
-  if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'cyber-notification';
-    document.body.appendChild(notification);
-  }
-
-  notification.textContent = message.toUpperCase();
-  notification.className = `notification-overlay show notification-${type}`;
-
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => {
-      isNotificationShowing = false;
-      processQueue();
-    }, 400);
-  }, 3000);
-};
-
 // ─── Notification System ──────────────────────────────────────────────────────
 const notify = (message, type = 'info') => {
   const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
   updateStatus(stateClass, message.toUpperCase());
+  addLogLine(message, type);
+  
   notificationQueue.push({ message, type });
   processQueue();
 };
@@ -190,12 +157,17 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// ─── Status Bar Update ───────────────────────────────────────────────────────
-function updateStatus(stateClass, text) {
-  if (!statusIndicator || !statusConsole) return;
-  statusIndicator.className = `status-indicator ${stateClass}`;
-  statusConsole.textContent = `SYSTEM: ${text}`;
+// ─── Terminal Log Helper ──────────────────────────────────────────────────────
+function addLogLine(text, type = '') {
+  if (!terminalLog) return;
+  const line = document.createElement('div');
+  line.className = `log-line ${type}`;
+  line.textContent = `> ${text}`;
+  terminalLog.appendChild(line);
+  terminalLog.scrollTop = terminalLog.scrollHeight;
 }
+
+// ─── Status Bar Update ───────────────────────────────────────────────────────
 // ─── Error Helpers ────────────────────────────────────────────────────────────
 function showError(inputEl, errorEl, message) {
   inputEl.parentElement.parentElement.classList.add('has-error');
@@ -237,6 +209,7 @@ if (togglePassword) {
     const isHidden = passwordInput.type === 'password';
     passwordInput.type = isHidden ? 'text' : 'password';
     toggleIcon.className = isHidden ? 'ph-bold ph-eye-slash' : 'ph-bold ph-eye';
+    addLogLine(isHidden ? 'Password visibility: Shown' : 'Password visibility: Hidden');
   });
 }
 
@@ -352,6 +325,7 @@ if (forgotPasswordLink) {
       return;
     }
 
+    addLogLine(`Initiating password reset for: ${identifier}`, 'system');
     updateStatus('processing', 'Sending reset link...');
 
     let email = identifier;
@@ -431,6 +405,7 @@ async function performLogin(identifier, password) {
     )
 
     const safeMessage = mapAuthError(error);
+    addLogLine(safeMessage, 'error');
     notify(safeMessage, 'error');
 
     return
@@ -450,6 +425,7 @@ async function performLogin(identifier, password) {
     await supabase.from('profiles').insert([
       { id: data.user.id, username: recoveryUsername, email: data.user.email }
     ]);
+    addLogLine('System: Profile sync restored from metadata', 'system');
   }
 
   updateStatus(

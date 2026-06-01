@@ -1,17 +1,6 @@
 import { supabase } from './supabase.js'
 import './style.css';
-
-// ─── Auth Session Check ───────────────────────────────────────────────────────
-const { data: { session: initialSession } } = await supabase.auth.getSession();
-if (!initialSession) {
-  window.location.replace('/');
-}
-
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_OUT' || !session) {
-    window.location.replace('/');
-  }
-});
+import { showNotification, updateClock as utilsUpdateClock, updateStatusUI } from './utils.js';
 
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');
@@ -74,15 +63,11 @@ resetForm.addEventListener('submit', async (e) => {
 
     updateStatus('success', 'Password updated');
     
-    // Notification display
-    let notification = document.getElementById('cyber-notification');
-    if (!notification) {
-      notification = document.createElement('div');
-      notification.id = 'cyber-notification';
-      document.body.appendChild(notification);
-    }
-    notification.textContent = 'PASSWORD SECURED. REDIRECTING...';
+    // Central notification
+    let notification = document.createElement('div');
     notification.className = 'notification-overlay show notification-success';
+    notification.textContent = 'PASSWORD SECURED. REDIRECTING...';
+    document.body.appendChild(notification);
 
     setTimeout(() => {
       window.location.replace('/');

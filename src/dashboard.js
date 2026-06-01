@@ -21,41 +21,6 @@ const DIFF_THEMES = {
 };
 
 // --- YORDAMCHI FUNKSIYALAR ---
-const escapeHTML = (str) => {
-    if (!str) return "";
-    return String(str).replace(/[&<>"']/g, m => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    })[m]);
-};
-
-let notificationQueue = [];
-let isNotificationShowing = false;
-
-const processQueue = () => {
-    if (notificationQueue.length === 0 || isNotificationShowing) return;
-
-    isNotificationShowing = true;
-    const { message, type } = notificationQueue.shift();
-
-    let notification = document.getElementById('cyber-notification');
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.id = 'cyber-notification';
-        document.body.appendChild(notification);
-    }
-
-    notification.textContent = message.toUpperCase();
-    notification.className = `notification-overlay show notification-${type}`;
-
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            isNotificationShowing = false;
-            processQueue();
-        }, 400); // Fade-out animatsiyasi uchun kutish
-    }, 3000);
-};
-
 const getPatternSVG = (cat) => {
     const config = CATEGORY_CONFIG[cat];
     if (!config) return null;
@@ -118,20 +83,6 @@ const challengeFileInput = document.getElementById('challengeFileInput');
 const challengeFileTrigger = document.getElementById('challengeFileTrigger');
 const challengeFileName = document.getElementById('challengeFileName');
 const challengeFileWrapper = document.getElementById('challengeFileWrapper');
-
-// View Challenge Modal elementlari
-const viewChModal = document.getElementById('viewChModal');
-const closeViewChModal = document.getElementById('closeViewChModal');
-const viewChName = document.getElementById('viewChName');
-const viewChPoints = document.getElementById('viewChPoints');
-const viewChCat = document.getElementById('viewChCat');
-const viewChLinkArea = document.getElementById('viewChLinkArea');
-const viewChLink = document.getElementById('viewChLink');
-const openChLink = document.getElementById('openChLink');
-const viewChFileArea = document.getElementById('viewChFileArea');
-const downloadChFile = document.getElementById('downloadChFile');
-const chFlagInput = document.getElementById('chFlagInput');
-const submitFlagBtn = document.getElementById('submitFlagBtn');
 
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
@@ -497,9 +448,6 @@ if (adminTerminalLink && adminSidebar) {
     });
 }
 
-let activeChallenges = [];
-let selectedCh = null;
-
 // Foydalanuvchilarni yuklash va ko'rsatish funksiyasi
 const fetchAndDisplayUsers = async () => {
     if (!mainContentArea) return;
@@ -554,7 +502,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
         .from('challenges')
         .select('*')
         .order('created_at', { ascending: false });
-    activeChallenges = challenges || [];
 
     if (error) {
         mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
@@ -581,7 +528,7 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
             const solveCount = ch.solves_count || 0; // Agar bazada yechimlar soni bo'lsa
             
             html += `
-                <div class="challenge-card-horizontal ${glitchClass}" data-id="${ch.id}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33; cursor: pointer;">
+                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
                     <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner bottom-left" style="border-color: ${styles.accent}"></div>
@@ -614,41 +561,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
 
     html += `</div>`;
     mainContentArea.innerHTML = html;
-
-    // Challenge kartasiga bosilganda modal ochish
-    mainContentArea.querySelectorAll('.challenge-card-horizontal').forEach(card => {
-        card.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-delete-challenge')) return;
-            
-            const id = card.getAttribute('data-id');
-            selectedCh = activeChallenges.find(c => c.id == id);
-            
-            if (selectedCh) {
-                viewChName.textContent = selectedCh.name.toUpperCase();
-                viewChPoints.textContent = selectedCh.points;
-                viewChPoints.style.color = getChallengeStyles(selectedCh.category, selectedCh.difficulty).accent;
-                viewChCat.textContent = selectedCh.category.toUpperCase() + ' // ' + selectedCh.difficulty.toUpperCase();
-                
-                // Link logic
-                if (selectedCh.link) {
-                    viewChLinkArea.style.display = 'block';
-                    viewChLink.value = selectedCh.link;
-                } else {
-                    viewChLinkArea.style.display = 'none';
-                }
-
-                // File logic
-                if (selectedCh.file_url) {
-                    viewChFileArea.style.display = 'block';
-                } else {
-                    viewChFileArea.style.display = 'none';
-                }
-
-                chFlagInput.value = '';
-                viewChModal.classList.add('active');
-            }
-        });
-    });
 
     document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
         updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
@@ -691,32 +603,6 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
         });
     }
 };
-
-closeViewChModal?.addEventListener('click', () => {
-    viewChModal.classList.remove('active');
-    selectedCh = null;
-});
-
-openChLink?.addEventListener('click', () => {
-    if (viewChLink.value) window.open(viewChLink.value, '_blank');
-});
-
-downloadChFile?.addEventListener('click', () => {
-    if (selectedCh?.file_url) window.open(selectedCh.file_url, '_blank');
-});
-
-submitFlagBtn?.addEventListener('click', () => {
-    const input = chFlagInput.value.trim();
-    if (!selectedCh) return;
-
-    if (input === selectedCh.flag) {
-        notify("IDENTITY VERIFIED. ACCESS GRANTED.", "success");
-        viewChModal.classList.remove('active');
-        // Ballarni saqlash tizimini bu yerda qo'shish mumkin
-    } else {
-        notify("INVALID PROTOCOL. ACCESS DENIED.", "error");
-    }
-});
 
 cancelAddChallenge?.addEventListener('click', () => {
     addChallengeModal.classList.remove('active');
@@ -817,11 +703,10 @@ adminUsersLink?.addEventListener('click', (e) => {
     fetchAndDisplayUsers();
 });
 
-const challengesMenuBtn = document.getElementById('challengesMenuBtn');
-challengesMenuBtn?.addEventListener('click', (e) => {
+document.querySelector('.menu-link[href="#"]')?.addEventListener('click', (e) => {
     e.preventDefault();
     document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-    challengesMenuBtn.classList.add('active');
+    e.target.classList.add('active');
     
     // Sidebar va admin rejimini yopish
     adminSidebar?.classList.remove('active');
@@ -831,20 +716,23 @@ challengesMenuBtn?.addEventListener('click', (e) => {
 });
 
 // Headerdagi "Scoreboard" havolasi uchun listener
-const scoreboardMenuBtn = document.getElementById('scoreboardMenuBtn');
-scoreboardMenuBtn?.addEventListener('click', (e) => {
-    e.preventDefault();
-    document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-    scoreboardMenuBtn.classList.add('active');
-    
-    // Sidebar va admin rejimini yopish
-    adminSidebar?.classList.remove('active');
-    document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
-    
-    if (mainContentArea) {
-        mainContentArea.innerHTML = `
-            <div class="stat-value" style="font-size: 1.5rem;">SCOREBOARD COMING SOON...</div>
-        `;
+document.querySelectorAll('.menu-link').forEach(link => {
+    if (link.textContent.trim() === 'Scoreboard') {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            
+            // Sidebar va admin rejimini yopish
+            adminSidebar?.classList.remove('active');
+            document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
+            
+            if (mainContentArea) {
+                mainContentArea.innerHTML = `
+                    <div class="stat-value" style="font-size: 1.5rem;">SCOREBOARD COMING SOON...</div>
+                `;
+            }
+        });
     }
 });
 
@@ -881,19 +769,6 @@ if (saveProfileBtn) {
 
         try {
             if (newProfilePictureFile) {
-                // Agar eski rasm mavjud bo'lsa, uni o'chirib tashlaymiz
-                if (currentProfile.avatar_url) {
-                    try {
-                        const urlParts = currentProfile.avatar_url.split('/');
-                        const fileName = urlParts.pop();
-                        const userId = urlParts.pop();
-                        const filePath = `${userId}/${fileName}`;
-                        await supabase.storage.from('avatars').remove([filePath]);
-                    } catch (e) {
-                        console.error("Eski avatarni o'chirishda xatolik:", e);
-                    }
-                }
-
                 // Fayl nomidagi maxsus belgi va joylarni chetlab o'tish uchun vaqt tamg'asidan foydalanamiz
                 const fileExt = newProfilePictureFile.name.split('.').pop();
                 const safeFileName = `${Date.now()}.${fileExt}`;
@@ -937,7 +812,8 @@ if (saveProfileBtn) {
 
             const { data, error } = await supabase
                 .from('profiles')
-                .upsert({ id: session.user.id, ...updateData })
+                .update(updateData)
+                .eq('id', session.user.id)
                 .select(); // Yangilangan qatorni qaytarib olish
 
             saveProfileBtn.disabled = false;
