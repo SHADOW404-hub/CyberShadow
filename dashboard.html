@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Phosphor Icons for modern sleek UI iconography -->
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/css/phosphor.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/index.css" />
   </head>
   <body>
     <!-- Admin Sidebar Panel -->
@@ -39,8 +39,8 @@
         </a>
         
         <nav class="main-menu">
-          <a href="#" class="menu-link">Challenges</a>
-          <a href="#" class="menu-link">Scoreboard</a>
+          <a href="#" class="menu-link" id="challengesMenuBtn">Challenges</a>
+          <a href="#" class="menu-link" id="scoreboardMenuBtn">Scoreboard</a>
           <a href="#" class="menu-link" id="adminTerminalLink" style="display: none;">Admin Terminal</a>
         </nav>
 
@@ -120,15 +120,15 @@
               <button type="button" class="btn-inline-change" data-target="modalCountry">CHANGE</button>
             </div>
           </div>
-        </div>
-        <div class="info-group">
-          <label>Profile Picture</label>
-          <div class="avatar-edit-container">
-            <div class="profile-avatar-preview" id="profilePicturePreview"></div>
-            <input type="file" id="modalProfilePictureInput" accept="image/*" style="display: none;">
-            <div class="avatar-controls">
-              <button type="button" class="btn-inline-change" id="changeProfilePictureBtn" style="height: 30px; padding: 0 20px;">CHOOSE</button>
-              <button type="button" class="btn-inline-change" id="removeProfilePictureBtn" style="height: 30px; padding: 0 20px; display: none; background: rgba(255, 51, 102, 0.1); border-color: var(--color-error); color: var(--color-error);">REMOVE</button>
+          <div class="info-group">
+            <label>Profile Picture</label>
+            <div class="avatar-edit-container">
+              <div class="profile-avatar-preview" id="profilePicturePreview"></div>
+              <input type="file" id="modalProfilePictureInput" accept="image/*" style="display: none;">
+              <div class="avatar-controls">
+                <button type="button" class="btn-inline-change" id="changeProfilePictureBtn" style="height: 30px; padding: 0 20px;">CHOOSE</button>
+                <button type="button" class="btn-inline-change" id="removeProfilePictureBtn" style="height: 30px; padding: 0 20px; display: none; background: rgba(255, 51, 102, 0.1); border-color: var(--color-error); color: var(--color-error);">REMOVE</button>
+              </div>
             </div>
           </div>
         </div>

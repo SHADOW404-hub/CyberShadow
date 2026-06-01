@@ -738,10 +738,11 @@ adminUsersLink?.addEventListener('click', (e) => {
     fetchAndDisplayUsers();
 });
 
-document.querySelector('.menu-link[href="#"]')?.addEventListener('click', (e) => {
+const challengesMenuBtn = document.getElementById('challengesMenuBtn');
+challengesMenuBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-    e.target.classList.add('active');
+    challengesMenuBtn.classList.add('active');
     
     // Sidebar va admin rejimini yopish
     adminSidebar?.classList.remove('active');
@@ -751,23 +752,20 @@ document.querySelector('.menu-link[href="#"]')?.addEventListener('click', (e) =>
 });
 
 // Headerdagi "Scoreboard" havolasi uchun listener
-document.querySelectorAll('.menu-link').forEach(link => {
-    if (link.textContent.trim() === 'Scoreboard') {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
-            
-            // Sidebar va admin rejimini yopish
-            adminSidebar?.classList.remove('active');
-            document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
-            
-            if (mainContentArea) {
-                mainContentArea.innerHTML = `
-                    <div class="stat-value" style="font-size: 1.5rem;">SCOREBOARD COMING SOON...</div>
-                `;
-            }
-        });
+const scoreboardMenuBtn = document.getElementById('scoreboardMenuBtn');
+scoreboardMenuBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+    scoreboardMenuBtn.classList.add('active');
+    
+    // Sidebar va admin rejimini yopish
+    adminSidebar?.classList.remove('active');
+    document.querySelector('.dashboard-wrapper')?.classList.remove('admin-mode');
+    
+    if (mainContentArea) {
+        mainContentArea.innerHTML = `
+            <div class="stat-value" style="font-size: 1.5rem;">SCOREBOARD COMING SOON...</div>
+        `;
     }
 });
 
@@ -804,6 +802,19 @@ if (saveProfileBtn) {
 
         try {
             if (newProfilePictureFile) {
+                // Agar eski rasm mavjud bo'lsa, uni o'chirib tashlaymiz
+                if (currentProfile.avatar_url) {
+                    try {
+                        const urlParts = currentProfile.avatar_url.split('/');
+                        const fileName = urlParts.pop();
+                        const userId = urlParts.pop();
+                        const filePath = `${userId}/${fileName}`;
+                        await supabase.storage.from('avatars').remove([filePath]);
+                    } catch (e) {
+                        console.error("Eski avatarni o'chirishda xatolik:", e);
+                    }
+                }
+
                 // Fayl nomidagi maxsus belgi va joylarni chetlab o'tish uchun vaqt tamg'asidan foydalanamiz
                 const fileExt = newProfilePictureFile.name.split('.').pop();
                 const safeFileName = `${Date.now()}.${fileExt}`;
@@ -847,8 +858,7 @@ if (saveProfileBtn) {
 
             const { data, error } = await supabase
                 .from('profiles')
-                .update(updateData)
-                .eq('id', session.user.id)
+                .upsert({ id: session.user.id, ...updateData })
                 .select(); // Yangilangan qatorni qaytarib olish
 
             saveProfileBtn.disabled = false;
@@ -893,3 +903,6 @@ confirmLogoutBtn?.addEventListener('click', async () => {
     await supabase.auth.signOut()
     window.location.href = '/'
 })
+
+// Topshiriqlarni sahifa yuklanganda ko'rsatish
+fetchAndDisplayChallenges(false);
