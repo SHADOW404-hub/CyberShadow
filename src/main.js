@@ -5,6 +5,12 @@
 import { supabase } from './supabase.js'
 import './style.css';
 
+// ─── Auth Session Check ───────────────────────────────────────────────────────
+const { data: { session: activeSession } } = await supabase.auth.getSession();
+if (activeSession) {
+  window.location.replace('/dashboard.html');
+}
+
 // ─── DOM Elements ─────────────────────────────────────────────────────────────
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -43,7 +49,6 @@ const showLoginLink = document.getElementById('showLogin');
 const footerLogin = document.getElementById('footerLogin');
 const footerRegister = document.getElementById('footerRegister');
 const forgotPasswordLink = document.getElementById('forgotPassword');
-const rememberMeCheckbox = document.getElementById('rememberMe');
 
 // ─── Security Helpers ─────────────────────────────────────────────────────────
 const escapeHTML = (str) => {
@@ -155,16 +160,6 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
-
-// ─── Check for Remembered User ────────────────────────────────────────────────
-function checkRememberedUser() {
-  const savedUser = localStorage.getItem('rememberedUser');
-  if (savedUser && usernameInput) {
-    usernameInput.value = savedUser;
-    if (rememberMeCheckbox) rememberMeCheckbox.checked = true;
-  }
-}
-checkRememberedUser();
 
 // ─── Terminal Log Helper ──────────────────────────────────────────────────────
 function addLogLine(text, type = '') {
@@ -359,7 +354,9 @@ if (forgotPasswordLink) {
       email = profile.email;
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/dashboard.html',
+    });
 
     if (error) {
       updateStatus('error', 'Reset failed');
@@ -421,14 +418,6 @@ async function performLogin(identifier, password) {
     notify(safeMessage, 'error');
 
     return
-  }
-
-  // Handle Remember Me logic
-  const rememberMe = rememberMeCheckbox?.checked;
-  if (rememberMe) {
-    localStorage.setItem('rememberedUser', identifier);
-  } else {
-    localStorage.removeItem('rememberedUser');
   }
 
   updateStatus(

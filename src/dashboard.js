@@ -306,7 +306,8 @@ const checkChanges = () => {
     const hasChanges = modalUsernameInput.value.trim() !== (currentProfile.username || '') || 
                        modalEmailInput.value.trim() !== (currentProfile.email || '') ||
                        modalCountrySelect.value !== (currentProfile.country || '') ||
-                       (modalProfilePictureInput && modalProfilePictureInput.files.length > 0);
+                       (modalProfilePictureInput && modalProfilePictureInput.files.length > 0) ||
+                       (document.getElementById('modalNewPassword')?.value.length > 0);
     if (saveProfileBtn) saveProfileBtn.disabled = !hasChanges;
 };
 
@@ -771,6 +772,7 @@ modalCountrySelect?.addEventListener('change', () => {
     checkChanges();
 });
 modalProfilePictureInput?.addEventListener('change', checkChanges);
+document.getElementById('modalNewPassword')?.addEventListener('input', checkChanges);
 
 // Save Changes tugmasi logikasi
 if (saveProfileBtn) {
@@ -814,6 +816,15 @@ if (saveProfileBtn) {
             }
             if (newCountry !== (currentProfile.country || '')) {
                 updateData.country = newCountry;
+                changesMade = true;
+            }
+
+            // Parolni yangilash mantiqi
+            const newPassword = document.getElementById('modalNewPassword')?.value;
+            if (newPassword) {
+                const { error: pwdError } = await supabase.auth.updateUser({ password: newPassword });
+                if (pwdError) throw pwdError;
+                document.getElementById('modalNewPassword').value = '';
                 changesMade = true;
             }
 
@@ -866,6 +877,16 @@ document.querySelectorAll('.btn-inline-change').forEach(btn => {
             input.focus();
         }
     });
+});
+
+// Password Recovery holatini tekshirish
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+        notify('Terminal: Recovery link verified. Update password now.', 'warning');
+        editProfileBtn?.click();
+        // Parol maydoniga e'tiborni qaratamiz
+        setTimeout(() => document.getElementById('modalNewPassword')?.focus(), 500);
+    }
 });
 
 // Confirm Logout funksiyasi
