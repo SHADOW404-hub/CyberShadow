@@ -281,6 +281,7 @@ if (showLoginLink) {
     // Clear register errors
     clearErrors([
       [regUsername, regUsernameError],
+      [regEmail, regEmailError],
       [regPassword, regPasswordError],
       [regConfirm, regConfirmError]
     ]);
