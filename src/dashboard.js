@@ -119,6 +119,20 @@ const challengeFileTrigger = document.getElementById('challengeFileTrigger');
 const challengeFileName = document.getElementById('challengeFileName');
 const challengeFileWrapper = document.getElementById('challengeFileWrapper');
 
+// View Challenge Modal elementlari
+const viewChModal = document.getElementById('viewChModal');
+const closeViewChModal = document.getElementById('closeViewChModal');
+const viewChName = document.getElementById('viewChName');
+const viewChPoints = document.getElementById('viewChPoints');
+const viewChCat = document.getElementById('viewChCat');
+const viewChLinkArea = document.getElementById('viewChLinkArea');
+const viewChLink = document.getElementById('viewChLink');
+const openChLink = document.getElementById('openChLink');
+const viewChFileArea = document.getElementById('viewChFileArea');
+const downloadChFile = document.getElementById('downloadChFile');
+const chFlagInput = document.getElementById('chFlagInput');
+const submitFlagBtn = document.getElementById('submitFlagBtn');
+
 // Challenge Preview elementlari
 const previewName = document.getElementById('previewName');
 const previewPoints = document.getElementById('previewPoints');
@@ -483,6 +497,9 @@ if (adminTerminalLink && adminSidebar) {
     });
 }
 
+let activeChallenges = [];
+let selectedCh = null;
+
 // Foydalanuvchilarni yuklash va ko'rsatish funksiyasi
 const fetchAndDisplayUsers = async () => {
     if (!mainContentArea) return;
@@ -537,6 +554,7 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
         .from('challenges')
         .select('*')
         .order('created_at', { ascending: false });
+    activeChallenges = challenges || [];
 
     if (error) {
         mainContentArea.innerHTML = `<div class="color-error">Error: ${error.message}</div>`;
@@ -563,7 +581,7 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
             const solveCount = ch.solves_count || 0; // Agar bazada yechimlar soni bo'lsa
             
             html += `
-                <div class="challenge-card-horizontal ${glitchClass}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33;">
+                <div class="challenge-card-horizontal ${glitchClass}" data-id="${ch.id}" style="background: ${cardBg}; border-color: ${styles.accent}; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px ${styles.accent}33; cursor: pointer;">
                     <div class="card-corner top-left" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner top-right" style="border-color: ${styles.accent}"></div>
                     <div class="card-corner bottom-left" style="border-color: ${styles.accent}"></div>
@@ -596,6 +614,41 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
 
     html += `</div>`;
     mainContentArea.innerHTML = html;
+
+    // Challenge kartasiga bosilganda modal ochish
+    mainContentArea.querySelectorAll('.challenge-card-horizontal').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-delete-challenge')) return;
+            
+            const id = card.getAttribute('data-id');
+            selectedCh = activeChallenges.find(c => c.id == id);
+            
+            if (selectedCh) {
+                viewChName.textContent = selectedCh.name.toUpperCase();
+                viewChPoints.textContent = selectedCh.points;
+                viewChPoints.style.color = getChallengeStyles(selectedCh.category, selectedCh.difficulty).accent;
+                viewChCat.textContent = selectedCh.category.toUpperCase() + ' // ' + selectedCh.difficulty.toUpperCase();
+                
+                // Link logic
+                if (selectedCh.link) {
+                    viewChLinkArea.style.display = 'block';
+                    viewChLink.value = selectedCh.link;
+                } else {
+                    viewChLinkArea.style.display = 'none';
+                }
+
+                // File logic
+                if (selectedCh.file_url) {
+                    viewChFileArea.style.display = 'block';
+                } else {
+                    viewChFileArea.style.display = 'none';
+                }
+
+                chFlagInput.value = '';
+                viewChModal.classList.add('active');
+            }
+        });
+    });
 
     document.getElementById('openAddChallengeBtn')?.addEventListener('click', () => {
         updateChallengePreview(); // Modal ochilganda previewni yangilab olamiz
@@ -638,6 +691,32 @@ const fetchAndDisplayChallenges = async (isAdmin = false) => {
         });
     }
 };
+
+closeViewChModal?.addEventListener('click', () => {
+    viewChModal.classList.remove('active');
+    selectedCh = null;
+});
+
+openChLink?.addEventListener('click', () => {
+    if (viewChLink.value) window.open(viewChLink.value, '_blank');
+});
+
+downloadChFile?.addEventListener('click', () => {
+    if (selectedCh?.file_url) window.open(selectedCh.file_url, '_blank');
+});
+
+submitFlagBtn?.addEventListener('click', () => {
+    const input = chFlagInput.value.trim();
+    if (!selectedCh) return;
+
+    if (input === selectedCh.flag) {
+        notify("IDENTITY VERIFIED. ACCESS GRANTED.", "success");
+        viewChModal.classList.remove('active');
+        // Ballarni saqlash tizimini bu yerda qo'shish mumkin
+    } else {
+        notify("INVALID PROTOCOL. ACCESS DENIED.", "error");
+    }
+});
 
 cancelAddChallenge?.addEventListener('click', () => {
     addChallengeModal.classList.remove('active');
