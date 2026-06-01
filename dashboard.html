@@ -44,12 +44,6 @@
           <a href="#" class="menu-link" id="adminTerminalLink" style="display: none;">Admin Terminal</a>
         </nav>
 
-        <div id="challengeNavActions" style="display: none;">
-          <button class="btn-inline-change" id="backToDashboardBtn" style="height: 36px; padding: 0 20px; font-weight: 800;">
-            <i class="ph-bold ph-arrow-left"></i> BACK TO GRID
-          </button>
-        </div>
-
         <div class="user-profile-section">
           <div class="profile-display glitch-hover" id="profileBtn">
             <span id="userEmail">Agent</span>
@@ -162,6 +156,53 @@
         <div class="modal-footer">
           <button class="btn-cancel" id="cancelLogout">Cancel</button>
           <button class="btn-save" id="confirmLogout">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Challenge Modal -->
+    <div id="viewChModal" class="modal-overlay modal-centered">
+      <div class="glass-card modal-content" style="max-width: 480px;">
+        <div class="card-decor top-left"></div>
+        <div class="card-decor top-right"></div>
+        <div class="card-decor-line"></div>
+        
+        <div class="modal-header">
+          <h3 id="viewChName">CHALLENGE DETAILS</h3>
+        </div>
+        
+        <div class="modal-body">
+          <div class="info-group" style="text-align: center; margin-bottom: 25px;">
+             <div id="viewChPoints" class="stat-value" style="font-size: 3rem; color: var(--neon-cyan);">0</div>
+             <div id="viewChCat" style="font-family: var(--font-mono); font-size: 12px; color: var(--color-text-muted);">CATEGORY</div>
+          </div>
+
+          <div id="viewChLinkArea" class="info-group" style="display: none;">
+            <label>Connection Link</label>
+            <div class="input-action-wrapper">
+              <input type="text" id="viewChLink" readonly>
+              <button type="button" class="btn-inline-change" id="openChLink">OPEN</button>
+            </div>
+          </div>
+
+          <div id="viewChFileArea" class="info-group" style="display: none; margin-top: 15px;">
+            <label>Attachments</label>
+            <button type="button" class="btn-submit" id="downloadChFile" style="margin: 0; padding: 10px; width: 100%; font-size: 11px;">
+              <i class="ph-bold ph-file-zip"></i> DOWNLOAD ASSET
+            </button>
+          </div>
+
+          <div class="info-group" style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+            <label>Enter Flag</label>
+            <div class="input-action-wrapper">
+              <input type="text" id="chFlagInput" placeholder="Flag{...}">
+              <button type="button" class="btn-inline-change" id="submitFlagBtn" style="background: var(--neon-cyan); color: #000; font-weight: 800;">SUBMIT</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancel" id="closeViewChModal">Terminate Connection</button>
         </div>
       </div>
     </div>
