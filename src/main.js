@@ -493,23 +493,15 @@ if (registerForm) {
 
 async function performRegister(username, email, password) {
   registerBtn.classList.add('loading')
-  updateStatus('processing', 'Checking username availability...')
+  updateStatus('processing', 'Establishing secure link...') // Username bandligini oldindan tekshirish olib tashlandi
   registerBtn.disabled = true;
 
   try {
-    // 1. Check if username is already taken
-    const { data: existingUser, error: checkError } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('username', username)
-      .maybeSingle();
-
-    if (checkError) throw checkError;
-    if (existingUser) {
-      throw new Error('This username is already taken. Please choose another.');
-    }
-
-    updateStatus('processing', 'Establishing secure link...');
+    // MUAMMO: Ro'yxatdan o'tish jarayonidagi "Race Condition" muammosini hal qilish uchun
+    // username band yoki yo'qligini oldindan tekshirish olib tashlandi.
+    // Endi username noyobligini ta'minlash Supabase'dagi `profiles` jadvalidagi
+    // `username` ustuniga qo'yilgan UNIQUE constraint'ga bog'liq.
+    // Agar UNIQUE constraint buzilsa, `profileError` yuzaga keladi va bu yerda ushlanadi.
 
     // 2. Perform Supabase Auth SignUp
     const { data, error: authError } = await supabase.auth.signUp({
@@ -531,7 +523,12 @@ async function performRegister(username, email, password) {
 
       if (profileError) {
         console.error("Critical: Auth succeeded but profile failed:", profileError);
-        throw new Error('Identity secured, but profile sync failed. Please log in with your email to repair.');
+        // Supabase Postgrest unique constraint violation error code is '23505'
+        if (profileError.code === '23505' && profileError.message.includes('username')) {
+            // Agar username allaqachon band bo'lsa, maxsus xabar beramiz
+            throw new Error('Registry Error: This username is already taken. Please choose another.');
+        }
+        throw new Error('System Error: Identity secured, but profile sync failed. Please log in with your email to repair.');
       }
     }
 
@@ -539,7 +536,15 @@ async function performRegister(username, email, password) {
     showSuccessOverlay('ACCOUNT CREATED', `Identity verified. You can now log in.`, false);
 
   } catch (err) {
-    const safeMessage = mapAuthError(err);
+    let safeMessage = err.message;
+
+    // Supabase Auth xatolarini mapAuthError orqali boshqaramiz
+    if (err.name === 'AuthApiError' || err.status) {
+        safeMessage = mapAuthError(err);
+    }
+    // O'zimiz tashlagan custom xabarlarni to'g'ridan-to'g'ri ishlatamiz
+    // Masalan: 'Registry Error: This username is already taken.'
+    // yoki 'System Error: Identity secured, but profile sync failed.'
     updateStatus('error', 'Registration aborted');
     notify(safeMessage, 'error');
   } finally {
