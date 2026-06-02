@@ -1,6 +1,28 @@
 import { supabase } from './supabase.js'
 import './style.css';
 
+// ─── Session Security Check ──────────────────────────────────────────────────
+// Foydalanuvchi haqiqatdan ham recovery link orqali kelganini tekshiramiz.
+// Sessiyasiz bu sahifaga kirishga ruxsat bermaymiz.
+const { data: { session } } = await supabase.auth.getSession();
+if (!session) {
+  window.location.replace('/');
+}
+
+// ─── Security Helpers ─────────────────────────────────────────────────────────
+const mapResetError = (error) => {
+  if (!error) return 'Update sequence failed.';
+  const msg = error.message.toLowerCase();
+  
+  // Xavfsizlik qoidalariga mos keladigan xabarlar
+  if (msg.includes('same as old')) return 'Security: New password must differ from previous.';
+  if (msg.includes('at least 6 characters')) return 'Policy: Password must be min 6 characters.';
+  if (msg.includes('rate limit')) return 'System: Connection throttled. Wait before retrying.';
+  if (msg.includes('expired')) return 'Security: Recovery session expired. Request new link.';
+  
+  return 'System Error: User identity update aborted.';
+};
+
 const resetForm = document.getElementById('resetPasswordForm');
 const newPasswordInput = document.getElementById('newPassword');
 const confirmPasswordInput = document.getElementById('confirmPassword');
@@ -13,6 +35,22 @@ const statusIndicator = document.querySelector('.status-indicator');
 const updateStatus = (state, text) => {
   statusIndicator.className = `status-indicator ${state}`;
   statusConsole.textContent = `SYSTEM: ${text.toUpperCase()}`;
+};
+
+const notify = (message, type = 'info') => {
+  let notification = document.getElementById('cyber-notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'cyber-notification';
+    document.documentElement.appendChild(notification);
+  }
+  notification.textContent = message.toUpperCase();
+  notification.className = `notification-overlay show notification-${type}`;
+  
+  const stateClass = type === 'error' ? 'error' : (type === 'success' ? 'success' : 'online');
+  updateStatus(stateClass, message.toUpperCase());
+
+  setTimeout(() => notification.classList.remove('show'), 3000);
 };
 
 // Password toggle
@@ -57,16 +95,10 @@ resetForm.addEventListener('submit', async (e) => {
 
   try {
     const { error } = await supabase.auth.updateUser({ password });
-
     if (error) throw error;
 
     updateStatus('success', 'Password updated');
-    
-    // Central notification
-    let notification = document.createElement('div');
-    notification.className = 'notification-overlay show notification-success';
-    notification.textContent = 'PASSWORD SECURED. REDIRECTING...';
-    document.documentElement.appendChild(notification);
+    notify('Password secured. Redirecting...', 'success');
 
     setTimeout(() => {
       window.location.replace('/');
@@ -77,15 +109,8 @@ resetForm.addEventListener('submit', async (e) => {
     resetBtn.classList.remove('loading');
     resetBtn.disabled = false;
     
-    let notification = document.getElementById('cyber-notification');
-    if (!notification) {
-      notification = document.createElement('div');
-      notification.id = 'cyber-notification';
-      document.documentElement.appendChild(notification);
-    }
-    notification.textContent = err.message.toUpperCase();
-    notification.className = 'notification-overlay show notification-error';
-    setTimeout(() => notification.classList.remove('show'), 3000);
+    const safeMessage = mapResetError(err);
+    notify(safeMessage, 'error');
   }
 });
 
