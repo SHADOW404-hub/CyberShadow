@@ -550,17 +550,17 @@ async function performRegister(username, email, password) {
 
       if (profileError) {
         console.error("Critical: Auth succeeded but profile failed:", profileError);
-        // Supabase Postgrest unique constraint violation error code is '23505'
         if (profileError.code === '23505' && profileError.message.includes('username')) {
-            // Agar username allaqachon band bo'lsa, maxsus xabar beramiz
-            throw new Error('Registry Error: This username is already taken. Please choose another.');
+          throw new Error('Registry Error: This username is already taken. Please choose another.');
         }
-        throw new Error('System Error: Identity secured, but profile sync failed. Please log in with your email to repair.');
+        // Profil yaratishda xato bo'lsa, foydalanuvchiga login orqali profilni tiklashni tavsiya qilamiz
+        throw new Error('Identity established, but profile sync deferred. Please log in to finalize registration.');
       }
     }
 
     updateStatus('success', `Welcome, ${escapeHTML(username)}!`);
-    showSuccessOverlay('ACCOUNT CREATED', `Identity verified. You can now log in.`, false);
+    // Confirm Email o'chirilgan bo'lsa, "verified" o'rniga "established" ishlatish to'g'riroq
+    showSuccessOverlay('ACCOUNT CREATED', `Identity established. Welcome to the grid.`, false);
 
   } catch (err) {
     let safeMessage = err.message;
