@@ -20,7 +20,7 @@ const processQueue = () => {
     if (!notification) {
         notification = document.createElement('div');
         notification.id = 'cyber-notification';
-        document.body.appendChild(notification);
+        document.documentElement.appendChild(notification);
     }
     notification.textContent = message.toUpperCase();
     notification.className = `notification-overlay show notification-${type}`;

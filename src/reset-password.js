@@ -66,7 +66,7 @@ resetForm.addEventListener('submit', async (e) => {
     let notification = document.createElement('div');
     notification.className = 'notification-overlay show notification-success';
     notification.textContent = 'PASSWORD SECURED. REDIRECTING...';
-    document.body.appendChild(notification);
+    document.documentElement.appendChild(notification);
 
     setTimeout(() => {
       window.location.replace('/');
@@ -81,7 +81,7 @@ resetForm.addEventListener('submit', async (e) => {
     if (!notification) {
       notification = document.createElement('div');
       notification.id = 'cyber-notification';
-      document.body.appendChild(notification);
+      document.documentElement.appendChild(notification);
     }
     notification.textContent = err.message.toUpperCase();
     notification.className = 'notification-overlay show notification-error';
