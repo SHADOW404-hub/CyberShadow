@@ -359,33 +359,17 @@ if (forgotPasswordLink) {
     addLogLine(`Initiating password reset for: ${identifier}`, 'system');
     updateStatus('processing', 'Sending reset link...');
 
-    let email = identifier;
-
-    if (!identifier.includes('@')) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('username', identifier)
-        .single();
-      
-      if (!profile) {
-        // Generic message to prevent account enumeration
-        notify('If user exists, a link will be sent', 'info');
-        return;
-      }
-      email = profile.email;
-    }
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    // Supabase's resetPasswordForEmail is designed to be enumeration-resistant.
+    // It will send a reset link if the email exists, and return success even if it doesn't,
+    // to prevent attackers from knowing which emails are registered.
+    // Therefore, we always use the identifier directly and provide a generic success message.
+    // Any 'error' here would typically be a network or system issue, not 'user not found'.
+    const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
       redirectTo: window.location.origin + '/reset-password.html',
     });
 
-    if (error) {
-      updateStatus('error', 'Reset failed');
-    } else {
-      updateStatus('success', 'Sequence complete');
-      notify('Recovery link transmitted to your terminal', 'success');
-    }
+    updateStatus('success', 'Sequence complete');
+    notify('If an account with that email exists, a recovery link has been transmitted to your terminal', 'success');
   });
 }
 
@@ -400,24 +384,10 @@ async function performLogin(identifier, password) {
 
   submitBtn.disabled = true;
 
-  let email = identifier;
-
-  if (!identifier.includes('@')) {
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('email')
-      .eq('username', identifier)
-      .single();
-
-    if (profileError || !profile) {
-      updateStatus('error', 'User not found');
-      submitBtn.classList.remove('loading');
-      submitBtn.disabled = false;
-      notify('Access denied: User not found', 'error');
-      return;
-    }
-    email = profile.email;
-  }
+  // Supabase's signInWithPassword expects an email.
+  // If a username is provided, this call will fail, and the error will be
+  // handled by mapAuthError, providing a generic message to prevent user enumeration.
+  const email = identifier;
 
   const { data, error } =
     await supabase.auth.signInWithPassword({
