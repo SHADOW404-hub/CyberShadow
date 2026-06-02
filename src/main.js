@@ -6,6 +6,19 @@ import { supabase } from './supabase.js'
 import './style.css';
 
 // ─── Auth Session Check ───────────────────────────────────────────────────────
+// Dastlabki sessiya tekshiruvi - "flicker" effektini yo'qotish va 
+// tizimga kirgan foydalanuvchini darhol yo'naltirish uchun.
+const { data: { session: initialSession } } = await supabase.auth.getSession();
+if (initialSession) {
+  const isRecovery = window.location.hash.includes('type=recovery') || 
+                     window.location.search.includes('type=recovery');
+  if (isRecovery) {
+    window.location.replace('/reset-password.html');
+  } else {
+    window.location.replace('/dashboard.html');
+  }
+}
+
 supabase.auth.onAuthStateChange((event, session) => {
   // Agar parolni tiklash havolasi orqali kelgan bo'lsa
   if (event === 'PASSWORD_RECOVERY') { 
@@ -357,12 +370,20 @@ if (forgotPasswordLink) {
     addLogLine(`Initiating password reset for: ${identifier}`, 'system');
     updateStatus('processing', 'Sending reset link...');
 
-    // Supabase's resetPasswordForEmail is designed to be enumeration-resistant.
-    // It will send a reset link if the email exists, and return success even if it doesn't,
-    // to prevent attackers from knowing which emails are registered.
-    // Therefore, we always use the identifier directly and provide a generic success message.
-    // Any 'error' here would typically be a network or system issue, not 'user not found'.
-    const { error } = await supabase.auth.resetPasswordForEmail(identifier, {
+    let email = identifier;
+
+    // Username orqali emailni aniqlash (Forgot Password)
+    if (!identifier.includes('@')) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', identifier)
+        .maybeSingle();
+      
+      if (profile) email = profile.email;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + '/reset-password.html',
     });
 
@@ -382,10 +403,18 @@ async function performLogin(identifier, password) {
 
   submitBtn.disabled = true;
 
-  // Supabase's signInWithPassword expects an email.
-  // If a username is provided, this call will fail, and the error will be
-  // handled by mapAuthError, providing a generic message to prevent user enumeration.
-  const email = identifier;
+  let email = identifier;
+
+  // Username orqali kirish mantiqi (Login)
+  if (!identifier.includes('@')) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('username', identifier)
+      .maybeSingle();
+    
+    if (profile) email = profile.email;
+  }
 
   const { data, error } =
     await supabase.auth.signInWithPassword({
