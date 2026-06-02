@@ -6,18 +6,16 @@ import { supabase } from './supabase.js'
 import './style.css';
 
 // ─── Auth Session Check ───────────────────────────────────────────────────────
-const { data: { session: activeSession } } = await supabase.auth.getSession();
-
-// Agar sessiya bo'lsa va u parolni tiklash havolasidan kelgan bo'lsa
-if (activeSession && (window.location.hash.includes('type=recovery') || window.location.href.includes('type=recovery'))) {
-  window.location.replace('/reset-password.html');
-} else if (activeSession) {
-  window.location.replace('/dashboard.html');
-}
-
-supabase.auth.onAuthStateChange((event) => {
-  if (event === 'PASSWORD_RECOVERY') {
+supabase.auth.onAuthStateChange((event, session) => {
+  // Agar parolni tiklash havolasi orqali kelgan bo'lsa
+  if (event === 'PASSWORD_RECOVERY') { 
     window.location.replace('/reset-password.html');
+  } 
+  // Agar foydalanuvchi tizimga kirgan bo'lsa (yoki sessiya yangilangan bo'lsa)
+  // va hozirgi sahifa login/register sahifasi bo'lsa, dashboardga yo'naltiramiz.
+  // Bu "flicker" effektini kamaytiradi va sessiya holatini dinamik boshqaradi.
+  else if (session && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+    window.location.replace('/dashboard.html');
   }
 });
 
