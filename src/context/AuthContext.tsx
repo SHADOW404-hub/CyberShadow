@@ -12,6 +12,7 @@ interface AuthContextType {
   signUp: (email: string, pass: string, username: string) => Promise<{ error: string | null }>;
   updatePassword: (newPass: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  sendResetEmail: (email: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -88,6 +89,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: error ? mapAuthError(error) : null };
   };
 
+  const sendResetEmail = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/#type=recovery`,
+    });
+    return { error: error ? mapAuthError(error) : null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
   };
@@ -101,7 +109,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signIn,
       signUp,
       signOut,
-      updatePassword
+      updatePassword,
+      sendResetEmail
     }}>
       {!loading && children}
     </AuthContext.Provider>
