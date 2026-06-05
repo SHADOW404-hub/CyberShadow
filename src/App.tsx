@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -12,7 +12,6 @@ type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
-  const { notifications } = useNotification();
   const [view, setView] = useState<View>('login');
 
   React.useEffect(() => {
@@ -44,24 +43,6 @@ const AppContent: React.FC = () => {
         ) : (
           <Dashboard />
         )}
-      </div>
-
-      {/* Notifications */}
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col gap-2.5 z-[9999]">
-        {notifications.map((n) => (
-          <div
-            key={n.id}
-            className={`py-3 px-6 rounded-lg font-mono font-bold text-sm shadow-[0_0_20px] transition-all duration-300 ${
-              n.type === 'error'
-                ? 'bg-[#ff3366]/90 text-white shadow-[#ff3366]/40'
-                : n.type === 'success'
-                ? 'bg-[#00ff66]/90 text-black shadow-[#00ff66]/40'
-                : 'bg-[#00f0ff]/90 text-black shadow-[#00f0ff]/40'
-            }`}
-          >
-            {n.message}
-          </div>
-        ))}
       </div>
     </div>
   );

@@ -6,24 +6,31 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
   const [id, setId] = useState('');
   const [pass, setPass] = useState('');
   const [isBusy, setIsBusy] = useState(false);
+  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
   const { signIn } = useAuth();
   const { notify } = useNotification();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !pass) {
-      notify('Please enter your username and password', 'error');
+      const msg = 'Please enter your username and password';
+      setStatus({ text: msg, type: 'error' });
+      notify(msg, 'error');
       return;
     }
 
     setIsBusy(true);
+    setStatus(null);
     const { error } = await signIn(id, pass);
 
     if (error) {
+      setStatus({ text: error, type: 'error' });
       notify(error, 'error');
       setIsBusy(false);
     } else {
-      notify('Welcome back! Login successful', 'success');
+      const msg = 'Welcome back! Login successful';
+      setStatus({ text: msg, type: 'success' });
+      notify(msg, 'success');
     }
   };
 
@@ -31,14 +38,16 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     <div className="bg-[#0d101b]/90 p-10 rounded-2xl border border-[#00f0ff]/20 w-full backdrop-blur-md">
       {/* Logo */}
       <div className="flex justify-center mb-5">
-        <img
-          src="/favicon.svg"
-          alt="CyberShadow Logo"
-          className="w-16 h-16 drop-shadow-[0_0_18px_rgba(0,240,255,0.7)]"
-        />
+        <div className="w-20 h-20 bg-[#00f0ff]/5 border border-[#00f0ff]/20 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+          <img
+            src="/favicon.svg"
+            alt="CyberShadow Logo"
+            className="w-12 h-12 drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]"
+          />
+        </div>
       </div>
 
-      <h2 className="text-white tracking-[3px] mb-6 text-center text-xl font-bold font-mono">Sign In</h2>
+      <h2 className="text-white tracking-[3px] mb-6 text-center text-xl font-bold font-mono">Log In</h2>
 
       <form onSubmit={handleLogin} className="flex flex-col gap-5">
         {/* Username / Email */}
@@ -63,11 +72,11 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
             className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors font-mono"
             placeholder="••••••••"
           />
-          <div className="flex justify-end">
+          <div className="flex justify-center mt-1.5">
             <button
               type="button"
               onClick={onForgotPassword}
-              className="text-[#9d4edd] text-xs font-mono hover:underline cursor-pointer bg-transparent border-none p-0"
+              className="text-[#9d4edd] text-sm font-mono hover:underline cursor-pointer bg-transparent border-none p-0 font-semibold"
             >
               Forgot password?
             </button>
@@ -79,8 +88,21 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
           disabled={isBusy}
           className="bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] text-black py-3.5 font-bold rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-50 font-mono tracking-[1px]"
         >
-          {isBusy ? 'Signing in...' : 'Sign In'}
+          {isBusy ? 'Logging in...' : 'Log In'}
         </button>
+
+        {/* Status Box */}
+        {status && (
+          <div className={`p-3 rounded-lg border text-xs font-mono text-center tracking-[0.5px] transition-all duration-300 ${
+            status.type === 'error'
+              ? 'bg-[#ff3366]/10 border-[#ff3366]/30 text-[#ff3366] shadow-[0_0_10px_rgba(255,51,102,0.1)]'
+              : status.type === 'success'
+              ? 'bg-[#00ff66]/10 border-[#00ff66]/30 text-[#00ff66] shadow-[0_0_10px_rgba(0,255,102,0.1)]'
+              : 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'
+          }`}>
+            {status.text}
+          </div>
+        )}
 
         <p className="text-[#64748b] text-xs text-center">
           Don't have an account?{' '}

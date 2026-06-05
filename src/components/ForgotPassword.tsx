@@ -5,24 +5,31 @@ import { useNotification } from '../context/NotificationContext';
 const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [email, setEmail] = useState('');
   const [isBusy, setIsBusy] = useState(false);
+  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
   const { sendResetEmail } = useAuth();
   const { notify } = useNotification();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
-      notify('Please enter your email address', 'error');
+      const msg = 'Please enter your email address';
+      setStatus({ text: msg, type: 'error' });
+      notify(msg, 'error');
       return;
     }
 
     setIsBusy(true);
+    setStatus(null);
     const { error } = await sendResetEmail(email);
 
     if (error) {
+      setStatus({ text: error, type: 'error' });
       notify(error, 'error');
       setIsBusy(false);
     } else {
-      notify('Reset link sent! Please check your email', 'success');
+      const msg = 'Reset link sent! Please check your email';
+      setStatus({ text: msg, type: 'success' });
+      notify(msg, 'success');
       setTimeout(() => {
         setIsBusy(false);
         onSwitch();
@@ -33,7 +40,13 @@ const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   return (
     <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00f0ff]/20 w-full backdrop-blur-md">
       <div className="flex justify-center mb-5">
-        <img src="/favicon.svg" alt="CyberShadow Logo" className="w-16 h-16 drop-shadow-[0_0_15px_rgba(0,240,255,0.6)]" />
+        <div className="w-20 h-20 bg-[#00f0ff]/5 border border-[#00f0ff]/20 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+          <img
+            src="/favicon.svg"
+            alt="CyberShadow Logo"
+            className="w-12 h-12 drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]"
+          />
+        </div>
       </div>
       <h2 className="text-white tracking-[2px] mb-2 text-center text-xl font-bold font-mono">Reset Password</h2>
       <p className="text-[#64748b] text-xs text-center mb-6">Enter your email to receive a password reset link.</p>
@@ -54,6 +67,19 @@ const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
           {isBusy ? 'Sending Link...' : 'Send Reset Link'}
         </button>
         
+        {/* Status Box */}
+        {status && (
+          <div className={`p-3 rounded-lg border text-xs font-mono text-center tracking-[0.5px] transition-all duration-300 ${
+            status.type === 'error'
+              ? 'bg-[#ff3366]/10 border-[#ff3366]/30 text-[#ff3366] shadow-[0_0_10px_rgba(255,51,102,0.1)]'
+              : status.type === 'success'
+              ? 'bg-[#00ff66]/10 border-[#00ff66]/30 text-[#00ff66] shadow-[0_0_10px_rgba(0,255,102,0.1)]'
+              : 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'
+          }`}>
+            {status.text}
+          </div>
+        )}
+
         <p className="text-[#64748b] text-xs text-center mt-2">
           Remember your password? <span onClick={onSwitch} className="text-[#00f0ff] cursor-pointer font-bold hover:underline">Back to login</span>
         </p>
