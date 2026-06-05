@@ -30,6 +30,9 @@ const LoginForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
 
   return (
     <div style={styles.card}>
+      <div style={styles.iconWrapper}>
+        <i className="ph-bold ph-shield-checkered" style={styles.icon}></i>
+      </div>
       <h2 style={styles.title}>SECURE_LOGIN</h2>
       <form onSubmit={handleLogin} style={styles.form}>
         <div style={styles.inputGroup}>
@@ -78,6 +81,8 @@ const styles: Record<string, React.CSSProperties> = {
   label: { color: '#64748b', fontSize: '12px', fontFamily: 'monospace' },
   input: { background: '#000', border: '1px solid #333', padding: '12px', color: '#00f0ff', borderRadius: '8px' },
   button: { background: 'linear-gradient(90deg, #00f0ff, #9d4edd)', color: '#000', padding: '14px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' },
+  iconWrapper: { display: 'flex', justifyContent: 'center', marginBottom: '20px' },
+  icon: { fontSize: '64px', color: '#00f0ff', filter: 'drop-shadow(0 0 15px rgba(0, 240, 255, 0.6))' },
   footerText: { color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px' },
   link: { color: '#9d4edd', cursor: 'pointer', fontWeight: 'bold' }
 };

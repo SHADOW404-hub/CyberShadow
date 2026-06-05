@@ -41,6 +41,9 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
 
   return (
     <div style={styles.card}>
+      <div style={styles.iconWrapper}>
+        <i className="ph-bold ph-shield-checkered" style={styles.icon}></i>
+      </div>
       <h2 style={styles.title}>CREATE_IDENTITY</h2>
       <form onSubmit={handleRegister} style={styles.form}>
         <div style={styles.inputGroup}>
@@ -109,6 +112,8 @@ const styles: Record<string, React.CSSProperties> = {
   label: { color: '#64748b', fontSize: '11px', fontFamily: 'monospace' },
   input: { background: '#000', border: '1px solid #333', padding: '10px', color: '#9d4edd', borderRadius: '8px' },
   button: { background: 'linear-gradient(90deg, #9d4edd, #ff007f)', color: '#fff', padding: '14px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', marginTop: '10px' },
+  iconWrapper: { display: 'flex', justifyContent: 'center', marginBottom: '20px' },
+  icon: { fontSize: '64px', color: '#9d4edd', filter: 'drop-shadow(0 0 15px rgba(157, 78, 221, 0.6))' },
   footerText: { color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px' },
   link: { color: '#00f0ff', cursor: 'pointer', fontWeight: 'bold' }
 };
