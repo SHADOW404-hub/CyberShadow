@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { AppNotification } from './index';
+import { AppNotification } from '../types';
 
 interface NotificationContextType {
   notify: (message: string, type?: AppNotification['type']) => void;

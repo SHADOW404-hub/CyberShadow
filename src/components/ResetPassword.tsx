@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import { useNotification } from './NotificationContext';
+import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 
 const ResetPassword: React.FC = () => {
   const [pass, setPass] = useState('');
@@ -111,4 +111,5 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', letterSpacing: '2px'
   }
 };
+
 export default ResetPassword;

@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { Profile, Challenge } from './index';
 
 // Environment variables orqali xavfsiz ulanish
 const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || '';

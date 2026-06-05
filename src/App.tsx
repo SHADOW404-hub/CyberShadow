@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { AuthProvider, useAuth } from '../AuthContext';
-import { NotificationProvider, useNotification } from '../NotificationContext';
-import CyberBackground from '../CyberBackground';
-import LoginForm from '../LoginForm';
-import RegisterForm from '../RegisterForm';
-import Dashboard from '../Dashboard';
-import ResetPassword from '../ResetPassword';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider, useNotification } from './context/NotificationContext';
+import CyberBackground from './components/CyberBackground';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
+import Dashboard from './components/Dashboard';
+import ResetPassword from './components/ResetPassword';
 
 /**
  * Ilova kontenti - bu yerda biz auth holatiga qarab nima ko'rsatishni hal qilamiz.

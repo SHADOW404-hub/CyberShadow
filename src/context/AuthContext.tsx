@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from './supabase'; 
-import { Profile } from './index';
-import { mapAuthError } from './errorMapper';
+import { supabase } from '../services/supabase'; 
+import { Profile } from '../types';
+import { mapAuthError } from '../utils/errorMapper';
 
 interface AuthContextType {
   user: any | null;

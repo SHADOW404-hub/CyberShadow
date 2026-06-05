@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from './AuthContext';
-import { useNotification } from './NotificationContext';
+import { useAuth } from '../context/AuthContext';
+import { useNotification } from '../context/NotificationContext';
 
 const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [formData, setFormData] = useState({
