@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+import { supabase } from '../services/supabase';
 
 const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }> = ({ onSwitch, onForgotPassword }) => {
   const [id, setId] = useState('');
   const [pass, setPass] = useState('');
   const [isBusy, setIsBusy] = useState(false);
-  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' }>({
+    text: 'READY',
+    type: 'info'
+  });
   const { signIn } = useAuth();
   const { notify } = useNotification();
 
@@ -20,17 +24,37 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     }
 
     setIsBusy(true);
-    setStatus(null);
+    setStatus({ text: 'CHECKING CREDENTIALS...', type: 'info' });
+
+    let userExists = false;
+    try {
+      if (id.includes('@')) {
+        const { data } = await supabase.from('profiles').select('email').eq('email', id).maybeSingle();
+        if (data) userExists = true;
+      } else {
+        const { data } = await supabase.from('profiles').select('email').eq('username', id).maybeSingle();
+        if (data) userExists = true;
+      }
+    } catch (err) {
+      userExists = true;
+    }
+
+    if (!userExists) {
+      setStatus({ text: 'username topilmadi', type: 'error' });
+      notify('username topilmadi', 'error');
+      setIsBusy(false);
+      return;
+    }
+
     const { error } = await signIn(id, pass);
 
     if (error) {
-      setStatus({ text: error, type: 'error' });
-      notify(error, 'error');
+      setStatus({ text: "parol xato", type: 'error' });
+      notify("parol xato", 'error');
       setIsBusy(false);
     } else {
-      const msg = 'Welcome back! Login successful';
-      setStatus({ text: msg, type: 'success' });
-      notify(msg, 'success');
+      setStatus({ text: 'welcome back', type: 'success' });
+      notify('welcome back', 'success');
     }
   };
 
@@ -50,6 +74,17 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
       <h2 className="text-white tracking-[3px] mb-6 text-center text-xl font-bold font-mono">Log In</h2>
 
       <form onSubmit={handleLogin} className="flex flex-col gap-5">
+        {/* Status Box */}
+        <div className={`p-3 rounded-lg border text-xs font-mono text-center tracking-[0.5px] transition-all duration-300 ${
+          status.type === 'error'
+            ? 'bg-[#ff3366]/10 border-[#ff3366]/30 text-[#ff3366] shadow-[0_0_10px_rgba(255,51,102,0.1)]'
+            : status.type === 'success'
+            ? 'bg-[#00ff66]/10 border-[#00ff66]/30 text-[#00ff66] shadow-[0_0_10px_rgba(0,255,102,0.1)]'
+            : 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'
+        }`}>
+          <span className="font-bold uppercase mr-1">STATUS:</span> {status.text}
+        </div>
+
         {/* Username / Email */}
         <div className="flex flex-col gap-2">
           <label className="text-[#64748b] text-xs font-mono">Username or Email</label>
@@ -90,19 +125,6 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
         >
           {isBusy ? 'Logging in...' : 'Log In'}
         </button>
-
-        {/* Status Box */}
-        {status && (
-          <div className={`p-3 rounded-lg border text-xs font-mono text-center tracking-[0.5px] transition-all duration-300 ${
-            status.type === 'error'
-              ? 'bg-[#ff3366]/10 border-[#ff3366]/30 text-[#ff3366] shadow-[0_0_10px_rgba(255,51,102,0.1)]'
-              : status.type === 'success'
-              ? 'bg-[#00ff66]/10 border-[#00ff66]/30 text-[#00ff66] shadow-[0_0_10px_rgba(0,255,102,0.1)]'
-              : 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'
-          }`}>
-            <span className="font-bold uppercase mr-1">STATUS:</span> {status.text}
-          </div>
-        )}
 
         <p className="text-[#64748b] text-xs text-center">
           Don't have an account?{' '}
