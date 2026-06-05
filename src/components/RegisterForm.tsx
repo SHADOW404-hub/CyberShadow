@@ -18,12 +18,12 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     const { username, email, password, confirm } = formData;
 
     if (!username || !email || !password) {
-      notify('VALIDATION_ERROR: Missing required fields', 'error');
+      notify('Please fill in all required fields', 'error');
       return;
     }
 
     if (password !== confirm) {
-      notify('SECURITY_MISMATCH: Passwords do not match', 'error');
+      notify('Passwords do not match', 'error');
       return;
     }
 
@@ -34,7 +34,7 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       notify(error, 'error');
       setIsBusy(false);
     } else {
-      notify('REGISTRY_SUCCESS: Identity established', 'success');
+      notify('Account created! Please check your email to confirm.', 'success');
       setTimeout(() => {
         setIsBusy(false);
         onSwitch();
@@ -44,56 +44,75 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
 
   return (
     <div className="bg-[#0d101b]/90 py-7 px-10 rounded-2xl border border-[#9d4edd]/20 w-full backdrop-blur-md">
+      {/* Logo */}
       <div className="flex justify-center mb-5">
-        <i className="ph-bold ph-shield-checkered text-[64px] text-[#9d4edd] drop-shadow-[0_0_15px_rgba(157,78,221,0.6)]"></i>
+        <img
+          src="/favicon.svg"
+          alt="CyberShadow Logo"
+          className="w-16 h-16 drop-shadow-[0_0_18px_rgba(157,78,221,0.7)]"
+        />
       </div>
-      <h2 className="text-white tracking-[4px] mb-5 text-center text-xl font-bold font-mono">CREATE_IDENTITY</h2>
+
+      <h2 className="text-white tracking-[3px] mb-5 text-center text-xl font-bold font-mono">Create Account</h2>
+
       <form onSubmit={handleRegister} className="flex flex-col gap-3.5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#64748b] text-[11px] font-mono">AGENT_NAME</label>
-          <input 
-            type="text" 
-            value={formData.username} 
-            onChange={(e) => setFormData({...formData, username: e.target.value})} 
-            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors"
-            placeholder="Username"
+          <label className="text-[#64748b] text-[11px] font-mono">Username</label>
+          <input
+            type="text"
+            value={formData.username}
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors font-mono"
+            placeholder="Choose a username"
           />
         </div>
+
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#64748b] text-[11px] font-mono">COMM_LINK</label>
-          <input 
-            type="email" 
-            value={formData.email} 
-            onChange={(e) => setFormData({...formData, email: e.target.value})} 
-            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors"
-            placeholder="Email address"
+          <label className="text-[#64748b] text-[11px] font-mono">Email</label>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors font-mono"
+            placeholder="name@example.com"
           />
         </div>
+
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#64748b] text-[11px] font-mono">ENCRYPT_KEY</label>
-          <input 
-            type="password" 
-            value={formData.password} 
-            onChange={(e) => setFormData({...formData, password: e.target.value})} 
-            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors"
-            placeholder="••••••"
+          <label className="text-[#64748b] text-[11px] font-mono">Password</label>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors font-mono"
+            placeholder="••••••••"
           />
         </div>
+
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#64748b] text-[11px] font-mono">VERIFY_KEY</label>
-          <input 
-            type="password" 
-            value={formData.confirm} 
-            onChange={(e) => setFormData({...formData, confirm: e.target.value})} 
-            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors"
-            placeholder="••••••"
+          <label className="text-[#64748b] text-[11px] font-mono">Confirm Password</label>
+          <input
+            type="password"
+            value={formData.confirm}
+            onChange={(e) => setFormData({ ...formData, confirm: e.target.value })}
+            className="bg-black border border-[#333] p-2.5 text-[#9d4edd] rounded-lg focus:outline-none focus:border-[#9d4edd] transition-colors font-mono"
+            placeholder="••••••••"
           />
         </div>
-        <button type="submit" disabled={isBusy} className="bg-gradient-to-r from-[#9d4edd] to-[#ff007f] text-white py-3.5 px-4 font-bold rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-50 mt-2.5 font-mono">
-          {isBusy ? 'ESTABLISHING...' : 'REGISTER_AGENT'}
+
+        <button
+          type="submit"
+          disabled={isBusy}
+          className="bg-gradient-to-r from-[#9d4edd] to-[#ff007f] text-white py-3.5 font-bold rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-50 mt-2.5 font-mono tracking-[1px]"
+        >
+          {isBusy ? 'Creating account...' : 'Create Account'}
         </button>
-        <p className="text-[#64748b] text-xs text-center mt-3.5">
-          Already established? <span onClick={onSwitch} className="text-[#00f0ff] cursor-pointer font-bold hover:underline">Login here</span>
+
+        <p className="text-[#64748b] text-xs text-center mt-2">
+          Already have an account?{' '}
+          <span onClick={onSwitch} className="text-[#00f0ff] cursor-pointer font-bold hover:underline">
+            Sign in
+          </span>
         </p>
       </form>
     </div>
