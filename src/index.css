@@ -69,3 +69,13 @@
   transform: scaleX(1);
 }
 
+@keyframes progressMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-progress-move {
+  animation: progressMove 1.5s infinite linear;
+}
+
+
