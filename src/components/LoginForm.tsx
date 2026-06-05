@@ -76,7 +76,7 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
             <button
               type="button"
               onClick={onForgotPassword}
-              className="text-[#9d4edd] text-sm font-mono hover:underline cursor-pointer bg-transparent border-none p-0 font-semibold"
+              className="forgot-password-link text-sm font-mono cursor-pointer bg-transparent border-none p-0 font-semibold"
             >
               Forgot password?
             </button>

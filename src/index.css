@@ -39,3 +39,33 @@
 .bg-noise {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
+
+.forgot-password-link {
+  position: relative;
+  color: #9d4edd;
+  transition: all 0.3s ease-in-out;
+}
+
+.forgot-password-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #00f0ff;
+  transform-origin: bottom center;
+  transition: transform 0.25s ease-out;
+  box-shadow: 0 0 8px #00f0ff, 0 0 12px #00f0ff;
+}
+
+.forgot-password-link:hover {
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.forgot-password-link:hover::after {
+  transform: scaleX(1);
+}
+
