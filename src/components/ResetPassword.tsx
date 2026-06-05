@@ -123,7 +123,7 @@ const ResetPassword: React.FC = () => {
               ? 'bg-[#00ff66]/10 border-[#00ff66]/30 text-[#00ff66] shadow-[0_0_10px_rgba(0,255,102,0.1)]'
               : 'bg-[#00f0ff]/10 border-[#00f0ff]/30 text-[#00f0ff] shadow-[0_0_10px_rgba(0,240,255,0.1)]'
           }`}>
-            {status.text}
+            <span className="font-bold uppercase mr-1">STATUS:</span> {status.text}
           </div>
         )}
       </form>
