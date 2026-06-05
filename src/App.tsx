@@ -25,10 +25,10 @@ const AppContent: React.FC = () => {
   if (loading) return null; // Yuklanayotgan vaqtda bo'sh ekran (yoki loader)
 
   return (
-    <div style={styles.appWrapper}>
+    <div className="w-screen h-screen flex justify-center items-center">
       <CyberBackground />
       
-      <div style={styles.mainContainer}>
+      <div className={view === 'reset-password' || !isAuthenticated ? "w-full max-w-[450px] z-10 p-5" : "w-full max-w-[900px] z-10 p-5"}>
         {view === 'reset-password' ? (
           <ResetPassword />
         ) : !isAuthenticated ? (
@@ -43,17 +43,15 @@ const AppContent: React.FC = () => {
       </div>
 
       {/* Global Bildirishnomalar UI */}
-      <div style={styles.notificationStack}>
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-col gap-2.5 z-[9999]">
         {notifications.map((n) => (
           <div 
             key={n.id} 
-            style={{
-              ...styles.note,
-              backgroundColor: n.type === 'error' ? 'rgba(255, 51, 102, 0.9)' : 
-                               n.type === 'success' ? 'rgba(0, 255, 102, 0.9)' : 
-                               'rgba(0, 240, 255, 0.9)',
-              boxShadow: n.type === 'error' ? '0 0 20px rgba(255,51,102,0.4)' : '0 0 20px rgba(0,240,255,0.4)'
-            }}
+            className={`py-3 px-6 rounded-lg text-black font-mono font-bold shadow-[0_0_20px] transition-all duration-300 ${
+              n.type === 'error' ? 'bg-[#ff3366]/90 shadow-[#ff3366]/40' : 
+              n.type === 'success' ? 'bg-[#00ff66]/90 shadow-[#00ff66]/40' : 
+              'bg-[#00f0ff]/90 shadow-[#00f0ff]/40'
+            }`}
           >
             {n.message.toUpperCase()}
           </div>
@@ -70,12 +68,5 @@ const App: React.FC = () => (
     </AuthProvider>
   </NotificationProvider>
 );
-
-const styles: Record<string, React.CSSProperties> = {
-  appWrapper: { width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' },
-  mainContainer: { width: '100%', maxWidth: '450px', zIndex: 10, padding: '20px' },
-  notificationStack: { position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', gap: '10px', zIndex: 9999 },
-  note: { padding: '12px 25px', borderRadius: '8px', background: 'rgba(0, 240, 255, 0.9)', color: '#000', fontFamily: 'monospace', fontWeight: 'bold', boxShadow: '0 0 20px rgba(0,240,255,0.4)' }
-};
 
 export default App;

@@ -29,62 +29,41 @@ const LoginForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   };
 
   return (
-    <div style={styles.card}>
-      <div style={styles.iconWrapper}>
-        <i className="ph-bold ph-shield-checkered" style={styles.icon}></i>
+    <div className="bg-[#0d101b]/90 p-10 rounded-2xl border border-[#00f0ff]/20 w-full backdrop-blur-md">
+      <div className="flex justify-center mb-5">
+        <i className="ph-bold ph-shield-checkered text-[64px] text-[#00f0ff] drop-shadow-[0_0_15px_rgba(0,240,255,0.6)]"></i>
       </div>
-      <h2 style={styles.title}>SECURE_LOGIN</h2>
-      <form onSubmit={handleLogin} style={styles.form}>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>AGENT_IDENTIFIER</label>
+      <h2 className="text-white tracking-[4px] mb-5 text-center text-xl font-bold font-mono">SECURE_LOGIN</h2>
+      <form onSubmit={handleLogin} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+          <label className="text-[#64748b] text-xs font-mono">AGENT_IDENTIFIER</label>
           <input 
             type="text" 
             value={id} 
             onChange={(e) => setId(e.target.value)} 
-            style={styles.input}
+            className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors"
             placeholder="Username or Email"
           />
         </div>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>ENCRYPTED_KEY</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-[#64748b] text-xs font-mono">ENCRYPTED_KEY</label>
           <input 
             type="password" 
             value={pass} 
             onChange={(e) => setPass(e.target.value)} 
-            style={styles.input}
+            className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors"
             placeholder="••••••"
           />
         </div>
-        <button type="submit" disabled={isBusy} style={styles.button}>
+        <button type="submit" disabled={isBusy} className="bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] text-black py-3.5 px-4 font-bold rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-50 font-mono">
           {isBusy ? 'VERIFYING...' : 'INITIATE_AUTH'}
         </button>
-        <p style={styles.footerText}>
-          New identity? <span onClick={onSwitch} style={styles.link}>Register agent</span>
+        <p className="text-[#64748b] text-xs text-center mt-3.5">
+          New identity? <span onClick={onSwitch} className="text-[#9d4edd] cursor-pointer font-bold hover:underline">Register agent</span>
         </p>
       </form>
     </div>
   );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-  card: {
-    background: 'rgba(13, 16, 27, 0.9)',
-    padding: '40px',
-    borderRadius: '16px',
-    border: '1px solid rgba(0, 240, 255, 0.2)',
-    width: '100%',
-    backdropFilter: 'blur(10px)'
-  },
-  title: { color: '#fff', letterSpacing: '4px', marginBottom: '20px', textAlign: 'center' },
-  form: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { color: '#64748b', fontSize: '12px', fontFamily: 'monospace' },
-  input: { background: '#000', border: '1px solid #333', padding: '12px', color: '#00f0ff', borderRadius: '8px' },
-  button: { background: 'linear-gradient(90deg, #00f0ff, #9d4edd)', color: '#000', padding: '14px', fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer' },
-  iconWrapper: { display: 'flex', justifyContent: 'center', marginBottom: '20px' },
-  icon: { fontSize: '64px', color: '#00f0ff', filter: 'drop-shadow(0 0 15px rgba(0, 240, 255, 0.6))' },
-  footerText: { color: '#64748b', fontSize: '12px', textAlign: 'center', marginTop: '15px' },
-  link: { color: '#9d4edd', cursor: 'pointer', fontWeight: 'bold' }
 };
 
 export default LoginForm;

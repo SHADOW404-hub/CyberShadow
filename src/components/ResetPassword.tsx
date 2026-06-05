@@ -49,67 +49,50 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div style={styles.card}>
-      <div style={styles.header}>
-        <h2 style={styles.title}>IDENTITY_RECOVERY</h2>
-        <div style={styles.time}>{systemTime}</div>
+    <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00f0ff]/20 w-full backdrop-blur-md">
+      <div className="text-center mb-7.5">
+        <h2 className="text-white tracking-[4px] m-0 mb-2.5 text-xl font-bold font-mono">IDENTITY_RECOVERY</h2>
+        <div className="text-[#00f0ff] text-[10px] font-mono opacity-70">{systemTime}</div>
       </div>
 
-      <form onSubmit={handleReset} style={styles.form}>
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>NEW_ENCRYPT_KEY</label>
-          <div style={styles.inputWrapper}>
+      <form onSubmit={handleReset} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2">
+          <label className="text-[#64748b] text-[11px] font-mono">NEW_ENCRYPT_KEY</label>
+          <div className="relative flex">
             <input 
               type={showPass ? "text" : "password"} 
               value={pass} 
               onChange={(e) => setPass(e.target.value)} 
-              style={styles.input}
+              className="flex-1 bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] font-mono transition-colors"
               placeholder="••••••"
             />
             <button 
               type="button" 
               onClick={() => setShowPass(!showPass)} 
-              style={styles.toggleBtn}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-transparent border-none text-[#64748b] text-[10px] cursor-pointer hover:text-white font-mono"
             >
               {showPass ? 'HIDE' : 'SHOW'}
             </button>
           </div>
         </div>
 
-        <div style={styles.inputGroup}>
-          <label style={styles.label}>CONFIRM_KEY</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-[#64748b] text-[11px] font-mono">CONFIRM_KEY</label>
           <input 
             type="password" 
             value={confirm} 
             onChange={(e) => setConfirm(e.target.value)} 
-            style={styles.input}
+            className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] font-mono transition-colors"
             placeholder="••••••"
           />
         </div>
 
-        <button type="submit" disabled={isBusy} style={styles.button}>
+        <button type="submit" disabled={isBusy} className="bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] text-black py-3.5 px-4 font-bold rounded-lg cursor-pointer transition-all duration-300 hover:opacity-90 disabled:opacity-50 tracking-[2px] font-mono">
           {isBusy ? 'UPDATING_NODE...' : 'SECURE_ACCOUNT'}
         </button>
       </form>
     </div>
   );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-  card: { background: 'rgba(13, 16, 27, 0.95)', padding: '40px', borderRadius: '16px', border: '1px solid #00f0ff33', width: '100%', backdropFilter: 'blur(10px)' },
-  header: { textAlign: 'center', marginBottom: '30px' },
-  title: { color: '#fff', letterSpacing: '4px', margin: '0 0 10px 0' },
-  time: { color: '#00f0ff', fontSize: '10px', fontFamily: 'monospace', opacity: 0.7 },
-  form: { display: 'flex', flexDirection: 'column', gap: '20px' },
-  inputGroup: { display: 'flex', flexDirection: 'column', gap: '8px' },
-  label: { color: '#64748b', fontSize: '11px', fontFamily: 'monospace' },
-  inputWrapper: { position: 'relative', display: 'flex' },
-  input: { flex: 1, background: '#000', border: '1px solid #333', padding: '12px', color: '#00f0ff', borderRadius: '8px', fontFamily: 'monospace' },
-  toggleBtn: { position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#64748b', fontSize: '10px', cursor: 'pointer' },
-  button: { 
-    background: 'linear-gradient(90deg, #00f0ff, #9d4edd)', color: '#000', padding: '14px', 
-    fontWeight: 'bold', border: 'none', borderRadius: '8px', cursor: 'pointer', letterSpacing: '2px'
-  }
 };
 
 export default ResetPassword;

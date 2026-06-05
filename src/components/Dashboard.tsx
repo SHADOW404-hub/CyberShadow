@@ -5,50 +5,34 @@ const Dashboard: React.FC = () => {
   const { profile, signOut } = useAuth();
 
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <div style={styles.branding}>
-          <span style={styles.status}>ONLINE</span>
-          <h1 style={styles.title}>AGENT_{profile?.username?.toUpperCase()}</h1>
+    <div className="w-full max-w-[900px] p-5">
+      <header className="flex justify-between items-center mb-10 border-b border-[#00f0ff]/20 pb-5">
+        <div className="flex flex-col">
+          <span className="text-[#00ff66] text-[10px] font-bold tracking-[2px]">ONLINE</span>
+          <h1 className="text-white m-0 text-2xl tracking-[4px] font-mono font-bold">AGENT_{profile?.username?.toUpperCase()}</h1>
         </div>
-        <button onClick={() => signOut()} style={styles.logoutBtn}>DISCONNECT</button>
+        <button onClick={() => signOut()} className="bg-transparent border border-[#ff3366] text-[#ff3366] py-2 px-4 rounded cursor-pointer font-mono hover:bg-[#ff3366]/10 transition-colors">DISCONNECT</button>
       </header>
 
-      <div style={styles.grid}>
-        <div style={styles.statCard}>
-          <label style={styles.label}>CLEARANCE_LEVEL</label>
-          <div style={styles.value}>{profile?.role === 'admin' ? 'ELITE_OVERSEER' : 'RECRUIT'}</div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5 mb-10">
+        <div className="bg-[#0f121d]/80 p-5 rounded-lg border-l-4 border-[#00f0ff]">
+          <label className="text-[#64748b] text-[10px] block mb-1.5 font-mono">CLEARANCE_LEVEL</label>
+          <div className="text-[#00f0ff] text-lg font-bold font-mono">{profile?.role === 'admin' ? 'ELITE_OVERSEER' : 'RECRUIT'}</div>
         </div>
-        <div style={styles.statCard}>
-          <label style={styles.label}>NODE_ORIGIN</label>
-          <div style={styles.value}>{profile?.country || 'UNKNOWN_SECTOR'}</div>
+        <div className="bg-[#0f121d]/80 p-5 rounded-lg border-l-4 border-[#00f0ff]">
+          <label className="text-[#64748b] text-[10px] block mb-1.5 font-mono">NODE_ORIGIN</label>
+          <div className="text-[#00f0ff] text-lg font-bold font-mono">{profile?.country || 'UNKNOWN_SECTOR'}</div>
         </div>
       </div>
 
-      <div style={styles.console}>
-        <div style={styles.consoleHeader}>SYSTEM_LOGS</div>
-        <div style={styles.logLine}>{'>'} Initializing secure environment... OK</div>
-        <div style={styles.logLine}>{'>'} Loading encrypted data... OK</div>
-        <div style={styles.logLine}>{'>'} Welcome to CyberShadow, Agent.</div>
+      <div className="bg-black p-5 rounded-lg border border-[#333] font-mono">
+        <div className="text-[#9d4edd] mb-2.5 text-xs border-b border-[#222] pb-1.5">SYSTEM_LOGS</div>
+        <div className="text-[#888] text-sm mb-1">{'>'} Initializing secure environment... OK</div>
+        <div className="text-[#888] text-sm mb-1">{'>'} Loading encrypted data... OK</div>
+        <div className="text-[#888] text-sm mb-1">{'>'} Welcome to CyberShadow, Agent.</div>
       </div>
     </div>
   );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-  container: { width: '100%', maxWidth: '900px', padding: '20px' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', borderBottom: '1px solid rgba(0, 240, 255, 0.2)', paddingBottom: '20px' },
-  branding: { display: 'flex', flexDirection: 'column' },
-  status: { color: '#00ff66', fontSize: '10px', fontWeight: 'bold', letterSpacing: '2px' },
-  title: { color: '#fff', margin: 0, fontSize: '24px', letterSpacing: '4px' },
-  logoutBtn: { background: 'transparent', border: '1px solid #ff3366', color: '#ff3366', padding: '8px 16px', borderRadius: '4px', cursor: 'pointer', fontFamily: 'monospace' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' },
-  statCard: { background: 'rgba(15, 18, 29, 0.8)', padding: '20px', borderRadius: '8px', borderLeft: '4px solid #00f0ff' },
-  label: { color: '#64748b', fontSize: '10px', display: 'block', marginBottom: '5px' },
-  value: { color: '#00f0ff', fontSize: '18px', fontWeight: 'bold' },
-  console: { background: '#000', padding: '20px', borderRadius: '8px', border: '1px solid #333', fontFamily: 'monospace' },
-  consoleHeader: { color: '#9d4edd', marginBottom: '10px', fontSize: '12px', borderBottom: '1px solid #222', paddingBottom: '5px' },
-  logLine: { color: '#888', fontSize: '14px', marginBottom: '4px' }
 };
 
 export default Dashboard;

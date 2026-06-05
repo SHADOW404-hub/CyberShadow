@@ -6,88 +6,19 @@ import React from 'react';
  */
 const CyberBackground: React.FC = () => {
   return (
-    <div style={styles.container}>
+    <div className="fixed top-0 left-0 w-full h-full z-[-1] bg-cyber-base overflow-hidden">
       {/* 3D Perspektivali Grid */}
-      <div style={styles.gridOverlay} />
+      <div className="absolute top-[-50%] left-0 w-full h-[200%] bg-cyber-grid [transform:rotateX(50deg)] pointer-events-none animate-grid-move" />
       
       {/* Dinamik Neon Orblar */}
-      <div style={{ ...styles.orb, ...styles.orb1 }} />
-      <div style={{ ...styles.orb, ...styles.orb2 }} />
-      <div style={{ ...styles.orb, ...styles.orb3 }} />
+      <div className="absolute rounded-full blur-[120px] opacity-40 mix-blend-screen pointer-events-none w-[60vw] h-[60vw] bg-orb-cyan top-[-10%] left-[-10%]" />
+      <div className="absolute rounded-full blur-[120px] opacity-40 mix-blend-screen pointer-events-none w-[70vw] h-[70vw] bg-orb-purple bottom-[-15%] right-[-10%]" />
+      <div className="absolute rounded-full blur-[120px] opacity-[0.15] mix-blend-screen pointer-events-none w-[300px] h-[350px] bg-orb-pink top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2" />
       
       {/* Vizual shovqin (Cinematic Noise) */}
-      <div style={styles.noise} />
+      <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay pointer-events-none" />
     </div>
   );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    zIndex: -1,
-    backgroundColor: '#010204',
-    backgroundImage: 'radial-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px)',
-    backgroundSize: '30px 30px',
-    overflow: 'hidden',
-  },
-  gridOverlay: {
-    position: 'absolute',
-    top: '-50%',
-    left: 0,
-    width: '100%',
-    height: '200%',
-    backgroundImage: `
-      radial-gradient(rgba(0, 240, 255, 0.08) 1px, transparent 1px),
-      linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px)
-    `,
-    backgroundSize: '30px 30px, 60px 60px, 60px 60px',
-    transform: 'rotateX(50deg)',
-    pointerEvents: 'none',
-  },
-  orb: {
-    position: 'absolute',
-    borderRadius: '50%',
-    filter: 'blur(120px)',
-    opacity: 0.4,
-    mixBlendMode: 'screen',
-    pointerEvents: 'none',
-  },
-  orb1: {
-    width: '60vw',
-    height: '60vw',
-    background: 'radial-gradient(circle, #00f0ff 0%, transparent 70%)',
-    top: '-10%',
-    left: '-10%',
-  },
-  orb2: {
-    width: '70vw',
-    height: '70vw',
-    background: 'radial-gradient(circle, #9d4edd 0%, transparent 70%)',
-    bottom: '-15%',
-    right: '-10%',
-  },
-  orb3: {
-    width: '300px',
-    height: '350px',
-    background: 'radial-gradient(circle, #ff007f 0%, transparent 70%)',
-    top: '40%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    opacity: 0.15,
-  },
-  noise: {
-    position: 'absolute',
-    inset: 0,
-    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-    opacity: 0.03,
-    mixBlendMode: 'overlay',
-    pointerEvents: 'none',
-  }
 };
 
 export default CyberBackground;
