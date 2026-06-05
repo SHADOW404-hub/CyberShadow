@@ -17,7 +17,7 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id || !pass) {
-      const msg = 'Please enter your username and password';
+      const msg = 'PLEASE ENTER YOUR USERNAME AND PASSWORD';
       setStatus({ text: msg, type: 'error' });
       notify(msg, 'error');
       return;
@@ -40,8 +40,8 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     }
 
     if (!userExists) {
-      setStatus({ text: 'username topilmadi', type: 'error' });
-      notify('username topilmadi', 'error');
+      setStatus({ text: 'USER NOT FOUND', type: 'error' });
+      notify('User not found', 'error');
       setIsBusy(false);
       return;
     }
@@ -49,12 +49,12 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     const { error } = await signIn(id, pass);
 
     if (error) {
-      setStatus({ text: "parol xato", type: 'error' });
-      notify("parol xato", 'error');
+      setStatus({ text: 'INCORRECT PASSWORD', type: 'error' });
+      notify('Incorrect password', 'error');
       setIsBusy(false);
     } else {
-      setStatus({ text: 'welcome back', type: 'success' });
-      notify('welcome back', 'success');
+      setStatus({ text: 'WELCOME BACK', type: 'success' });
+      notify('Welcome back', 'success');
     }
   };
 
