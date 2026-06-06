@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+import { supabase } from '../services/supabase';
 
 const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [formData, setFormData] = useState({
@@ -36,6 +37,22 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     }
 
     setIsBusy(true);
+    setStatus({ text: 'VERIFYING USERNAME...', type: 'info' });
+
+    const { data: existingUser } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .maybeSingle();
+
+    if (existingUser) {
+      const msg = 'THIS USERNAME IS ALREADY TAKEN';
+      setStatus({ text: msg, type: 'error' });
+      notify(msg, 'error');
+      setIsBusy(false);
+      return;
+    }
+
     setStatus({ text: 'CREATING ACCOUNT...', type: 'info' });
     const { error } = await signUp(email, password, username);
 
