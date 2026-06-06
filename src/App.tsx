@@ -11,7 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, profile, user } = useAuth();
   const [view, setView] = useState<View>('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
@@ -27,7 +27,7 @@ const AppContent: React.FC = () => {
       setIsRedirecting(true);
       const timer = setTimeout(() => {
         setIsRedirecting(false);
-      }, 2500);
+      }, 3000);
       return () => clearTimeout(timer);
     } else {
       setIsRedirecting(false);
@@ -52,7 +52,7 @@ const AppContent: React.FC = () => {
             </div>
 
             <h2 className="text-[#00ff66] tracking-[6px] text-2xl font-bold font-mono text-center mb-3 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">
-              WELCOME BACK
+              WELCOME {(profile?.username || user?.email || '').toUpperCase()}
             </h2>
 
             <p className="text-[#64748b] text-xs font-mono tracking-[2px] text-center flex items-center gap-2">
