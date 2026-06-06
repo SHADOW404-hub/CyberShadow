@@ -251,80 +251,78 @@ const AppContent: React.FC = () => {
               <h3 className="text-white font-mono font-bold text-xl tracking-[6px] uppercase border-b border-[#00f0ff]/30 pb-3">User Profile</h3>
             </div>
 
-            <div className="flex gap-20 items-start h-[calc(100%-180px)] px-10">
+            <div className="flex gap-16 items-start h-[calc(100%-180px)] px-10">
               {/* Left Column: Larger Profile Picture */}
               <div className="relative shrink-0">
-                <div className="relative w-96 h-96 rounded-2xl border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center shadow-[0_0_50px_rgba(0,240,255,0.2)]">
+                <div className="relative w-72 h-72 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center shadow-[0_0_50px_rgba(0,240,255,0.2)]">
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-[#00f0ff] font-mono font-bold text-[180px] drop-shadow-[0_0_20px_rgba(0,240,255,0.6)]">
+                    <span className="text-[#00f0ff] font-mono font-bold text-9xl drop-shadow-[0_0_20px_rgba(0,240,255,0.6)]">
                       {(profile?.username || 'G').charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
-                <div className="absolute -top-4 -left-4 w-10 h-10 border-t-2 border-l-2 border-[#00f0ff]/50" />
-                <div className="absolute -bottom-4 -right-4 w-10 h-10 border-b-2 border-r-2 border-[#00f0ff]/50" />
               </div>
 
               {/* Right Column: User Info & Actions */}
-              <div className="flex-1 flex flex-col h-full py-4 gap-10">
-                <div className="flex flex-col gap-8">
+              <div className="flex-1 flex flex-col h-full py-4 gap-8">
+                <div className="flex flex-col gap-6">
                   {/* Username Field */}
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between px-2">
-                      <label className="text-[#00f0ff] font-mono text-[11px] uppercase tracking-[3px] opacity-70">Username</label>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Username</label>
+                    <div className="flex gap-4 items-center">
+                      <div className="flex-1">
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editedUsername}
+                            onChange={(e) => setEditedUsername(e.target.value)}
+                            className="bg-black/50 border-2 border-[#00f0ff]/40 p-4 text-[#00f0ff] rounded-xl focus:outline-none focus:border-[#00f0ff] font-mono text-xl w-full shadow-[0_0_25px_rgba(0,240,255,0.15)]"
+                            autoFocus
+                          />
+                        ) : (
+                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl uppercase tracking-[2px] w-full shadow-inner">
+                            {profile?.username || 'UNKNOWN'}
+                          </div>
+                        )}
+                      </div>
                       {!isEditing && (
                         <button
                           onClick={() => {
                             setIsEditing(true);
                             setEditedUsername(profile?.username || '');
                           }}
-                          className="text-[#00f0ff] font-mono text-[10px] uppercase hover:underline cursor-pointer tracking-[2px]"
+                          className="px-6 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-xl font-mono text-xs uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[2px]"
                         >
-                          [Change]
+                          Change
                         </button>
-                      )}
-                    </div>
-                    <div className="relative">
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          value={editedUsername}
-                          onChange={(e) => setEditedUsername(e.target.value)}
-                          className="bg-black/50 border-2 border-[#00f0ff]/40 p-5 text-[#00f0ff] rounded-2xl focus:outline-none focus:border-[#00f0ff] font-mono text-4xl w-full shadow-[0_0_25px_rgba(0,240,255,0.15)]"
-                          autoFocus
-                        />
-                      ) : (
-                        <div className="bg-white/5 border border-white/10 p-5 text-white rounded-2xl font-mono text-5xl uppercase tracking-[2px] w-full shadow-inner">
-                          {profile?.username || 'UNKNOWN'}
-                        </div>
                       )}
                     </div>
                   </div>
 
                   {/* Email Field */}
-                  <div className="flex flex-col gap-3">
-                    <label className="text-[#64748b] font-mono text-[11px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
-                    <div className="bg-white/5 border border-white/5 p-5 text-[#64748b] rounded-2xl font-mono text-2xl w-full opacity-60 italic">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-[#64748b] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
+                    <div className="bg-white/5 border border-white/5 p-4 text-[#64748b] rounded-xl font-mono text-lg w-full opacity-60 italic">
                       {profile?.email || 'UNAUTHORIZED'}
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-auto flex gap-6">
+                <div className="mt-auto flex gap-4">
                   <button
                     onClick={() => {
                       setIsEditing(false);
                       setShowProfileModal(false);
                     }}
-                    className="flex-1 py-5 border border-[#64748b]/30 text-[#64748b] rounded-2xl font-mono text-sm uppercase tracking-[4px] hover:bg-white/5 transition-all cursor-pointer"
+                    className="flex-1 py-4 border border-[#64748b]/30 text-[#64748b] rounded-xl font-mono text-xs uppercase tracking-[4px] hover:bg-white/5 transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSaveProfile}
-                    className="flex-1 py-5 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-2xl font-mono text-sm uppercase tracking-[4px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
+                    className="flex-1 py-4 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-xl font-mono text-xs uppercase tracking-[4px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
                   >
                     <span className="group-hover:tracking-[6px] transition-all duration-300">Save Changes</span>
                   </button>
