@@ -5,28 +5,7 @@ const Dashboard: React.FC = () => {
   const { profile, signOut } = useAuth();
 
   return (
-    <div className="w-full max-w-[900px] p-5">
-      <header className="flex justify-between items-center mb-10 border-b border-[#00f0ff]/20 pb-5">
-        <div className="flex items-center gap-3">
-          <img
-            src="/favicon.svg"
-            alt="CyberShadow Logo"
-            className="w-9 h-9 drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]"
-          />
-          <div className="flex flex-col">
-            <span className="text-[#00ff66] text-[10px] font-bold tracking-[2px] font-mono">ONLINE</span>
-            <h1 className="text-white m-0 text-xl tracking-[3px] font-mono font-bold leading-tight">
-              {profile?.username?.toUpperCase()}
-            </h1>
-          </div>
-        </div>
-        <button
-          onClick={() => signOut()}
-          className="bg-transparent border border-[#ff3366] text-[#ff3366] py-2 px-4 rounded cursor-pointer font-mono text-sm hover:bg-[#ff3366]/10 transition-colors"
-        >
-          Log Out
-        </button>
-      </header>
+    <div className="w-full max-w-[900px]">
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5 mb-10">
         <div className="bg-[#0f121d]/80 p-5 rounded-lg border-l-4 border-[#00f0ff]">

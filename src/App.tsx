@@ -11,7 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, } = useAuth();
+  const { isAuthenticated, loading, profile, signOut } = useAuth();
   const [view, setView] = useState<View>('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
@@ -38,10 +38,36 @@ const AppContent: React.FC = () => {
   if (loading) return null;
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className={`w-screen h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} overflow-auto`}>
       <CyberBackground />
+
+      {isAuthenticated && !isRedirecting && (
+        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/80 backdrop-blur-lg border-b border-[#00f0ff]/20 px-8 py-3 flex justify-between items-center shadow-[0_0_20px_rgba(0,240,255,0.1)]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#00f0ff]/5 border border-[#00f0ff]/30 rounded-lg flex items-center justify-center">
+              <img src="/favicon.svg" alt="Logo" className="w-6 h-6 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+            </div>
+            <span className="text-white font-mono font-bold tracking-[4px] text-lg hidden sm:inline">
+              CYBERSHADOW
+            </span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col items-end">
+              <span className="text-[#00ff66] text-[9px] font-bold tracking-[2px] font-mono leading-none">SESSION_ACTIVE</span>
+              <span className="text-white/70 font-mono text-xs uppercase">{profile?.username}</span>
+            </div>
+            <button 
+              onClick={() => signOut()}
+              className="bg-transparent border border-[#ff3366]/40 text-[#ff3366] px-4 py-1.5 rounded font-mono text-xs hover:bg-[#ff3366]/10 hover:border-[#ff3366] transition-all tracking-wider"
+            >
+              LOG_OUT
+            </button>
+          </div>
+        </nav>
+      )}
       
-      <div className={isAuthenticated && !isRedirecting ? "w-full max-w-[900px] z-10 p-5" : "w-full max-w-[450px] z-10 p-5"}>
+      <div className={isAuthenticated && !isRedirecting ? "w-full max-w-[900px] z-10 p-5 pt-24" : "w-full max-w-[450px] z-10 p-5"}>
         {isRedirecting ? (
           <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00ff66]/30 w-full backdrop-blur-md flex flex-col items-center justify-center min-h-[350px] shadow-[0_0_30px_rgba(0,255,102,0.15)] animate-[pulse_2s_infinite]">
             {/* Animated Checkmark with Neon Pulse */}
