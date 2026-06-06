@@ -5,7 +5,10 @@ import { useNotification } from '../context/NotificationContext';
 const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [email, setEmail] = useState('');
   const [isBusy, setIsBusy] = useState(false);
-  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
+  const [status, setStatus] = useState<{ text: string; type: 'success' | 'error' | 'info' }>({
+    text: 'READY',
+    type: 'info'
+  });
   const { sendResetEmail } = useAuth();
   const { notify } = useNotification();
 
@@ -19,7 +22,7 @@ const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     }
 
     setIsBusy(true);
-    setStatus(null);
+    setStatus({ text: 'SENDING REQUEST...', type: 'info' });
     const { error } = await sendResetEmail(email);
 
     if (error) {
@@ -53,34 +56,32 @@ const ForgotPassword: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="relative mb-1">
-          {status && (
-            <>
-              {/* Cyberpunk Decorative Corners */}
-              <div className={`absolute -top-1 -left-1 w-2 h-2 border-t border-l transition-colors duration-500 ${
-                status.type === 'error' ? 'border-[#ff3366]' : status.type === 'success' ? 'border-[#00ff66]' : 'border-[#00f0ff]'
-              }`} />
-              <div className={`absolute -bottom-1 -right-1 w-2 h-2 border-b border-r transition-colors duration-500 ${
-                status.type === 'error' ? 'border-[#ff3366]' : status.type === 'success' ? 'border-[#00ff66]' : 'border-[#00f0ff]'
-              }`} />
+          {/* Cyberpunk Decorative Corners */}
+          <div className={`absolute -top-1 -left-1 w-2 h-2 border-t border-l transition-colors duration-500 ${
+            status.type === 'error' ? 'border-[#ff3366]' : status.type === 'success' ? 'border-[#00ff66]' : 'border-[#00f0ff]'
+          }`} />
+          <div className={`absolute -bottom-1 -right-1 w-2 h-2 border-b border-r transition-colors duration-500 ${
+            status.type === 'error' ? 'border-[#ff3366]' : status.type === 'success' ? 'border-[#00ff66]' : 'border-[#00f0ff]'
+          }`} />
 
-              {/* Status Box */}
-              <div className={`p-3 rounded-lg border text-[10px] font-mono text-center tracking-[2px] transition-all duration-500 transform ${
-                status.type === 'error'
-                  ? 'bg-[#ff3366]/10 border-[#ff3366]/40 text-[#ff3366] shadow-[0_0_15px_rgba(255,51,102,0.2)]'
-                  : status.type === 'success'
-                  ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66] shadow-[0_0_15px_rgba(0,255,102,0.2)]'
-                  : 'bg-[#00f0ff]/10 border-[#00f0ff]/40 text-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)]'
-              } ${isBusy ? 'animate-pulse scale-[1.02]' : 'scale-100'}`}>
-                <div className="flex items-center justify-center gap-3 uppercase italic">
-                  {!isBusy && <div className={`w-1.5 h-1.5 rounded-full animate-ping ${
-                    status.type === 'error' ? 'bg-[#ff3366]' : status.type === 'success' ? 'bg-[#00ff66]' : 'bg-[#00f0ff]'
-                  }`} />}
-                  <span className="font-bold">{status.text}</span>
-                  {isBusy && <span className="w-1.5 h-3 bg-current animate-bounce opacity-80" />}
-                </div>
-              </div>
-            </>
-          )}
+          {/* Status Box */}
+          <div className={`p-3 rounded-lg border text-[10px] font-mono text-center tracking-[2px] transition-all duration-500 transform ${
+            status.type === 'error'
+              ? 'bg-[#ff3366]/10 border-[#ff3366]/40 text-[#ff3366] shadow-[0_0_15px_rgba(255,51_102,0.2)]'
+              : status.type === 'success'
+              ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66] shadow-[0_0_15px_rgba(0,255_102,0.2)]'
+              : 'bg-[#00f0ff]/10 border-[#00f0ff]/40 text-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)]'
+          } ${isBusy ? 'animate-pulse scale-[1.02]' : 'scale-100'}`}>
+            <div className="flex items-center justify-center gap-3 uppercase italic">
+              {!isBusy && <div className={`w-1.5 h-1.5 rounded-full animate-ping ${
+                status.type === 'error' ? 'bg-[#ff3366]' : status.type === 'success' ? 'bg-[#00ff66]' : 'bg-[#00f0ff]'
+              }`} />}
+              <span className="font-bold">{status.text}</span>
+              {isBusy && (
+                <span className="w-1.5 h-3 bg-current animate-bounce opacity-80" />
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">
