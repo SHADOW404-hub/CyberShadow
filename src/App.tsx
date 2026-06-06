@@ -52,7 +52,7 @@ const AppContent: React.FC = () => {
             </div>
 
             <h2 className="text-[#00ff66] tracking-[6px] text-2xl font-bold font-mono text-center mb-3 drop-shadow-[0_0_12px_rgba(0,255,102,0.6)]">
-              WELCOME {(profile?.username || '').toUpperCase()}
+              WELCOME
             </h2>
 
             <p className="text-[#64748b] text-xs font-mono tracking-[2px] text-center flex items-center gap-2">

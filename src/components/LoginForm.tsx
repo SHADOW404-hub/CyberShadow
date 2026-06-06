@@ -53,7 +53,7 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
       notify('Incorrect password', 'error');
       setIsBusy(false);
     } else {
-      setStatus({ text: 'REDIRECTING...', type: 'success' });
+      setStatus({ text: 'WELCOME', type: 'success' });
       notify('Welcome back', 'success');
     }
   };
