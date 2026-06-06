@@ -221,7 +221,7 @@ const AppContent: React.FC = () => {
       {showProfileModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-md" onClick={() => setShowProfileModal(false)} />
-          <div className="relative bg-[#0d101b] border border-[#00f0ff]/30 p-12 rounded-3xl w-[92%] max-w-6xl h-fit max-h-[90vh] overflow-hidden shadow-[0_0_80px_rgba(0,240,255,0.25)] animate-[scaleIn_0.2s_ease-out]">
+          <div className="relative bg-[#0d101b] border border-[#00f0ff]/30 p-12 rounded-3xl w-[92%] max-w-6xl h-[92vh] overflow-hidden shadow-[0_0_80px_rgba(0,240,255,0.25)] animate-[scaleIn_0.2s_ease-out]">
             {/* Cyberpunk Decorative Corners */}
             <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
             <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
