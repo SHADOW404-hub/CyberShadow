@@ -46,7 +46,7 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       .maybeSingle();
 
     if (existingUser) {
-      const msg = 'THIS USERNAME IS ALREADY TAKEN';
+      const msg = 'This username is already taken';
       setStatus({ text: msg, type: 'error' });
       notify(msg, 'error');
       setIsBusy(false);
