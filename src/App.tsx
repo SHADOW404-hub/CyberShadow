@@ -230,33 +230,55 @@ const AppContent: React.FC = () => {
               <h3 className="text-white font-mono font-bold text-lg tracking-[4px] uppercase border-b border-[#00f0ff]/30 pb-2">User Profile</h3>
             </div>
 
-            <div className="flex flex-col items-center mb-8">
-              <div className="relative w-20 h-20 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(0,240,255,0.1)]">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-[#00f0ff] font-mono font-bold text-2xl drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
-                    {(profile?.username || 'G').charAt(0).toUpperCase()}
-                  </span>
-                )}
+            <div className="flex gap-16 items-start h-[calc(100%-160px)] px-6">
+              {/* Left Column: Larger Profile Picture */}
+              <div className="relative shrink-0">
+                <div className="relative w-80 h-80 rounded-2xl border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center shadow-[0_0_40px_rgba(0,240,255,0.15)]">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[#00f0ff] font-mono font-bold text-9xl drop-shadow-[0_0_15px_rgba(0,240,255,0.6)]">
+                      {(profile?.username || 'G').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                {/* Image Decoration Corners */}
+                <div className="absolute -top-3 -left-3 w-8 h-8 border-t-2 border-l-2 border-[#00f0ff]/50" />
+                <div className="absolute -bottom-3 -right-3 w-8 h-8 border-b-2 border-r-2 border-[#00f0ff]/50" />
               </div>
-              <h4 className="text-[#00f0ff] font-mono font-bold text-lg tracking-[2px]">{profile?.username || 'UNKNOWN'}</h4>
-              <span className="text-[#64748b] font-mono text-[9px] uppercase tracking-widest opacity-60">Authorized Operator</span>
-            </div>
 
-            <div className="space-y-3">
-              <div className="bg-white/5 p-3 rounded-lg border border-white/5">
-                <span className="text-[#64748b] font-mono text-[8px] uppercase block mb-1">Email Registry</span>
-                <span className="text-white font-mono text-xs truncate block">{profile?.email || 'Unauthorized'}</span>
+              {/* Right Column: User Info & Actions */}
+              <div className="flex-1 flex flex-col h-full py-4">
+                <div className="mb-10">
+                  <h4 className="text-[#00f0ff] font-mono font-bold text-6xl tracking-[4px] mb-3 uppercase">{profile?.username || 'UNKNOWN'}</h4>
+                  <div className="flex items-center gap-4">
+                    <span className="text-[#64748b] font-mono text-sm uppercase tracking-[4px] opacity-60">Authorized Operator</span>
+                    <div className="h-[1px] w-24 bg-gradient-to-r from-[#00f0ff]/40 to-transparent" />
+                  </div>
+                </div>
+
+                <div className="space-y-6 max-w-xl">
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm group hover:border-[#00f0ff]/30 transition-all duration-300">
+                    <span className="text-[#64748b] font-mono text-[10px] uppercase block mb-2 tracking-[3px]">Registered Network Identity</span>
+                    <span className="text-white font-mono text-base block tracking-wider">{profile?.email || 'Unauthorized'}</span>
+                  </div>
+                  
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm group hover:border-[#00f0ff]/30 transition-all duration-300">
+                    <span className="text-[#64748b] font-mono text-[10px] uppercase block mb-2 tracking-[3px]">Access Clearance</span>
+                    <span className="text-[#00ff66] font-mono text-sm block uppercase tracking-[2px]">Verified_System_Owner</span>
+                  </div>
+                </div>
+
+                <div className="mt-auto">
+                  <button
+                    onClick={() => setShowProfileModal(false)}
+                    className="px-16 py-4 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-xl font-mono text-sm uppercase tracking-[4px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
+                  >
+                    <span className="group-hover:tracking-[6px] transition-all duration-300">Dismiss Terminal</span>
+                  </button>
+                </div>
               </div>
             </div>
-
-            <button
-              onClick={() => setShowProfileModal(false)}
-              className="w-full mt-8 py-3 bg-[#00f0ff]/10 border border-[#00f0ff] text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,240,255,0.1)]"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
