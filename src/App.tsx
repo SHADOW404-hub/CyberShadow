@@ -42,14 +42,24 @@ const AppContent: React.FC = () => {
       <CyberBackground />
 
       {isAuthenticated && !isRedirecting && (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/80 backdrop-blur-lg border-b border-[#00f0ff]/20 px-8 py-3 flex justify-between items-center shadow-[0_0_20px_rgba(0,240,255,0.1)]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#00f0ff]/5 border border-[#00f0ff]/30 rounded-lg flex items-center justify-center">
-              <img src="/favicon.svg" alt="Logo" className="w-6 h-6 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]" />
+        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+          {/* Enhanced Branding Section */}
+          <div className="flex items-center gap-4 group cursor-default">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative w-11 h-11 bg-[#0d101b] border border-[#00f0ff]/30 rounded-lg flex items-center justify-center shadow-[inset_0_0_10px_rgba(0,240,255,0.1)]">
+                <img src="/favicon.svg" alt="Logo" className="w-7 h-7 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)] transform group-hover:scale-110 transition-transform duration-500" />
+              </div>
             </div>
-            <span className="text-white font-mono font-bold tracking-[4px] text-lg hidden sm:inline">
-              CYBERSHADOW
-            </span>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-[2px] bg-[#00f0ff] animate-pulse"></span>
+                <span className="text-[9px] font-mono text-[#00f0ff] tracking-[3px] leading-none opacity-70 uppercase">Nexus_Core</span>
+              </div>
+              <span className="text-white font-mono font-black tracking-[6px] text-xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-[#00f0ff]/50 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                CYBERSHADOW
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-6">
