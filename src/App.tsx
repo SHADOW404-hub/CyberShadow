@@ -76,12 +76,14 @@ const AppContent: React.FC = () => {
             
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b]">
-                <img 
-                  src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username || 'fallback'}`} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                />
+              <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[#00f0ff] font-mono font-bold text-lg drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
+                    {(profile?.username || 'G').charAt(0).toUpperCase()}
+                  </span>
+                )}
               </div>
             </div>
           </div>
