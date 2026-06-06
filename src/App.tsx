@@ -11,8 +11,9 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile} = useAuth();
+  const { isAuthenticated, loading, profile, signOut } = useAuth();
   const [view, setView] = useState<View>('login');
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
 
@@ -60,32 +61,70 @@ const AppContent: React.FC = () => {
           </div>
 
           {/* Profile Section - Right Aligned */}
-          <div className="flex items-center gap-4 border border-[#00f0ff]/25 bg-[#0d101b]/40 group cursor-pointer hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)]">
-            <div className="flex flex-col items-end">
-              <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
-                {profile?.username || 'GHOST_USER'}
-              </span>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00ff66]"></span>
+          <div 
+            className="relative outline-none"
+            onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
+            tabIndex={0}
+          >
+            <div 
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className="flex items-center gap-4 border border-[#00f0ff]/25 bg-[#0d101b]/40 group cursor-pointer hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)]"
+            >
+              <div className="flex flex-col items-end">
+                <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
+                  {profile?.username || 'GHOST_USER'}
                 </span>
-                <span className="text-[10px] font-mono text-[#00ff66] tracking-[1px] uppercase opacity-90 leading-none">Online</span>
-              </div>
-            </div>
-            
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-[#00f0ff] font-mono font-bold text-lg drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
-                    {(profile?.username || 'G').charAt(0).toUpperCase()}
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00ff66]"></span>
                   </span>
-                )}
+                  <span className="text-[10px] font-mono text-[#00ff66] tracking-[1px] uppercase opacity-90 leading-none">Online</span>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[#00f0ff] font-mono font-bold text-lg drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
+                      {(profile?.username || 'G').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
+
+            {/* Dropdown Menu */}
+            {showProfileMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-[#0d101b]/95 border border-[#00f0ff]/20 rounded-xl shadow-2xl backdrop-blur-md z-50 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+                <div className="p-2 flex flex-col gap-1">
+                  <button 
+                    className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group"
+                  >
+                    <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    View Profile
+                  </button>
+                  <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
+                  <button 
+                    onClick={() => {
+                      signOut();
+                      setShowProfileMenu(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group"
+                  >
+                    <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Log Out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </nav>
       )}
