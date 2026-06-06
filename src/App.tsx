@@ -296,8 +296,8 @@ const AppContent: React.FC = () => {
                             autoFocus
                           />
                         ) : (
-                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl uppercase tracking-[2px] w-full shadow-inner">
-                            {profile?.username || 'UNKNOWN'}
+                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl tracking-[2px] w-full shadow-inner">
+                            {profile?.username || 'Unknown'}
                           </div>
                         )}
                       </div>
@@ -325,8 +325,8 @@ const AppContent: React.FC = () => {
                             className="bg-black/50 border-2 border-[#00f0ff]/40 p-4 text-[#00f0ff] rounded-xl focus:outline-none focus:border-[#00f0ff] font-mono text-xl w-full shadow-[0_0_25px_rgba(0,240,255,0.15)]"
                           />
                         ) : (
-                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl uppercase tracking-[2px] w-full shadow-inner">
-                            {profile?.email || 'UNAUTHORIZED'}
+                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl tracking-[2px] w-full shadow-inner">
+                            {profile?.email || 'Unauthorized'}
                           </div>
                         )}
                       </div>
