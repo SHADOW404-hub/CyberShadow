@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard: React.FC = () => {
-  const { profile, signOut } = useAuth();
+  const { profile, } = useAuth();
 
   return (
     <div className="w-full max-w-[900px]">
