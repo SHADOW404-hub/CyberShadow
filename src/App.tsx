@@ -11,7 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, } = useAuth();
+  const { isAuthenticated, loading, profile} = useAuth();
   const [view, setView] = useState<View>('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
@@ -42,7 +42,7 @@ const AppContent: React.FC = () => {
       <CyberBackground />
 
       {isAuthenticated && !isRedirecting && (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-start items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           {/* Enhanced Branding Section - Left Aligned */}
           <div className="flex items-center gap-4 group cursor-default">
             <div className="relative">
@@ -56,6 +56,33 @@ const AppContent: React.FC = () => {
                 CYBERSHADOW
               </span>
               <div className="h-[1px] w-0 group-hover:w-full bg-gradient-to-r from-[#00f0ff] to-transparent transition-all duration-700"></div>
+            </div>
+          </div>
+
+          {/* Profile Section - Right Aligned */}
+          <div className="flex items-center gap-4 pl-4 border-l border-[#00f0ff]/10 group cursor-pointer hover:bg-white/5 py-1 px-3 rounded-xl transition-all duration-300">
+            <div className="flex flex-col items-end">
+              <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
+                {profile?.username || 'GHOST_USER'}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00ff66]"></span>
+                </span>
+                <span className="text-[9px] font-mono text-[#00ff66] tracking-[2px] uppercase opacity-80">Online</span>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
+              <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b]">
+                <img 
+                  src={profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username || 'fallback'}`} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </nav>
