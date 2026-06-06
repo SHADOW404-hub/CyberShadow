@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider } from './context/NotificationContext';
+import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { supabase } from './services/supabase';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -11,7 +12,10 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
+  const { notify } = useNotification();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUsername, setEditedUsername] = useState('');
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -37,6 +41,23 @@ const AppContent: React.FC = () => {
     }
     prevAuth.current = isAuthenticated;
   }, [isAuthenticated]);
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    if (!editedUsername.trim()) {
+      notify('PLEASE ENTER A VALID USERNAME', 'error');
+      return;
+    }
+
+    const { error } = await supabase.from('profiles').update({ username: editedUsername }).eq('id', user.id);
+    
+    if (error) {
+      notify(error.message, 'error');
+    } else {
+      notify('USERNAME UPDATED SUCCESSFULLY', 'success');
+      setIsEditing(false);
+    }
+  };
 
   if (loading) return null;
 
@@ -250,7 +271,32 @@ const AppContent: React.FC = () => {
               {/* Right Column: User Info & Actions */}
               <div className="flex-1 flex flex-col h-full py-4">
                 <div className="mb-10">
-                  <h4 className="text-[#00f0ff] font-mono font-bold text-6xl tracking-[4px] mb-3 uppercase">{profile?.username || 'UNKNOWN'}</h4>
+                  <div className="flex items-center gap-6 mb-3">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editedUsername}
+                        onChange={(e) => setEditedUsername(e.target.value)}
+                        className="bg-black/50 border border-[#00f0ff]/40 p-3 text-[#00f0ff] rounded-xl focus:outline-none focus:border-[#00f0ff] font-mono text-4xl w-full shadow-[0_0_15px_rgba(0,240,255,0.1)]"
+                        autoFocus
+                      />
+                    ) : (
+                      <h4 className="text-[#00f0ff] font-mono font-bold text-6xl tracking-[4px] uppercase truncate max-w-[500px]">
+                        {profile?.username || 'UNKNOWN'}
+                      </h4>
+                    )}
+                    {!isEditing && (
+                      <button
+                        onClick={() => {
+                          setIsEditing(true);
+                          setEditedUsername(profile?.username || '');
+                        }}
+                        className="shrink-0 px-4 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-lg font-mono text-xs uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer"
+                      >
+                        Change
+                      </button>
+                    )}
+                  </div>
                   <div className="flex items-center gap-4">
                     <span className="text-[#64748b] font-mono text-sm uppercase tracking-[4px] opacity-60">Authorized Operator</span>
                     <div className="h-[1px] w-24 bg-gradient-to-r from-[#00f0ff]/40 to-transparent" />
@@ -270,12 +316,23 @@ const AppContent: React.FC = () => {
                 </div>
 
                 <div className="mt-auto">
-                  <button
-                    onClick={() => setShowProfileModal(false)}
-                    className="px-16 py-4 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-xl font-mono text-sm uppercase tracking-[4px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
-                  >
-                    <span className="group-hover:tracking-[6px] transition-all duration-300">Dismiss Terminal</span>
-                  </button>
+                  <div className="flex gap-6">
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setShowProfileModal(false);
+                      }}
+                      className="px-12 py-4 border border-[#64748b]/30 text-[#64748b] rounded-xl font-mono text-sm uppercase tracking-[4px] hover:bg-white/5 transition-all cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveProfile}
+                      className="px-12 py-4 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-xl font-mono text-sm uppercase tracking-[4px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
+                    >
+                      <span className="group-hover:tracking-[6px] transition-all duration-300">Save Changes</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
