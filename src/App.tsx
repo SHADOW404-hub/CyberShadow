@@ -99,10 +99,10 @@ const AppContent: React.FC = () => {
 
             {/* Dropdown Menu */}
             {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#0d101b]/95 border border-[#00f0ff]/20 rounded-xl shadow-2xl backdrop-blur-md z-50 overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+              <div className="absolute right-0 mt-2 w-48 bg-[#0d101b]/95 border border-[#00f0ff]/20 rounded-xl shadow-2xl backdrop-blur-md z-50 overflow-hidden animate-[slideDown_0.2s_ease-out,fadeIn_0.2s_ease-out] origin-top-right transform transition-all shadow-[0_0_30px_rgba(0,240,255,0.15)]">
                 <div className="p-2 flex flex-col gap-1">
                   <button 
-                    className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group"
+                    className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group hover:translate-x-1"
                   >
                     <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -115,7 +115,7 @@ const AppContent: React.FC = () => {
                       signOut();
                       setShowProfileMenu(false);
                     }}
-                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group"
+                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group hover:translate-x-1"
                   >
                     <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
