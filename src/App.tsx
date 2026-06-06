@@ -220,17 +220,14 @@ const AppContent: React.FC = () => {
       {/* Profile Modal */}
       {showProfileModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-md" onClick={() => setShowProfileModal(false)} />
+          <div className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-md" />
           <div className="relative bg-[#0d101b] border border-[#00f0ff]/30 p-12 rounded-3xl w-[92%] max-w-6xl h-[92vh] overflow-hidden shadow-[0_0_80px_rgba(0,240,255,0.25)] animate-[scaleIn_0.2s_ease-out]">
             {/* Cyberpunk Decorative Corners */}
             <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
             <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
             
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-white font-mono font-bold text-sm tracking-wider uppercase">User Profile</h3>
-              <button onClick={() => setShowProfileModal(false)} className="text-[#64748b] hover:text-white transition-colors cursor-pointer">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+            <div className="flex justify-center items-center mb-10">
+              <h3 className="text-white font-mono font-bold text-lg tracking-[4px] uppercase border-b border-[#00f0ff]/30 pb-2">User Profile</h3>
             </div>
 
             <div className="flex flex-col items-center mb-8">
@@ -258,7 +255,7 @@ const AppContent: React.FC = () => {
               onClick={() => setShowProfileModal(false)}
               className="w-full mt-8 py-3 bg-[#00f0ff]/10 border border-[#00f0ff] text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,240,255,0.1)]"
             >
-              Dismiss Terminal
+              Cancel
             </button>
           </div>
         </div>
