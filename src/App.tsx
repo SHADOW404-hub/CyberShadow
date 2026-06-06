@@ -183,7 +183,6 @@ const AppContent: React.FC = () => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div 
             className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm transition-opacity" 
-            onClick={() => setShowLogoutConfirm(false)} 
           />
           <div className="relative bg-[#0d101b] border border-[#ff3366]/30 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(255,51,102,0.2)] animate-[scaleIn_0.2s_ease-out]">
             {/* Cyberpunk Decorative Corners */}
@@ -192,7 +191,7 @@ const AppContent: React.FC = () => {
 
             <h3 className="text-white font-mono font-bold text-lg mb-2 tracking-wider text-center uppercase">Terminating Session</h3>
             <p className="text-[#64748b] font-mono text-[10px] mb-8 text-center leading-relaxed uppercase tracking-widest">
-              Are you sure you want to disconnect from the nexus?
+              Are you sure you want to log out?
             </p>
 
             <div className="flex gap-4">
