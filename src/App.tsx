@@ -11,7 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const { isAuthenticated, loading, profile } = useAuth();
   const [view, setView] = useState<View>('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
@@ -42,37 +42,24 @@ const AppContent: React.FC = () => {
       <CyberBackground />
 
       {isAuthenticated && !isRedirecting && (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-          {/* Enhanced Branding Section */}
-          <div className="flex items-center gap-4 group cursor-default">
+        <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-5 flex justify-center items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+          {/* Ultra-Focused Branding Section */}
+          <div className="flex items-center gap-5 group cursor-default scale-110">
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative w-11 h-11 bg-[#0d101b] border border-[#00f0ff]/30 rounded-lg flex items-center justify-center shadow-[inset_0_0_10px_rgba(0,240,255,0.1)]">
-                <img src="/favicon.svg" alt="Logo" className="w-7 h-7 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)] transform group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute -inset-3 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur-md opacity-20 group-hover:opacity-50 transition duration-700"></div>
+              <div className="relative w-12 h-12 bg-[#0d101b] border border-[#00f0ff]/40 rounded-xl flex items-center justify-center shadow-[inset_0_0_15px_rgba(0,240,255,0.2)]">
+                <img src="/favicon.svg" alt="Logo" className="w-8 h-8 drop-shadow-[0_0_10px_rgba(0,240,255,0.9)] transform group-hover:rotate-[360deg] transition-transform duration-1000" />
               </div>
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-[2px] bg-[#00f0ff] animate-pulse"></span>
-                <span className="text-[9px] font-mono text-[#00f0ff] tracking-[3px] leading-none opacity-70 uppercase">Nexus_Core</span>
+                <span className="w-3 h-[1px] bg-[#00f0ff] shadow-[0_0_5px_#00f0ff]"></span>
+                <span className="text-[10px] font-mono text-[#00f0ff] tracking-[4px] leading-none opacity-80 uppercase font-bold">Mainframe_Access</span>
               </div>
-              <span className="text-white font-mono font-black tracking-[6px] text-xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-[#00f0ff]/50 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+              <span className="text-white font-mono font-black tracking-[8px] text-2xl bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-[#00f0ff]/60 drop-shadow-[0_0_20px_rgba(0,240,255,0.3)]">
                 CYBERSHADOW
               </span>
             </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="flex flex-col items-end">
-              <span className="text-[#00ff66] text-[9px] font-bold tracking-[2px] font-mono leading-none">SESSION_ACTIVE</span>
-              <span className="text-white/70 font-mono text-xs uppercase">{profile?.username}</span>
-            </div>
-            <button 
-              onClick={() => signOut()}
-              className="bg-transparent border border-[#ff3366]/40 text-[#ff3366] px-4 py-1.5 rounded font-mono text-xs hover:bg-[#ff3366]/10 hover:border-[#ff3366] transition-all tracking-wider"
-            >
-              LOG_OUT
-            </button>
           </div>
         </nav>
       )}
