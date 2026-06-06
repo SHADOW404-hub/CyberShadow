@@ -14,6 +14,7 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, loading, profile, signOut } = useAuth();
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
 
@@ -105,7 +106,7 @@ const AppContent: React.FC = () => {
             }`}>
               <div className="p-2 flex flex-col gap-1">
                 <button 
-                  className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group"
+                  className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -115,10 +116,10 @@ const AppContent: React.FC = () => {
                 <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
                 <button 
                   onClick={() => {
-                    signOut();
                     setShowProfileMenu(false);
+                    setShowLogoutConfirm(true);
                   }}
-                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group"
+                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -176,6 +177,41 @@ const AppContent: React.FC = () => {
           <Dashboard />
         )}
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm transition-opacity" 
+            onClick={() => setShowLogoutConfirm(false)} 
+          />
+          <div className="relative bg-[#0d101b] border border-[#ff3366]/30 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(255,51,102,0.2)] animate-[scaleIn_0.2s_ease-out]">
+            {/* Cyberpunk Decorative Corners */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#ff3366]" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#ff3366]" />
+
+            <h3 className="text-white font-mono font-bold text-lg mb-2 tracking-wider text-center uppercase">Terminating Session</h3>
+            <p className="text-[#64748b] font-mono text-[10px] mb-8 text-center leading-relaxed uppercase tracking-widest">
+              Are you sure you want to disconnect from the nexus?
+            </p>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 px-4 py-2.5 border border-[#64748b]/30 text-[#64748b] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-white/5 transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => signOut()}
+                className="flex-1 px-4 py-2.5 bg-[#ff3366]/10 border border-[#ff3366] text-[#ff3366] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#ff3366]/20 transition-all cursor-pointer shadow-[0_0_15px_rgba(255,51_102,0.3)]"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
