@@ -14,7 +14,8 @@ type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 const AppContent: React.FC = () => {
   const { isAuthenticated, loading, profile, user, signOut } = useAuth();
   const { notify } = useNotification();
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [editedUsername, setEditedUsername] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
   const [view, setView] = useState<View>('login');
@@ -60,7 +61,8 @@ const AppContent: React.FC = () => {
       notify(error.message, 'error');
     } else {
       notify('PROFILE UPDATED SUCCESSFULLY', 'success');
-      setIsEditing(false);
+      setIsEditingUsername(false);
+      setIsEditingEmail(false);
       setShowProfileModal(false);
     }
   };
@@ -137,6 +139,11 @@ const AppContent: React.FC = () => {
                   onClick={() => {
                     setShowProfileMenu(false);
                     setShowProfileModal(true);
+                    // Modal ochilganda qiymatlarni va tahrirlash holatini tayyorlaymiz
+                    setEditedUsername(profile?.username || '');
+                    setEditedEmail(profile?.email || '');
+                    setIsEditingUsername(false);
+                    setIsEditingEmail(false);
                   }}
                   className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
@@ -280,7 +287,7 @@ const AppContent: React.FC = () => {
                     <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Username</label>
                     <div className="flex gap-4 items-center">
                       <div className="flex-1">
-                        {isEditing ? (
+                        {isEditingUsername ? (
                           <input
                             type="text"
                             value={editedUsername}
@@ -294,13 +301,9 @@ const AppContent: React.FC = () => {
                           </div>
                         )}
                       </div>
-                      {!isEditing && (
+                      {!isEditingUsername && (
                         <button
-                          onClick={() => {
-                            setIsEditing(true);
-                            setEditedUsername(profile?.username || '');
-                          setEditedEmail(profile?.email || '');
-                          }}
+                          onClick={() => setIsEditingUsername(true)}
                           className="px-6 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-xl font-mono text-xs uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[2px]"
                         >
                           Change
@@ -311,10 +314,10 @@ const AppContent: React.FC = () => {
 
                   {/* Email Field */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-[#64748b] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
+                    <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
                     <div className="flex gap-4 items-center">
                       <div className="flex-1">
-                        {isEditing ? (
+                        {isEditingEmail ? (
                           <input
                             type="email"
                             value={editedEmail}
@@ -322,19 +325,15 @@ const AppContent: React.FC = () => {
                             className="bg-black/50 border-2 border-[#00f0ff]/40 p-4 text-[#00f0ff] rounded-xl focus:outline-none focus:border-[#00f0ff] font-mono text-xl w-full shadow-[0_0_25px_rgba(0,240,255,0.15)]"
                           />
                         ) : (
-                          <div className="bg-white/5 border border-white/5 p-4 text-[#64748b] rounded-xl font-mono text-lg w-full opacity-60 italic">
+                          <div className="bg-white/5 border border-white/10 p-4 text-white rounded-xl font-mono text-xl uppercase tracking-[2px] w-full shadow-inner">
                             {profile?.email || 'UNAUTHORIZED'}
                           </div>
                         )}
                       </div>
-                      {!isEditing && (
+                      {!isEditingEmail && (
                         <button
-                          onClick={() => {
-                            setIsEditing(true);
-                            setEditedUsername(profile?.username || '');
-                            setEditedEmail(profile?.email || '');
-                          }}
-                          className="px-6 py-2 border border-[#64748b]/30 text-[#64748b] rounded-xl font-mono text-xs uppercase hover:bg-white/10 transition-all cursor-pointer tracking-[2px]"
+                          onClick={() => setIsEditingEmail(true)}
+                          className="px-6 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-xl font-mono text-xs uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[2px]"
                         >
                           Change
                         </button>
@@ -346,7 +345,8 @@ const AppContent: React.FC = () => {
                 <div className="mt-auto flex gap-4">
                   <button
                     onClick={() => {
-                      setIsEditing(false);
+                      setIsEditingUsername(false);
+                      setIsEditingEmail(false);
                       setShowProfileModal(false);
                     }}
                     className="flex-1 py-4 border border-[#64748b]/30 text-[#64748b] rounded-xl font-mono text-xs uppercase tracking-[4px] hover:bg-white/5 transition-all cursor-pointer"
