@@ -15,6 +15,7 @@ const AppContent: React.FC = () => {
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
 
@@ -106,6 +107,10 @@ const AppContent: React.FC = () => {
             }`}>
               <div className="p-2 flex flex-col gap-1">
                 <button 
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    setShowProfileModal(true);
+                  }}
                   className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -208,6 +213,53 @@ const AppContent: React.FC = () => {
                 Confirm
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-md" onClick={() => setShowProfileModal(false)} />
+          <div className="relative bg-[#0d101b] border border-[#00f0ff]/30 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(0,240,255,0.2)] animate-[scaleIn_0.2s_ease-out]">
+            {/* Cyberpunk Decorative Corners */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
+            
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-white font-mono font-bold text-sm tracking-wider uppercase">User Profile</h3>
+              <button onClick={() => setShowProfileModal(false)} className="text-[#64748b] hover:text-white transition-colors cursor-pointer">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center mb-8">
+              <div className="relative w-20 h-20 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(0,240,255,0.1)]">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[#00f0ff] font-mono font-bold text-2xl drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
+                    {(profile?.username || 'G').charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <h4 className="text-[#00f0ff] font-mono font-bold text-lg tracking-[2px]">{profile?.username || 'UNKNOWN'}</h4>
+              <span className="text-[#64748b] font-mono text-[9px] uppercase tracking-widest opacity-60">Authorized Operator</span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="bg-white/5 p-3 rounded-lg border border-white/5">
+                <span className="text-[#64748b] font-mono text-[8px] uppercase block mb-1">Email Registry</span>
+                <span className="text-white font-mono text-xs truncate block">{profile?.email || 'Unauthorized'}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowProfileModal(false)}
+              className="w-full mt-8 py-3 bg-[#00f0ff]/10 border border-[#00f0ff] text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,240,255,0.1)]"
+            >
+              Dismiss Terminal
+            </button>
           </div>
         </div>
       )}
