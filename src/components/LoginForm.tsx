@@ -54,7 +54,7 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
       setIsBusy(false);
     } else {
       setStatus({ text: 'WELCOME', type: 'success' });
-      notify('Welcome back', 'success');
+      notify('Welcome', 'success');
     }
   };
 

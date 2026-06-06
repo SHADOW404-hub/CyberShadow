@@ -11,7 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile,} = useAuth();
+  const { isAuthenticated, loading, } = useAuth();
   const [view, setView] = useState<View>('login');
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
