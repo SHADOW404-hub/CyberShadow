@@ -60,17 +60,17 @@ const AppContent: React.FC = () => {
           </div>
 
           {/* Profile Section - Right Aligned */}
-          <div className="flex items-center gap-4 pl-4 border-l border-[#00f0ff]/10 group cursor-pointer hover:bg-white/5 py-1 px-3 rounded-xl transition-all duration-300">
+          <div className="flex items-center gap-4 border border-[#00f0ff]/25 bg-[#0d101b]/40 group cursor-pointer hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)]">
             <div className="flex flex-col items-end">
               <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
                 {profile?.username || 'GHOST_USER'}
               </span>
-              <div className="flex items-center gap-1.5">
-                <span className="relative flex h-2 w-2">
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00ff66]"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00ff66]"></span>
                 </span>
-                <span className="text-[9px] font-mono text-[#00ff66] tracking-[2px] uppercase opacity-80">Online</span>
+                <span className="text-[10px] font-mono text-[#00ff66] tracking-[1px] uppercase opacity-90 leading-none">Online</span>
               </div>
             </div>
             
