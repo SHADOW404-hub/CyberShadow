@@ -16,6 +16,7 @@ const AppContent: React.FC = () => {
   const { notify } = useNotification();
   const [isEditing, setIsEditing] = useState(false);
   const [editedUsername, setEditedUsername] = useState('');
+  const [editedEmail, setEditedEmail] = useState('');
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -48,14 +49,19 @@ const AppContent: React.FC = () => {
       notify('PLEASE ENTER A VALID USERNAME', 'error');
       return;
     }
+    if (!editedEmail.trim() || !editedEmail.includes('@')) {
+      notify('PLEASE ENTER A VALID EMAIL', 'error');
+      return;
+    }
 
-    const { error } = await supabase.from('profiles').update({ username: editedUsername }).eq('id', user.id);
+    const { error } = await supabase.from('profiles').update({ username: editedUsername, email: editedEmail }).eq('id', user.id);
     
     if (error) {
       notify(error.message, 'error');
     } else {
-      notify('USERNAME UPDATED SUCCESSFULLY', 'success');
+      notify('PROFILE UPDATED SUCCESSFULLY', 'success');
       setIsEditing(false);
+      setShowProfileModal(false);
     }
   };
 
@@ -251,9 +257,10 @@ const AppContent: React.FC = () => {
               <h3 className="text-white font-mono font-bold text-xl tracking-[6px] uppercase border-b border-[#00f0ff]/30 pb-3">User Profile</h3>
             </div>
 
-            <div className="flex gap-16 items-start h-[calc(100%-180px)] px-10">
+            <div className="flex gap-16 items-start h-[calc(100%-200px)] px-10">
               {/* Left Column: Larger Profile Picture */}
-              <div className="relative shrink-0">
+              <div className="flex flex-col gap-4 shrink-0">
+                <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2 text-center">Profile Picture</label>
                 <div className="relative w-72 h-72 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center shadow-[0_0_50px_rgba(0,240,255,0.2)]">
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
@@ -292,6 +299,7 @@ const AppContent: React.FC = () => {
                           onClick={() => {
                             setIsEditing(true);
                             setEditedUsername(profile?.username || '');
+                          setEditedEmail(profile?.email || '');
                           }}
                           className="px-6 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-xl font-mono text-xs uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[2px]"
                         >
@@ -304,8 +312,33 @@ const AppContent: React.FC = () => {
                   {/* Email Field */}
                   <div className="flex flex-col gap-2">
                     <label className="text-[#64748b] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
-                    <div className="bg-white/5 border border-white/5 p-4 text-[#64748b] rounded-xl font-mono text-lg w-full opacity-60 italic">
-                      {profile?.email || 'UNAUTHORIZED'}
+                    <div className="flex gap-4 items-center">
+                      <div className="flex-1">
+                        {isEditing ? (
+                          <input
+                            type="email"
+                            value={editedEmail}
+                            onChange={(e) => setEditedEmail(e.target.value)}
+                            className="bg-black/50 border-2 border-[#00f0ff]/40 p-4 text-[#00f0ff] rounded-xl focus:outline-none focus:border-[#00f0ff] font-mono text-xl w-full shadow-[0_0_25px_rgba(0,240,255,0.15)]"
+                          />
+                        ) : (
+                          <div className="bg-white/5 border border-white/5 p-4 text-[#64748b] rounded-xl font-mono text-lg w-full opacity-60 italic">
+                            {profile?.email || 'UNAUTHORIZED'}
+                          </div>
+                        )}
+                      </div>
+                      {!isEditing && (
+                        <button
+                          onClick={() => {
+                            setIsEditing(true);
+                            setEditedUsername(profile?.username || '');
+                            setEditedEmail(profile?.email || '');
+                          }}
+                          className="px-6 py-2 border border-[#64748b]/30 text-[#64748b] rounded-xl font-mono text-xs uppercase hover:bg-white/10 transition-all cursor-pointer tracking-[2px]"
+                        >
+                          Change
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
