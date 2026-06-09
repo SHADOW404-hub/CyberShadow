@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
+import DashboardBackground from './components/DashboardBackground';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
 import ResetPassword from './components/ResetPassword';
@@ -41,9 +42,12 @@ const AppContent: React.FC = () => {
   if (loading) return null;
 
   return (
-    <div className={`w-full h-screen bg-cyber-base flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
+    <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
       {!isAuthenticated && (
         <CyberBackground />
+      )}
+      {isAuthenticated && (
+        <DashboardBackground />
       )}
 
       {isAuthenticated && !isRedirecting && (
