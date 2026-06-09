@@ -154,17 +154,19 @@ const AppContent: React.FC = () => {
                 : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
             }`}>
               <div className="p-2 flex flex-col gap-1">
-                <button 
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                  }}
-                  className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
+                <NavLink
+                  to="/profile"
+                  onClick={() => setShowProfileMenu(false)}
+                  className={({ isActive }) => `
+                    flex items-center gap-3 px-4 py-2 font-mono text-[10px] uppercase tracking-wider transition-all text-left group cursor-pointer rounded-lg
+                    ${isActive ? 'text-[#00f0ff] bg-[#00f0ff]/10' : 'text-white/80 hover:bg-[#00f0ff]/10 hover:text-[#00f0ff]'}
+                  `}
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   View Profile
-                </button>
+                </NavLink>
                 <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
                 <button 
                   onClick={() => {
