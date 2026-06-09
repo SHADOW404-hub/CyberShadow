@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider, useNotification } from './context/NotificationContext';
 import { supabase } from './services/supabase';
 import CyberBackground from './components/CyberBackground';
+import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
@@ -63,6 +64,49 @@ const AppContent: React.FC = () => {
               </span>
               <div className="h-[1px] w-0 group-hover:w-full bg-gradient-to-r from-[#00f0ff] to-transparent transition-all duration-700"></div>
             </div>
+          </div>
+
+          {/* Enhanced Navigation Links - Center Aligned */}
+          <div className="hidden md:flex items-center gap-8 px-6 py-2 bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl backdrop-blur-md shadow-[inset_0_0_20px_rgba(0,240,255,0.05)]">
+            <NavLink
+              to="/challenges"
+              className={({ isActive }) => `
+                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+              `}
+            >
+              <span className="relative z-10">Challenges</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
+              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+            </NavLink>
+            
+            <div className="w-[1px] h-3 bg-[#00f0ff]/10" />
+
+            <NavLink
+              to="/scoreboard"
+              className={({ isActive }) => `
+                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+              `}
+            >
+              <span className="relative z-10">Scoreboard</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
+              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+            </NavLink>
+
+            <div className="w-[1px] h-3 bg-[#00f0ff]/10" />
+
+            <NavLink
+              to="/learn"
+              className={({ isActive }) => `
+                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+              `}
+            >
+              <span className="relative z-10">Learn</span>
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
+              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+            </NavLink>
           </div>
 
           {/* Profile Section - Right Aligned */}
@@ -227,11 +271,13 @@ const AppContent: React.FC = () => {
 };
 
 const App: React.FC = () => (
-  <NotificationProvider>
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
-  </NotificationProvider>
+  <Router>
+    <NotificationProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </NotificationProvider>
+  </Router>
 );
 
 export default App;
