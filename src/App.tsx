@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider, useNotification } from './context/NotificationContext';
-import { supabase } from './services/supabase';
+import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -12,12 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
-  const { notify } = useNotification();
-  const [isEditingUsername, setIsEditingUsername] = useState(false);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [editedUsername, setEditedUsername] = useState('');
-  const [editedEmail, setEditedEmail] = useState('');
+  const { isAuthenticated, loading, profile, signOut } = useAuth();
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -29,7 +23,7 @@ const AppContent: React.FC = () => {
     if (window.location.hash.includes('type=recovery')) {
       setView('reset-password');
     }
-  }, []);
+  }, [setView]);
 
   React.useEffect(() => {
     if (!prevAuth.current && isAuthenticated) {
@@ -43,29 +37,6 @@ const AppContent: React.FC = () => {
     }
     prevAuth.current = isAuthenticated;
   }, [isAuthenticated]);
-
-  const handleSaveProfile = async () => {
-    if (!user) return;
-    if (!editedUsername.trim()) {
-      notify('PLEASE ENTER A VALID USERNAME', 'error');
-      return;
-    }
-    if (!editedEmail.trim() || !editedEmail.includes('@')) {
-      notify('PLEASE ENTER A VALID EMAIL', 'error');
-      return;
-    }
-
-    const { error } = await supabase.from('profiles').update({ username: editedUsername, email: editedEmail }).eq('id', user.id);
-    
-    if (error) {
-      notify(error.message, 'error');
-    } else {
-      notify('PROFILE UPDATED SUCCESSFULLY', 'success');
-      setIsEditingUsername(false);
-      setIsEditingEmail(false);
-      setShowProfileModal(false);
-    }
-  };
 
   if (loading) return null;
 
@@ -139,11 +110,6 @@ const AppContent: React.FC = () => {
                   onClick={() => {
                     setShowProfileMenu(false);
                     setShowProfileModal(true);
-                    // Modal ochilganda qiymatlarni va tahrirlash holatini tayyorlaymiz
-                    setEditedUsername(profile?.username || '');
-                    setEditedEmail(profile?.email || '');
-                    setIsEditingUsername(false);
-                    setIsEditingEmail(false);
                   }}
                   className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
@@ -246,121 +212,6 @@ const AppContent: React.FC = () => {
               >
                 Confirm
               </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Profile Modal */}
-      {showProfileModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-md" />
-          <div className="relative bg-[#0d101b] border border-[#00f0ff]/30 p-8 rounded-2xl w-[95%] max-w-2xl h-auto max-h-[90vh] overflow-y-auto shadow-[0_0_60px_rgba(0,240,255,0.2)] animate-[scaleIn_0.2s_ease-out]">
-            {/* Cyberpunk Decorative Corners */}
-            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
-            
-            <div className="flex justify-center items-center mb-6">
-              <h3 className="text-white font-mono font-bold text-lg tracking-[6px] uppercase border-b border-[#00f0ff]/30 pb-2">User Profile</h3>
-            </div>
-
-            <div className="flex flex-col md:flex-row gap-8 items-center md:items-start px-2">
-              {/* Left Column: Larger Profile Picture */}
-              <div className="flex flex-col gap-4 shrink-0">
-                <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2 text-center">Profile Picture</label>
-                <div className="relative w-32 h-32 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.15)]">
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-[#00f0ff] font-mono font-bold text-5xl drop-shadow-[0_0_15px_rgba(0,240,255,0.6)]">
-                      {(profile?.username || 'G').charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Column: User Info & Actions */}
-              <div className="flex-1 flex flex-col w-full py-2 gap-6">
-                <div className="flex flex-col gap-4">
-                  {/* Username Field */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Username</label>
-                    <div className="flex gap-3 items-center">
-                      <div className="flex-1">
-                        {isEditingUsername ? (
-                          <input
-                            type="text"
-                            value={editedUsername}
-                            onChange={(e) => setEditedUsername(e.target.value)}
-                            className="bg-black/50 border border-[#00f0ff]/40 p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] font-mono text-sm w-full shadow-[0_0_15px_rgba(0,240,255,0.1)]"
-                            autoFocus
-                          />
-                        ) : (
-                          <div className="bg-white/5 border border-white/10 p-3 text-white rounded-lg font-mono text-sm tracking-[1px] w-full shadow-inner">
-                            {profile?.username || 'Unknown'}
-                          </div>
-                        )}
-                      </div>
-                      {!isEditingUsername && (
-                        <button
-                          onClick={() => setIsEditingUsername(true)}
-                          className="px-4 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[1px]"
-                        >
-                          Change
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Email Field */}
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[#00f0ff] font-mono text-[10px] uppercase tracking-[3px] opacity-70 px-2">Email Address</label>
-                    <div className="flex gap-3 items-center">
-                      <div className="flex-1">
-                        {isEditingEmail ? (
-                          <input
-                            type="email"
-                            value={editedEmail}
-                            onChange={(e) => setEditedEmail(e.target.value)}
-                            className="bg-black/50 border border-[#00f0ff]/40 p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] font-mono text-sm w-full shadow-[0_0_15px_rgba(0,240,255,0.1)]"
-                          />
-                        ) : (
-                          <div className="bg-white/5 border border-white/10 p-3 text-white rounded-lg font-mono text-sm tracking-[1px] w-full shadow-inner">
-                            {profile?.email || 'Unauthorized'}
-                          </div>
-                        )}
-                      </div>
-                      {!isEditingEmail && (
-                        <button
-                          onClick={() => setIsEditingEmail(true)}
-                          className="px-4 py-2 border border-[#00f0ff]/30 text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase hover:bg-[#00f0ff]/10 transition-all cursor-pointer tracking-[1px]"
-                        >
-                          Change
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 flex gap-3">
-                  <button
-                    onClick={() => {
-                      setIsEditingUsername(false);
-                      setIsEditingEmail(false);
-                      setShowProfileModal(false);
-                    }}
-                    className="flex-1 py-3 border border-[#64748b]/30 text-[#64748b] rounded-lg font-mono text-[10px] uppercase tracking-[3px] hover:bg-white/5 transition-all cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveProfile}
-                    className="flex-1 py-3 bg-[#00f0ff]/10 border border-[#00f0ff]/40 text-[#00f0ff] rounded-lg font-mono text-[10px] uppercase tracking-[3px] hover:bg-[#00f0ff]/20 transition-all cursor-pointer shadow-[0_0_20px_rgba(0,240,255,0.1)] group"
-                  >
-                    <span className="group-hover:tracking-[4px] transition-all duration-300">Save Changes</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>
