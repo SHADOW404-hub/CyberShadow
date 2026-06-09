@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider, } from './context/NotificationContext';
+import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { supabase } from './services/supabase';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -11,11 +12,13 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
+  const { notify } = useNotification();
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [showProfileModal,] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
 
@@ -206,7 +209,11 @@ const AppContent: React.FC = () => {
                 Cancel
               </button>
               <button
-                onClick={() => signOut()}
+                onClick={() => {
+                  signOut();
+                  setShowLogoutConfirm(false);
+                  setView('login');
+                }}
                 className="flex-1 px-4 py-2.5 bg-[#ff3366]/10 border border-[#ff3366] text-[#ff3366] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#ff3366]/20 transition-all cursor-pointer shadow-[0_0_15px_rgba(255,51_102,0.3)]"
               >
                 Confirm
