@@ -42,7 +42,9 @@ const AppContent: React.FC = () => {
 
   return (
     <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
-      <CyberBackground />
+      {!isAuthenticated && (
+        <CyberBackground />
+      )}
 
       {isAuthenticated && !isRedirecting && (
         <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
