@@ -3,7 +3,6 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
-import DashboardBackground from './components/DashboardBackground';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
 import ResetPassword from './components/ResetPassword';
@@ -12,9 +11,7 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
-  const { notify } = useNotification();
-  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const { isAuthenticated, loading, profile, signOut } = useAuth();
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -47,9 +44,6 @@ const AppContent: React.FC = () => {
     <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
       {!isAuthenticated && (
         <CyberBackground />
-      )}
-      {isAuthenticated && (
-        <DashboardBackground />
       )}
 
       {isAuthenticated && !isRedirecting && (
