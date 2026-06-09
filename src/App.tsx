@@ -51,7 +51,7 @@ const AppContent: React.FC = () => {
       {isAuthenticated && !isRedirecting && (
         <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           {/* Enhanced Branding Section - Left Aligned */}
-          <div className="flex items-center gap-4 group cursor-default">
+          <div className="flex-1 flex items-center gap-4 group cursor-default">
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
               <div className="relative w-11 h-11 bg-[#0d101b] border border-[#00f0ff]/30 rounded-lg flex items-center justify-center shadow-[inset_0_0_10px_rgba(0,240,255,0.1)]">
@@ -67,51 +67,52 @@ const AppContent: React.FC = () => {
           </div>
 
           {/* Enhanced Navigation Links - Center Aligned */}
-          <div className="hidden md:flex items-center gap-8 px-6 py-2 bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl backdrop-blur-md shadow-[inset_0_0_20px_rgba(0,240,255,0.05)]">
+          <div className="hidden md:flex items-center gap-10 px-8 py-2.5 bg-[#0d101b]/40 border border-[#00f0ff]/15 rounded-xl backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.3),inset_0_0_10px_rgba(0,240,255,0.05)]">
             <NavLink
               to="/challenges"
               className={({ isActive }) => `
-                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
               `}
             >
-              <span className="relative z-10">Challenges</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
-              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Challenges</span>
+              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
             </NavLink>
             
-            <div className="w-[1px] h-3 bg-[#00f0ff]/10" />
+            <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
 
             <NavLink
               to="/scoreboard"
               className={({ isActive }) => `
-                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
               `}
             >
-              <span className="relative z-10">Scoreboard</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
-              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Scoreboard</span>
+              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
             </NavLink>
 
-            <div className="w-[1px] h-3 bg-[#00f0ff]/10" />
+            <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
 
             <NavLink
               to="/learn"
               className={({ isActive }) => `
-                relative font-mono text-[10px] uppercase tracking-[2px] transition-all duration-300 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]' : 'text-white/40 hover:text-white'}
+                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
               `}
             >
-              <span className="relative z-10">Learn</span>
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#00f0ff] transition-all duration-300 group-hover:w-full shadow-[0_0_8px_#00f0ff]"></span>
-              <div className="absolute -inset-x-3 -inset-y-1 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-300" />
+              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Learn</span>
+              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
             </NavLink>
           </div>
 
           {/* Profile Section - Right Aligned */}
-          <div 
-            className="relative outline-none"
+          <div className="flex-1 flex justify-end">
+            <div 
+              className="relative outline-none"
             onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
             tabIndex={0}
           >
@@ -178,6 +179,7 @@ const AppContent: React.FC = () => {
                   Log Out
                 </button>
               </div>
+            </div>
             </div>
           </div>
         </nav>
