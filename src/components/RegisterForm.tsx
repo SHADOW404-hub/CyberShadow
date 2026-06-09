@@ -99,9 +99,9 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
           {/* Status Box */}
           <div className={`p-3 rounded-lg border text-[10px] font-mono text-center tracking-[2px] transition-all duration-500 transform ${
             status.type === 'error'
-              ? 'bg-[#ff3366]/10 border-[#ff3366]/40 text-[#ff3366] shadow-[0_0_15px_rgba(255,51_102,0.2)]'
+              ? 'bg-[#ff3366]/10 border-[#ff3366]/40 text-[#ff3366] shadow-[0_0_15px_rgba(255,51,102,0.2)]'
               : status.type === 'success'
-              ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66] shadow-[0_0_15px_rgba(0,255_102,0.2)]'
+              ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66] shadow-[0_0_15px_rgba(0,255,102,0.2)]'
               : 'bg-[#00f0ff]/10 border-[#00f0ff]/40 text-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)]'
           } ${isBusy ? 'animate-pulse scale-[1.02]' : 'scale-100'}`}>
             <div className="flex items-center justify-center gap-3 uppercase italic">

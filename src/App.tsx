@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider, useNotification } from './context/NotificationContext';
-import { supabase } from './services/supabase';
+import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
 import { BrowserRouter as Router, NavLink } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
@@ -13,9 +12,8 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
-  const { notify } = useNotification();
-  const [isEditingUsername, setIsEditingUsername] = useState(false);
+  const { isAuthenticated, loading, profile, signOut } = useAuth();
+
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -111,10 +109,10 @@ const AppContent: React.FC = () => {
 
           {/* Profile Section - Right Aligned */}
           <div className="flex-1 flex justify-end">
-            <div 
+            <div
               className="relative outline-none"
-            onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
-            tabIndex={0}
+              onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
+              tabIndex={0}
           >
             <div 
               onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -154,19 +152,18 @@ const AppContent: React.FC = () => {
                 : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
             }`}>
               <div className="p-2 flex flex-col gap-1">
-                <NavLink
-                  to="/profile"
-                  onClick={() => setShowProfileMenu(false)}
-                  className={({ isActive }) => `
-                    flex items-center gap-3 px-4 py-2 font-mono text-[10px] uppercase tracking-wider transition-all text-left group cursor-pointer rounded-lg
-                    ${isActive ? 'text-[#00f0ff] bg-[#00f0ff]/10' : 'text-white/80 hover:bg-[#00f0ff]/10 hover:text-[#00f0ff]'}
-                  `}
+                <button 
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    setShowProfileModal(true);
+                  }}
+                  className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   View Profile
-                </NavLink>
+                </button>
                 <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
                 <button 
                   onClick={() => {
@@ -187,7 +184,11 @@ const AppContent: React.FC = () => {
         </nav>
       )}
       
-      <div className={isAuthenticated && !isRedirecting ? "w-full max-w-[900px] z-10 p-5 pt-24" : "w-full max-w-[450px] z-10 p-5"}>
+      <div className={
+        isAuthenticated && !isRedirecting
+          ? "w-full max-w-[900px] z-10 p-5 pt-24"
+          : "w-full max-w-[450px] z-10 p-5"
+      }>
         {isRedirecting ? (
           <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00ff66]/30 w-full backdrop-blur-md flex flex-col items-center justify-center min-h-[350px] shadow-[0_0_30px_rgba(0,255,102,0.15)] animate-[pulse_2s_infinite]">
             {/* Animated Checkmark with Neon Pulse */}
@@ -233,13 +234,78 @@ const AppContent: React.FC = () => {
         )}
       </div>
 
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm"
+            onClick={() => setShowProfileModal(false)}
+          />
+          <div className="relative bg-[#0d101b] border border-[#00f0ff]/25 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(0,240,255,0.15)] animate-scale-in">
+            {/* Cyberpunk Decorative Corners */}
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
+
+            {/* Close button */}
+            <button
+              onClick={() => setShowProfileModal(false)}
+              className="absolute top-4 right-4 text-[#64748b] hover:text-white transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Avatar */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-40" />
+                <div className="relative w-20 h-20 rounded-full border-2 border-[#00f0ff]/40 overflow-hidden bg-[#0d101b] flex items-center justify-center">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[#00f0ff] font-mono font-bold text-4xl drop-shadow-[0_0_12px_rgba(0,240,255,0.6)]">
+                      {(profile?.username || 'G').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <h3 className="text-white font-mono font-bold text-xl mt-4 tracking-wider">
+                {profile?.username || 'GHOST_USER'}
+              </h3>
+              <span className="text-[#00f0ff]/60 font-mono text-[10px] tracking-[2px] uppercase mt-1">
+                {profile?.role || 'user'}
+              </span>
+            </div>
+
+            {/* Info Rows */}
+            <div className="flex flex-col gap-3 border-t border-[#00f0ff]/10 pt-5">
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Email</span>
+                <span className="text-white/80 font-mono text-xs">{profile?.email || '—'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Country</span>
+                <span className="text-white/80 font-mono text-xs">{profile?.country || '—'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Joined</span>
+                <span className="text-white/80 font-mono text-xs">
+                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : '—'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div 
-            className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm transition-opacity" 
+          <div
+            className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm transition-opacity"
           />
-          <div className="relative bg-[#0d101b] border border-[#ff3366]/30 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(255,51,102,0.2)] animate-[scaleIn_0.2s_ease-out]">
+          <div className="relative bg-[#0d101b] border border-[#ff3366]/30 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(255,51,102,0.2)] animate-scale-in">
             {/* Cyberpunk Decorative Corners */}
             <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#ff3366]" />
             <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#ff3366]" />
@@ -262,7 +328,7 @@ const AppContent: React.FC = () => {
                   setShowLogoutConfirm(false);
                   setView('login');
                 }}
-                className="flex-1 px-4 py-2.5 bg-[#ff3366]/10 border border-[#ff3366] text-[#ff3366] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#ff3366]/20 transition-all cursor-pointer shadow-[0_0_15px_rgba(255,51_102,0.3)]"
+                className="flex-1 px-4 py-2.5 bg-[#ff3366]/10 border border-[#ff3366] text-[#ff3366] rounded-lg font-mono text-[10px] uppercase tracking-widest hover:bg-[#ff3366]/20 transition-all cursor-pointer shadow-[0_0_15px_rgba(255,51,102,0.3)]"
               >
                 Confirm
               </button>
