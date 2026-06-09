@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
-import { BrowserRouter as Router, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, NavLink, Routes, Route, Link } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
 import ResetPassword from './components/ResetPassword';
 import ForgotPassword from './components/ForgotPassword';
+import Profile from './Profile';
 
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
@@ -152,18 +153,16 @@ const AppContent: React.FC = () => {
                 : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
             }`}>
               <div className="p-2 flex flex-col gap-1">
-                <button 
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                    setShowProfileModal(true);
-                  }}
+                <Link 
+                  to="/profile"
+                  onClick={() => setShowProfileMenu(false)}
                   className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
                   <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                   View Profile
-                </button>
+                </Link>
                 <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
                 <button 
                   onClick={() => {
@@ -189,7 +188,10 @@ const AppContent: React.FC = () => {
           ? "w-full max-w-[900px] z-10 p-5 pt-24"
           : "w-full max-w-[450px] z-10 p-5"
       }>
-        {isRedirecting ? (
+        <Routes>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={
+            isRedirecting ? (
           <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00ff66]/30 w-full backdrop-blur-md flex flex-col items-center justify-center min-h-[350px] shadow-[0_0_30px_rgba(0,255,102,0.15)] animate-[pulse_2s_infinite]">
             {/* Animated Checkmark with Neon Pulse */}
             <div className="w-20 h-20 bg-[#00ff66]/10 border border-[#00ff66]/30 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(0,255,102,0.2)] mb-8 animate-bounce">
@@ -231,7 +233,9 @@ const AppContent: React.FC = () => {
           )
         ) : (
           <Dashboard />
-        )}
+        )
+      } />
+        </Routes>
       </div>
 
       {/* Profile Modal */}
