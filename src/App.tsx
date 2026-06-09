@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { NotificationProvider } from './context/NotificationContext';
+import { NotificationProvider, useNotification } from './context/NotificationContext';
+import { supabase } from './services/supabase';
 import CyberBackground from './components/CyberBackground';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -11,7 +12,9 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
+  const { notify } = useNotification();
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -42,9 +45,7 @@ const AppContent: React.FC = () => {
 
   return (
     <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
-      {!isAuthenticated && (
-        <CyberBackground />
-      )}
+      <CyberBackground />
 
       {isAuthenticated && !isRedirecting && (
         <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
@@ -111,7 +112,6 @@ const AppContent: React.FC = () => {
                 <button 
                   onClick={() => {
                     setShowProfileMenu(false);
-                    setShowProfileModal(true);
                   }}
                   className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
                 >
