@@ -12,7 +12,9 @@ import ForgotPassword from './components/ForgotPassword';
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
-  const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const { isAuthenticated, loading, profile, user, signOut } = useAuth();
+  const { notify } = useNotification();
+  const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -24,7 +26,7 @@ const AppContent: React.FC = () => {
     if (window.location.hash.includes('type=recovery')) {
       setView('reset-password');
     }
-  }, [setView]);
+  }, []);
 
   React.useEffect(() => {
     if (!prevAuth.current && isAuthenticated) {
