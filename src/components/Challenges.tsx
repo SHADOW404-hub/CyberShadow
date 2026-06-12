@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNotification } from '../context/NotificationContext';
+import { supabase } from '../services/supabase';
 
 interface Challenge {
   id: string;
@@ -10,6 +11,7 @@ interface Challenge {
   description: string;
   solved: boolean;
   solvesCount: number;
+  flag?: string;
 }
 
 const INITIAL_CHALLENGES: Challenge[] = [
@@ -21,7 +23,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Easy',
     description: 'Find the hidden admin credentials inside the ghost database. Standard login bypass wont be enough.',
     solved: true,
-    solvesCount: 142
+    solvesCount: 142,
+    flag: 'flag{sql_ghost_echo}'
   },
   {
     id: 'ch-2',
@@ -31,7 +34,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Medium',
     description: 'Overwrite the return address on the stack to redirect execution flow to the secret function.',
     solved: false,
-    solvesCount: 54
+    solvesCount: 54,
+    flag: 'flag{stack_overflow_success}'
   },
   {
     id: 'ch-3',
@@ -41,7 +45,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Easy',
     description: 'A custom XOR encryption mechanism was used to scramble the flags. The key length is 4 bytes.',
     solved: false,
-    solvesCount: 98
+    solvesCount: 98,
+    flag: 'flag{xor_matrix_dec}'
   },
   {
     id: 'ch-4',
@@ -51,7 +56,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Hard',
     description: 'Reverse engineer the router firmware binary to discover the hidden backdoor credentials.',
     solved: false,
-    solvesCount: 12
+    solvesCount: 12,
+    flag: 'flag{router_firmware_breach}'
   },
   {
     id: 'ch-5',
@@ -61,7 +67,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Medium',
     description: 'Analyze the packet capture file (PCAP) to extract the file being exfiltrated via DNS queries.',
     solved: false,
-    solvesCount: 38
+    solvesCount: 38,
+    flag: 'flag{dns_exfiltration_detect}'
   },
   {
     id: 'ch-6',
@@ -71,7 +78,8 @@ const INITIAL_CHALLENGES: Challenge[] = [
     difficulty: 'Insane',
     description: 'An API endpoint is protected by multiple rate limiters and signature validation checks. Exploit the logic flaw.',
     solved: false,
-    solvesCount: 3
+    solvesCount: 3,
+    flag: 'flag{api_bypass_insanity}'
   }
 ];
 
@@ -83,6 +91,36 @@ const Challenges: React.FC = () => {
   const [flagInput, setFlagInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('challenges')
+          .select('*');
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          const mapped: Challenge[] = data.map((c: any) => ({
+            id: c.id,
+            name: c.name,
+            points: c.points,
+            category: c.category,
+            difficulty: c.difficulty,
+            description: c.description || '',
+            solved: false,
+            solvesCount: c.solves_count || 0,
+            flag: c.flag
+          }));
+          setChallenges(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to load challenges from Supabase, using defaults:', err);
+      }
+    };
+    fetchChallenges();
+  }, []);
+
   const categories = ['All', 'Web', 'Pwn', 'Crypto', 'Reverse', 'Forensics'];
 
   const filteredChallenges = selectedCategory === 'All'
@@ -91,17 +129,28 @@ const Challenges: React.FC = () => {
 
   const handleFlagSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!flagInput.trim()) return;
+    if (!flagInput.trim() || !selectedChallenge) return;
 
     setIsSubmitting(true);
     setTimeout(() => {
-      if (flagInput.toLowerCase().includes('flag{') || flagInput.includes('csh{')) {
+      const isCorrect = selectedChallenge.flag 
+        ? flagInput.trim() === selectedChallenge.flag
+        : (flagInput.toLowerCase().includes('flag{') || flagInput.includes('csh{'));
+
+      if (isCorrect) {
         notify('SUCCESS: FLAG ACCEPTED!', 'success');
         setChallenges(prev => prev.map(c => 
-          c.id === selectedChallenge?.id 
+          c.id === selectedChallenge.id 
             ? { ...c, solved: true, solvesCount: c.solvesCount + 1 } 
             : c
         ));
+
+        // Update solves count in Supabase asynchronously
+        supabase.from('challenges')
+          .update({ solves_count: selectedChallenge.solvesCount + 1 })
+          .eq('id', selectedChallenge.id)
+          .then();
+
         setSelectedChallenge(null);
       } else {
         notify('ERROR: INVALID FLAG SEQUENCE', 'error');

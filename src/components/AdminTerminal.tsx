@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNotification } from '../context/NotificationContext';
+import { supabase } from '../services/supabase';
 
 interface ChallengeItem {
   id: string;
@@ -50,43 +51,98 @@ const AdminTerminal: React.FC = () => {
     '[AUDIT] Querying challenge node counts...'
   ]);
 
-  const handleAddChallenge = (e: React.FormEvent) => {
+  const fetchChallenges = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('challenges')
+        .select('*');
+      
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        const mapped = data.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          points: c.points,
+          category: c.category,
+          difficulty: c.difficulty,
+          flag: c.flag || '',
+          description: c.description || ''
+        }));
+        setChallenges(mapped);
+      }
+    } catch (err) {
+      console.error('Failed to load challenges from Supabase:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchChallenges();
+  }, []);
+
+  const handleAddChallenge = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !flag || !description) {
       notify('ALL FIELDS MUST BE SPECIFIED', 'error');
       return;
     }
 
-    const newChallenge: ChallengeItem = {
-      id: `ch-${Date.now()}`,
-      name,
-      points,
-      category,
-      difficulty,
-      flag,
-      description
-    };
+    try {
+      const { error } = await supabase
+        .from('challenges')
+        .insert([
+          {
+            name,
+            category,
+            difficulty,
+            points,
+            flag,
+            description,
+            solves_count: 0
+          }
+        ])
+        .select();
 
-    setChallenges(prev => [...prev, newChallenge]);
-    setLogs(prev => [
-      ...prev,
-      `[CREATE] Created challenge "${name}" (+${points} PTS)`
-    ]);
-    notify('CHALLENGE DEPLOYED SUCCESSFULLY', 'success');
+      if (error) throw error;
 
-    // Reset Form
-    setName('');
-    setFlag('');
-    setDescription('');
+      setLogs(prev => [
+        ...prev,
+        `[CREATE] Created challenge "${name}" (+${points} PTS) in database`
+      ]);
+      notify('CHALLENGE DEPLOYED SUCCESSFULLY TO DATABASE', 'success');
+
+      // Refresh list
+      await fetchChallenges();
+
+      // Reset Form
+      setName('');
+      setFlag('');
+      setDescription('');
+    } catch (err: any) {
+      notify(err.message || 'FAILED TO DEPLOY CHALLENGE', 'error');
+    }
   };
 
-  const handleDeleteChallenge = (id: string, challengeName: string) => {
-    setChallenges(prev => prev.filter(c => c.id !== id));
-    setLogs(prev => [
-      ...prev,
-      `[DELETE] Removed challenge "${challengeName}"`
-    ]);
-    notify('CHALLENGE REMOVED FROM ACTIVE MATRIX', 'info');
+  const handleDeleteChallenge = async (id: string, challengeName: string) => {
+    try {
+      const { error } = await supabase
+        .from('challenges')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setLogs(prev => [
+        ...prev,
+        `[DELETE] Removed challenge "${challengeName}" from database`
+      ]);
+      notify('CHALLENGE REMOVED FROM ACTIVE MATRIX', 'info');
+
+      // Refresh list
+      await fetchChallenges();
+    } catch (err: any) {
+      notify(err.message || 'FAILED TO REMOVE CHALLENGE', 'error');
+    }
   };
 
   return (
