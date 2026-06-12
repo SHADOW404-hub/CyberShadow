@@ -20,6 +20,7 @@ const AppContent: React.FC = () => {
   const { isAuthenticated, loading, profile, signOut } = useAuth();
   const location = useLocation();
 
+  const isAdminPath = location.pathname.startsWith('/admin');
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Faqat logout tasdiqlash modalini saqlab qolamiz
@@ -87,7 +88,7 @@ const AppContent: React.FC = () => {
     <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${showLogoutConfirm ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
       <CyberBackground />
 
-      {isAuthenticated && !isRedirecting && (
+      {isAuthenticated && !isRedirecting && !isAdminPath && (
         <nav className="fixed top-0 left-0 w-full z-50 bg-[#0d101b]/60 backdrop-blur-xl border-b border-[#00f0ff]/10 px-8 py-4 flex justify-between items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
           {/* Enhanced Branding Section - Left Aligned */}
           <div className="flex-1 flex items-center gap-4 group cursor-default">
@@ -255,9 +256,11 @@ const AppContent: React.FC = () => {
       )}
       
       <div className={
-        isAuthenticated && !isRedirecting
-          ? "w-full max-w-[900px] z-10 p-5 pt-24"
-          : "w-full max-w-[450px] z-10 p-5"
+        isAdminPath
+          ? "w-full h-full z-10"
+          : isAuthenticated && !isRedirecting
+            ? "w-full max-w-[900px] z-10 p-5 pt-24"
+            : "w-full max-w-[450px] z-10 p-5"
       }>
         <Routes>
           <Route path="/challenges" element={isAuthenticated ? <Challenges /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />

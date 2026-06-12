@@ -1,326 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import { useNotification } from '../context/NotificationContext';
-import { supabase } from '../services/supabase';
-
-interface ChallengeItem {
-  id: string;
-  name: string;
-  points: number;
-  category: string;
-  difficulty: string;
-  flag: string;
-  description: string;
-}
-
-const INITIAL_CHALLENGES: ChallengeItem[] = [
-  {
-    id: 'ch-1',
-    name: 'SQL Injection: Ghost Echo',
-    points: 100,
-    category: 'Web',
-    difficulty: 'Easy',
-    flag: 'flag{sql_ghost_echo}',
-    description: 'Find the hidden admin credentials inside the ghost database. Standard login bypass wont be enough.'
-  },
-  {
-    id: 'ch-2',
-    name: 'Buffer Overflow: Memory Leaks',
-    points: 250,
-    category: 'Pwn',
-    difficulty: 'Medium',
-    flag: 'flag{stack_overflow_success}',
-    description: 'Overwrite the return address on the stack to redirect execution flow to the secret function.'
-  }
-];
+import React, { useState } from 'react';
 
 const AdminTerminal: React.FC = () => {
-  const { notify } = useNotification();
-  const [challenges, setChallenges] = useState<ChallengeItem[]>(INITIAL_CHALLENGES);
-  
-  // Form State
-  const [name, setName] = useState('');
-  const [category, setCategory] = useState('Web');
-  const [points, setPoints] = useState(100);
-  const [difficulty, setDifficulty] = useState('Easy');
-  const [flag, setFlag] = useState('');
-  const [description, setDescription] = useState('');
-
-  const [logs, setLogs] = useState<string[]>([
-    '[SYSTEM] Admin terminal session initialized.',
-    '[DATABASE] Connection parameters validated.',
-    '[AUDIT] Querying challenge node counts...'
-  ]);
-
-  const fetchChallenges = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('challenges')
-        .select('*');
-      
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        const mapped = data.map((c: any) => ({
-          id: c.id,
-          name: c.name,
-          points: c.points,
-          category: c.category,
-          difficulty: c.difficulty,
-          flag: c.flag || '',
-          description: c.description || ''
-        }));
-        setChallenges(mapped);
-      }
-    } catch (err) {
-      console.error('Failed to load challenges from Supabase:', err);
-    }
-  };
-
-  useEffect(() => {
-    fetchChallenges();
-  }, []);
-
-  const handleAddChallenge = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name || !flag || !description) {
-      notify('ALL FIELDS MUST BE SPECIFIED', 'error');
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('challenges')
-        .insert([
-          {
-            name,
-            category,
-            difficulty,
-            points,
-            flag,
-            description,
-            solves_count: 0
-          }
-        ])
-        .select();
-
-      if (error) throw error;
-
-      setLogs(prev => [
-        ...prev,
-        `[CREATE] Created challenge "${name}" (+${points} PTS) in database`
-      ]);
-      notify('CHALLENGE DEPLOYED SUCCESSFULLY TO DATABASE', 'success');
-
-      // Refresh list
-      await fetchChallenges();
-
-      // Reset Form
-      setName('');
-      setFlag('');
-      setDescription('');
-    } catch (err: any) {
-      notify(err.message || 'FAILED TO DEPLOY CHALLENGE', 'error');
-    }
-  };
-
-  const handleDeleteChallenge = async (id: string, challengeName: string) => {
-    try {
-      const { error } = await supabase
-        .from('challenges')
-        .delete()
-        .eq('id', id);
-
-      if (error) throw error;
-
-      setLogs(prev => [
-        ...prev,
-        `[DELETE] Removed challenge "${challengeName}" from database`
-      ]);
-      notify('CHALLENGE REMOVED FROM ACTIVE MATRIX', 'info');
-
-      // Refresh list
-      await fetchChallenges();
-    } catch (err: any) {
-      notify(err.message || 'FAILED TO REMOVE CHALLENGE', 'error');
-    }
-  };
+  const [activeTab, setActiveTab] = useState<'challenges' | 'users'>('challenges');
 
   return (
-    <div className="flex flex-col gap-8 w-full animate-scale-in">
-      <div className="border-b border-[#ff3366]/30 pb-6 flex justify-between items-center">
-        <div>
-          <h1 className="text-white font-mono font-black text-2xl tracking-[4px] uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-[#ff3366] drop-shadow-[0_0_10px_rgba(255,51,102,0.3)]">
-            ADMIN MATRIX CONTROL
-          </h1>
-          <p className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest mt-1">
-            System administration & node verification interface
-          </p>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#ff3366]/5 border border-[#ff3366]/20 rounded-lg">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff3366] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff3366]"></span>
-          </span>
-          <span className="text-[10px] font-mono text-[#ff3366] tracking-[2px] uppercase">ROOT PRIVILEGES ACTIVE</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Challenge Creator (Form) */}
-        <div className="lg:col-span-1 bg-[#0d101b]/80 border border-[#ff3366]/20 p-6 rounded-xl relative flex flex-col justify-between">
-          <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#ff3366]" />
-          
-          <div>
-            <h2 className="text-white font-mono font-bold text-sm tracking-widest uppercase mb-6 border-b border-[#ff3366]/10 pb-3">
-              Deploy Challenge
-            </h2>
-
-            <form onSubmit={handleAddChallenge} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[#64748b] text-[9px] font-mono uppercase">Challenge Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. CSRF Attack Vector"
-                  className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[#64748b] text-[9px] font-mono uppercase">Category</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs"
-                  >
-                    <option value="Web">Web</option>
-                    <option value="Pwn">Pwn</option>
-                    <option value="Crypto">Crypto</option>
-                    <option value="Reverse">Reverse</option>
-                    <option value="Forensics">Forensics</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[#64748b] text-[9px] font-mono uppercase">Difficulty</label>
-                  <select
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
-                    className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs"
-                  >
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                    <option value="Insane">Insane</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[#64748b] text-[9px] font-mono uppercase">Points</label>
-                  <input
-                    type="number"
-                    value={points}
-                    onChange={(e) => setPoints(Number(e.target.value))}
-                    className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[#64748b] text-[9px] font-mono uppercase">Target Flag</label>
-                  <input
-                    type="text"
-                    value={flag}
-                    onChange={(e) => setFlag(e.target.value)}
-                    placeholder="flag{...}"
-                    className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[#64748b] text-[9px] font-mono uppercase">Description</label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  placeholder="Challenge details..."
-                  className="bg-black border border-[#333] p-2 text-[#ff3366] rounded focus:outline-none focus:border-[#ff3366] font-mono text-xs resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full mt-2 py-2.5 bg-[#ff3366]/10 border border-[#ff3366] text-[#ff3366] hover:bg-[#ff3366]/20 font-mono text-[10px] uppercase tracking-widest rounded transition-all cursor-pointer"
-              >
-                DEPLOY NODE
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Challenge List & Log Console */}
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          {/* Active List */}
-          <div className="bg-[#0d101b]/80 border border-[#ff3366]/20 p-6 rounded-xl relative">
-            <h2 className="text-white font-mono font-bold text-sm tracking-widest uppercase mb-4 border-b border-[#ff3366]/10 pb-3">
-              Active Custom Nodes
-            </h2>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse font-mono text-xs">
-                <thead>
-                  <tr className="border-b border-[#ff3366]/10 bg-black/40 text-[#64748b] text-[10px]">
-                    <th className="p-3">Challenge Name</th>
-                    <th className="p-3 text-center">Category</th>
-                    <th className="p-3 text-right">Points</th>
-                    <th className="p-3 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {challenges.map(c => (
-                    <tr key={c.id} className="border-b border-[#ff3366]/5 hover:bg-[#ff3366]/5 transition-colors">
-                      <td className="p-3 text-white font-bold">{c.name}</td>
-                      <td className="p-3 text-center text-[#ff3366]">{c.category}</td>
-                      <td className="p-3 text-right text-[#00f0ff]">{c.points}</td>
-                      <td className="p-3 text-right">
-                        <button
-                          onClick={() => handleDeleteChallenge(c.id, c.name)}
-                          className="px-2 py-1 bg-red-950/40 border border-red-500/30 text-red-400 hover:bg-red-500/20 rounded text-[9px] uppercase tracking-wide cursor-pointer"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {challenges.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="p-8 text-center text-[#64748b]">
-                        No active custom challenges detected.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+    <div className="flex h-screen w-full bg-[#0d101b] text-white font-mono overflow-hidden">
+      {/* Sidebar */}
+      <aside className="w-72 border-r border-[#00f0ff]/20 bg-[#0d101b]/95 backdrop-blur-xl flex flex-col z-20">
+        <div className="p-8 border-b border-[#00f0ff]/10">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-[#0d101b] border border-[#00f0ff]/40 rounded flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+              <img src="/favicon.svg" alt="Logo" className="w-5 h-5 drop-shadow-[0_0_5px_rgba(0,240,255,0.8)]" />
             </div>
-          </div>
-
-          {/* Audit Logs */}
-          <div className="bg-black/80 border border-[#ff3366]/20 p-5 rounded-xl flex flex-col">
-            <h2 className="text-[#ff3366] font-mono font-bold text-xs tracking-widest uppercase mb-3">
-              AUDIT LOG CONSOLE
-            </h2>
-            <div className="h-28 overflow-y-auto font-mono text-[9px] text-[#64748b] flex flex-col gap-1.5 bg-black/60 p-3 rounded border border-white/5">
-              {logs.map((log, idx) => (
-                <p key={idx}>{log}</p>
-              ))}
-            </div>
+            <span className="text-white font-black tracking-[4px] text-sm uppercase">Admin Panel</span>
           </div>
         </div>
-      </div>
+        
+        <nav className="flex-1 p-6 flex flex-col gap-3">
+          <button
+            onClick={() => setActiveTab('challenges')}
+            className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+              activeTab === 'challenges' 
+                ? 'text-[#00f0ff] bg-[#00f0ff]/5 border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]' 
+                : 'text-white/30 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            {activeTab === 'challenges' && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00f0ff] shadow-[0_0_15px_#00f0ff]" />
+            )}
+            <svg className={`w-5 h-5 transition-colors ${activeTab === 'challenges' ? 'text-[#00f0ff]' : 'text-white/20'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span className="text-[11px] font-bold uppercase tracking-[3px]">Challenges</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+              activeTab === 'users' 
+                ? 'text-[#00f0ff] bg-[#00f0ff]/5 border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]' 
+                : 'text-white/30 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            {activeTab === 'users' && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00f0ff] shadow-[0_0_15px_#00f0ff]" />
+            )}
+            <svg className={`w-5 h-5 transition-colors ${activeTab === 'users' ? 'text-[#00f0ff]' : 'text-white/20'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span className="text-[11px] font-bold uppercase tracking-[3px]">Users</span>
+          </button>
+        </nav>
+
+        <div className="p-6 border-t border-[#00f0ff]/10">
+          <a href="/" className="flex items-center gap-3 px-5 py-3 text-white/40 text-[10px] uppercase tracking-widest hover:text-[#ff3366] transition-colors group">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 8.959 8.959 0 01-9 9 8.959 8.959 0 01-9-9z" />
+            </svg>
+            Exit to Site
+          </a>
+        </div>
+      </aside>
+
+      {/* Content Area */}
+      <main className="flex-1 h-screen overflow-y-auto bg-[#0d101b] relative custom-scrollbar">
+        {/* Background Gradients for depth */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00f0ff]/5 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#9d4edd]/5 blur-[120px] rounded-full -ml-64 -mb-64 pointer-events-none" />
+
+        <div className="p-10 relative z-10">
+          <header className="flex justify-between items-center mb-12">
+            <div>
+              <h1 className="text-3xl font-black tracking-[8px] text-white uppercase mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                {activeTab === 'challenges' ? 'System_Challenges' : 'User_Database'}
+              </h1>
+              <div className="flex items-center gap-3">
+                <div className="h-[2px] w-12 bg-[#00f0ff]"></div>
+                <span className="text-[10px] text-[#00f0ff] font-bold tracking-[4px] uppercase opacity-70">
+                  Access_Level: Administrator
+                </span>
+              </div>
+            </div>
+            <div className="px-5 py-2 border border-[#00f0ff]/20 bg-[#00f0ff]/5 rounded-lg text-[#00f0ff] text-[10px] font-bold tracking-[2px] uppercase shadow-[inset_0_0_10px_rgba(0,240,255,0.1)]">
+              v1.0.4-stable
+            </div>
+          </header>
+
+          <section className="bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl p-8 backdrop-blur-md min-h-[600px] shadow-[inset_0_0_30px_rgba(0,240,255,0.02)]">
+            {activeTab === 'challenges' ? (
+              <div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Initializing Challenge Management Interface...</div>
+            ) : (
+              <div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Querying User Records from Database...</div>
+            )}
+          </section>
+        </div>
+      </main>
     </div>
   );
 };
