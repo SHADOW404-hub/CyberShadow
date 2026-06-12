@@ -85,7 +85,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${showLogoutConfirm ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
+    <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${showLogoutConfirm || isAdminPath ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
       <CyberBackground />
 
       {isAuthenticated && !isRedirecting && !isAdminPath && (

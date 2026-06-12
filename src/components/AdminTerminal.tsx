@@ -16,7 +16,7 @@ const AdminTerminal: React.FC = () => {
           </div>
         </div>
         
-        <nav className="flex-1 p-6 flex flex-col gap-3">
+        <nav className="flex-1 p-6 flex flex-col gap-3 overflow-y-auto custom-scrollbar">
           <button
             onClick={() => setActiveTab('challenges')}
             className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
@@ -63,7 +63,7 @@ const AdminTerminal: React.FC = () => {
       </aside>
 
       {/* Content Area */}
-      <main className="flex-1 h-screen overflow-y-auto bg-[#0d101b] relative custom-scrollbar">
+      <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#0d101b] relative custom-scrollbar">
         {/* Background Gradients for depth */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00f0ff]/5 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#9d4edd]/5 blur-[120px] rounded-full -ml-64 -mb-64 pointer-events-none" />
