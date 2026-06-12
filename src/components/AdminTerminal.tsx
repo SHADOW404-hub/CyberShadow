@@ -5,8 +5,8 @@ const AdminTerminal: React.FC = () => {
   const { pathname } = useLocation();
   
   const currentTab = pathname.includes('/admin/users') ? 'users' 
-                   : pathname.includes('/admin/stats') ? 'stats' 
-                   : 'challenges';
+                   : pathname.includes('/admin/challenges') ? 'challenges' 
+                   : 'stats';
 
   return (
     <div className="flex h-screen w-full bg-[#0d101b] text-white font-mono overflow-hidden">
@@ -117,8 +117,8 @@ const AdminTerminal: React.FC = () => {
               <Route path="challenges" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Initializing Challenge Management Interface...</div>} />
               <Route path="users" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Querying User Records from Database...</div>} />
               <Route path="stats" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Compiling System Performance Metrics...</div>} />
-              <Route path="/" element={<Navigate to="challenges" replace />} />
-              <Route path="*" element={<Navigate to="challenges" replace />} />
+              <Route path="/" element={<Navigate to="stats" replace />} />
+              <Route path="*" element={<Navigate to="stats" replace />} />
             </Routes>
           </section>
         </div>
