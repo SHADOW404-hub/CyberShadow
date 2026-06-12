@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import StatsContent from './admin/StatsContent';
+import ChallengesContent from './admin/ChallengesContent';
+import UsersContent from './admin/UsersContent';
 
 const AdminTerminal: React.FC = () => {
   const { pathname } = useLocation();
@@ -114,9 +117,9 @@ const AdminTerminal: React.FC = () => {
 
           <section className="bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl p-8 backdrop-blur-md min-h-[600px] shadow-[inset_0_0_30px_rgba(0,240,255,0.02)]">
             <Routes>
-              <Route path="challenges" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Initializing Challenge Management Interface...</div>} />
-              <Route path="users" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Querying User Records from Database...</div>} />
-              <Route path="stats" element={<div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Compiling System Performance Metrics...</div>} />
+              <Route path="stats" element={<StatsContent />} />
+              <Route path="challenges" element={<ChallengesContent />} />
+              <Route path="users" element={<UsersContent />} />
               <Route path="/" element={<Navigate to="stats" replace />} />
               <Route path="*" element={<Navigate to="stats" replace />} />
             </Routes>
