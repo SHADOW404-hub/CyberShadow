@@ -12,6 +12,7 @@ import Profile from './Profile';
 import Challenges from './components/Challenges';
 import Scoreboard from './components/Scoreboard';
 import Learn from './components/Learn';
+import AdminTerminal from './components/AdminTerminal';
 
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
@@ -110,6 +111,23 @@ const AppContent: React.FC = () => {
                 <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
                 <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
               </NavLink>
+
+              {profile?.role === 'admin' && (
+                <>
+                  <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
+                  <NavLink
+                    to="/admin"
+                    className={({ isActive }) => `
+                      relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                      ${isActive ? 'text-[#ff3366] drop-shadow-[0_0_10px_rgba(255,51,102,0.7)]' : 'text-white/30 hover:text-white'}
+                    `}
+                  >
+                    <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Admin Terminal</span>
+                    <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#ff3366] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#ff3366]"></span>
+                    <div className="absolute -inset-x-4 -inset-y-2 bg-[#ff3366]/0 group-hover:bg-[#ff3366]/5 rounded-lg transition-all duration-500" />
+                  </NavLink>
+                </>
+              )}
             </div>
           )}
 
@@ -210,6 +228,7 @@ const AppContent: React.FC = () => {
           <Route path="/scoreboard" element={isAuthenticated && !isRedirecting ? <Scoreboard /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
           <Route path="/learn" element={isAuthenticated && !isRedirecting ? <Learn /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
           <Route path="/profile" element={isAuthenticated && !isRedirecting ? <Profile /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
+          <Route path="/admin" element={isAuthenticated && !isRedirecting && profile?.role === 'admin' ? <AdminTerminal /> : <Dashboard />} />
           <Route path="*" element={
             isRedirecting ? (
           <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00ff66]/30 w-full backdrop-blur-md flex flex-col items-center justify-center min-h-[350px] shadow-[0_0_30px_rgba(0,255,102,0.15)] animate-[pulse_2s_infinite]">
