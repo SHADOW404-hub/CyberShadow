@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const AdminTerminal: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'challenges' | 'users'>('challenges');
+  const [activeTab, setActiveTab] = useState<'challenges' | 'users' | 'stats'>('challenges');
 
   return (
     <div className="flex h-screen w-full bg-[#0d101b] text-white font-mono overflow-hidden">
@@ -50,6 +50,23 @@ const AdminTerminal: React.FC = () => {
             </svg>
             <span className="text-[11px] font-bold uppercase tracking-[3px]">Users</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('stats')}
+            className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+              activeTab === 'stats' 
+                ? 'text-[#00f0ff] bg-[#00f0ff]/5 border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]' 
+                : 'text-white/30 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            {activeTab === 'stats' && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00f0ff] shadow-[0_0_15px_#00f0ff]" />
+            )}
+            <svg className={`w-5 h-5 transition-colors ${activeTab === 'stats' ? 'text-[#00f0ff]' : 'text-white/20'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span className="text-[11px] font-bold uppercase tracking-[3px]">Stats</span>
+          </button>
         </nav>
 
         <div className="p-6 border-t border-[#00f0ff]/10">
@@ -72,7 +89,11 @@ const AdminTerminal: React.FC = () => {
           <header className="flex justify-between items-center mb-12">
             <div>
               <h1 className="text-3xl font-black tracking-[8px] text-white uppercase mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                {activeTab === 'challenges' ? 'System_Challenges' : 'User_Database'}
+                {activeTab === 'challenges' 
+                  ? 'System_Challenges' 
+                  : activeTab === 'users' 
+                    ? 'User_Database' 
+                    : 'Operational_Stats'}
               </h1>
               <div className="flex items-center gap-3">
                 <div className="h-[2px] w-12 bg-[#00f0ff]"></div>
@@ -89,8 +110,10 @@ const AdminTerminal: React.FC = () => {
           <section className="bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl p-8 backdrop-blur-md min-h-[600px] shadow-[inset_0_0_30px_rgba(0,240,255,0.02)]">
             {activeTab === 'challenges' ? (
               <div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Initializing Challenge Management Interface...</div>
-            ) : (
+            ) : activeTab === 'users' ? (
               <div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Querying User Records from Database...</div>
+            ) : (
+              <div className="text-white/40 text-xs tracking-widest uppercase animate-pulse">Compiling System Performance Metrics...</div>
             )}
           </section>
         </div>
