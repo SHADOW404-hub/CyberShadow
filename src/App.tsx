@@ -267,7 +267,7 @@ const AppContent: React.FC = () => {
           <Route path="/scoreboard" element={isAuthenticated ? <Scoreboard /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
           <Route path="/learn" element={isAuthenticated ? <Learn /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
           <Route path="/profile" element={isAuthenticated ? <Profile /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
-          <Route path="/admin" element={isAuthenticated && profile?.role === 'admin' ? <AdminTerminal /> : <Dashboard />} />
+          <Route path="/admin/*" element={isAuthenticated && profile?.role === 'admin' ? <AdminTerminal /> : <Dashboard />} />
           <Route path="*" element={
             view === 'reset-password' ? (
               <ResetPassword />
