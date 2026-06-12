@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import StatsContent from './admin/StatsContent';
-import ChallengesContent from './admin/ChallengesContent';
-import UsersContent from './admin/UsersContent';
+import StatsContent from './StatsContent';
+import ChallengesContent from './/ChallengesContent';
+import UsersContent from './UsersContent';
 
 const AdminTerminal: React.FC = () => {
   const { pathname } = useLocation();
