@@ -2,23 +2,26 @@ import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
-import { BrowserRouter as Router, NavLink, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, NavLink, Routes, Route, Link, useLocation } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
 import ResetPassword from './components/ResetPassword';
 import ForgotPassword from './components/ForgotPassword';
 import Profile from './Profile';
+import Challenges from './components/Challenges';
+import Scoreboard from './components/Scoreboard';
+import Learn from './components/Learn';
 
 type View = 'login' | 'register' | 'reset-password' | 'forgot-password';
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, loading, profile, signOut } = useAuth();
+  const location = useLocation();
 
   const [view, setView] = useState<View>('login');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Faqat logout tasdiqlash modalini saqlab qolamiz
   const [isRedirecting, setIsRedirecting] = useState(false);
   const prevAuth = React.useRef(isAuthenticated);
 
@@ -44,7 +47,7 @@ const AppContent: React.FC = () => {
   if (loading) return null;
 
   return (
-    <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${(showProfileModal || showLogoutConfirm) ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
+    <div className={`w-full h-screen flex justify-center ${isAuthenticated && !isRedirecting ? 'items-start' : 'items-center'} ${showLogoutConfirm ? 'overflow-hidden' : 'overflow-y-auto overflow-x-hidden'}`}>
       <CyberBackground />
 
       {isAuthenticated && !isRedirecting && (
@@ -66,119 +69,133 @@ const AppContent: React.FC = () => {
           </div>
 
           {/* Enhanced Navigation Links - Center Aligned */}
-          <div className="hidden md:flex items-center gap-10 px-8 py-2.5 bg-[#0d101b]/40 border border-[#00f0ff]/15 rounded-xl backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.3),inset_0_0_10px_rgba(0,240,255,0.05)]">
-            <NavLink
-              to="/challenges"
-              className={({ isActive }) => `
-                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
-              `}
-            >
-              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Challenges</span>
-              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
-              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
-            </NavLink>
-            
-            <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
+          {location.pathname !== '/profile' && (
+            <div className="hidden md:flex items-center gap-10 px-8 py-2.5 bg-[#0d101b]/40 border border-[#00f0ff]/15 rounded-xl backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.3),inset_0_0_10px_rgba(0,240,255,0.05)]">
+              <NavLink
+                to="/challenges"
+                className={({ isActive }) => `
+                  relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                  ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
+                `}
+              >
+                <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Challenges</span>
+                <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+                <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
+              </NavLink>
+              
+              <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
 
-            <NavLink
-              to="/scoreboard"
-              className={({ isActive }) => `
-                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
-              `}
-            >
-              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Scoreboard</span>
-              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
-              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
-            </NavLink>
+              <NavLink
+                to="/scoreboard"
+                className={({ isActive }) => `
+                  relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                  ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
+                `}
+              >
+                <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Scoreboard</span>
+                <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+                <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
+              </NavLink>
 
-            <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
+              <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-[#00f0ff]/20 to-transparent" />
 
-            <NavLink
-              to="/learn"
-              className={({ isActive }) => `
-                relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
-                ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
-              `}
-            >
-              <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Learn</span>
-              <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
-              <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
-            </NavLink>
-          </div>
+              <NavLink
+                to="/learn"
+                className={({ isActive }) => `
+                  relative font-mono text-[11px] font-bold uppercase tracking-[3px] transition-all duration-500 group
+                  ${isActive ? 'text-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.7)]' : 'text-white/30 hover:text-white'}
+                `}
+              >
+                <span className="relative z-10 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">Learn</span>
+                <span className="absolute -bottom-1.5 left-0 w-0 h-[2px] bg-gradient-to-r from-transparent via-[#00f0ff] to-transparent opacity-0 group-hover:w-full group-hover:opacity-100 transition-all duration-500 shadow-[0_0_15px_#00f0ff]"></span>
+                <div className="absolute -inset-x-4 -inset-y-2 bg-[#00f0ff]/0 group-hover:bg-[#00f0ff]/5 rounded-lg transition-all duration-500" />
+              </NavLink>
+            </div>
+          )}
 
           {/* Profile Section - Right Aligned */}
           <div className="flex-1 flex justify-end">
-            <div
-              className="relative outline-none"
-              onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
-              tabIndex={0}
-          >
-            <div 
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-4 border border-[#00f0ff]/25 bg-[#0d101b]/40 group cursor-pointer hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)]"
-            >
-              <div className="flex flex-col items-end">
-                <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
-                  {profile?.username || 'GHOST_USER'}
-                </span>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00ff66]"></span>
-                  </span>
-                  <span className="text-[10px] font-mono text-[#00ff66] tracking-[1px] uppercase opacity-90 leading-none">Online</span>
-                </div>
-              </div>
-              
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
-                <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center">
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-[#00f0ff] font-mono font-bold text-lg drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
-                      {(profile?.username || 'G').charAt(0).toUpperCase()}
+            {location.pathname === '/profile' ? (
+              <Link
+                to="/"
+                className="flex items-center gap-3 border border-[#00f0ff]/25 bg-[#0d101b]/40 hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-5 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)] text-white font-mono text-[10px] font-bold uppercase tracking-[2px]"
+              >
+                <svg className="w-4 h-4 text-[#00f0ff]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Return to Dashboard
+              </Link>
+            ) : (
+              <div
+                className="relative outline-none"
+                onBlur={() => setTimeout(() => setShowProfileMenu(false), 200)}
+                tabIndex={0}
+              >
+                <div 
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center gap-4 border border-[#00f0ff]/25 bg-[#0d101b]/40 group cursor-pointer hover:border-[#00f0ff]/50 hover:bg-[#00f0ff]/5 py-2 px-4 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(0,240,255,0.05)]"
+                >
+                  <div className="flex flex-col items-end">
+                    <span className="text-white font-mono text-sm font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">
+                      {profile?.username || 'GHOST_USER'}
                     </span>
-                  )}
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff66] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00ff66]"></span>
+                      </span>
+                      <span className="text-[10px] font-mono text-[#00ff66] tracking-[1px] uppercase opacity-90 leading-none">Online</span>
+                    </div>
+                  </div>
+                  
+                  <div className="relative">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-0 group-hover:opacity-40 transition duration-500"></div>
+                    <div className="relative w-10 h-10 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-[#0d101b] flex items-center justify-center">
+                      {profile?.avatar_url ? (
+                        <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[#00f0ff] font-mono font-bold text-lg drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
+                          {(profile?.username || 'G').charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dropdown Menu */}
+                <div className={`absolute right-0 mt-2 w-48 bg-[#0d101b]/95 border border-[#00f0ff]/20 rounded-xl shadow-2xl backdrop-blur-md z-50 overflow-hidden origin-top-right transform transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[0_0_30px_rgba(0,240,255,0.15)] ${
+                  showProfileMenu 
+                    ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' 
+                    : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
+                }`}>
+                  <div className="p-2 flex flex-col gap-1">
+                    <Link
+                      to="/profile"
+                      onClick={() => setShowProfileMenu(false)}
+                      className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
+                    >
+                      <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      View Profile
+                    </Link>
+                    <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
+                    <button 
+                      onClick={() => {
+                        setShowProfileMenu(false);
+                        setShowLogoutConfirm(true);
+                      }}
+                        className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
+                    >
+                      <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Log Out
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Dropdown Menu */}
-            <div className={`absolute right-0 mt-2 w-48 bg-[#0d101b]/95 border border-[#00f0ff]/20 rounded-xl shadow-2xl backdrop-blur-md z-50 overflow-hidden origin-top-right transform transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[0_0_30px_rgba(0,240,255,0.15)] ${
-              showProfileMenu 
-                ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' 
-                : 'opacity-0 scale-90 -translate-y-4 pointer-events-none'
-            }`}>
-              <div className="p-2 flex flex-col gap-1">
-                <Link 
-                  to="/profile"
-                  onClick={() => setShowProfileMenu(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-white/80 font-mono text-[10px] hover:bg-[#00f0ff]/10 hover:text-[#00f0ff] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
-                >
-                  <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  View Profile
-                </Link>
-                <div className="h-[1px] bg-[#00f0ff]/10 mx-2 my-1"></div>
-                <button 
-                  onClick={() => {
-                    setShowProfileMenu(false);
-                    setShowLogoutConfirm(true);
-                  }}
-                    className="flex items-center gap-3 px-4 py-2 text-[#ff3366]/80 font-mono text-[10px] hover:bg-[#ff3366]/10 hover:text-[#ff3366] rounded-lg transition-all text-left uppercase tracking-wider group cursor-pointer"
-                >
-                  <svg className="w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  Log Out
-                </button>
-              </div>
-            </div>
-            </div>
+            )}
           </div>
         </nav>
       )}
@@ -189,7 +206,10 @@ const AppContent: React.FC = () => {
           : "w-full max-w-[450px] z-10 p-5"
       }>
         <Routes>
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/challenges" element={isAuthenticated && !isRedirecting ? <Challenges /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
+          <Route path="/scoreboard" element={isAuthenticated && !isRedirecting ? <Scoreboard /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
+          <Route path="/learn" element={isAuthenticated && !isRedirecting ? <Learn /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
+          <Route path="/profile" element={isAuthenticated && !isRedirecting ? <Profile /> : <LoginForm onSwitch={() => setView('register')} onForgotPassword={() => setView('forgot-password')} />} />
           <Route path="*" element={
             isRedirecting ? (
           <div className="bg-[#0d101b]/95 p-10 rounded-2xl border border-[#00ff66]/30 w-full backdrop-blur-md flex flex-col items-center justify-center min-h-[350px] shadow-[0_0_30px_rgba(0,255,102,0.15)] animate-[pulse_2s_infinite]">
@@ -237,72 +257,6 @@ const AppContent: React.FC = () => {
       } />
         </Routes>
       </div>
-
-      {/* Profile Modal */}
-      {showProfileModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-[#0d101b]/80 backdrop-blur-sm"
-            onClick={() => setShowProfileModal(false)}
-          />
-          <div className="relative bg-[#0d101b] border border-[#00f0ff]/25 p-8 rounded-2xl max-w-sm w-full shadow-[0_0_50px_rgba(0,240,255,0.15)] animate-scale-in">
-            {/* Cyberpunk Decorative Corners */}
-            <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f0ff]" />
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f0ff]" />
-
-            {/* Close button */}
-            <button
-              onClick={() => setShowProfileModal(false)}
-              className="absolute top-4 right-4 text-[#64748b] hover:text-white transition-colors cursor-pointer"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Avatar */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#00f0ff] to-[#9d4edd] rounded-full blur opacity-40" />
-                <div className="relative w-20 h-20 rounded-full border-2 border-[#00f0ff]/40 overflow-hidden bg-[#0d101b] flex items-center justify-center">
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-[#00f0ff] font-mono font-bold text-4xl drop-shadow-[0_0_12px_rgba(0,240,255,0.6)]">
-                      {(profile?.username || 'G').charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <h3 className="text-white font-mono font-bold text-xl mt-4 tracking-wider">
-                {profile?.username || 'GHOST_USER'}
-              </h3>
-              <span className="text-[#00f0ff]/60 font-mono text-[10px] tracking-[2px] uppercase mt-1">
-                {profile?.role || 'user'}
-              </span>
-            </div>
-
-            {/* Info Rows */}
-            <div className="flex flex-col gap-3 border-t border-[#00f0ff]/10 pt-5">
-              <div className="flex justify-between items-center">
-                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Email</span>
-                <span className="text-white/80 font-mono text-xs">{profile?.email || '—'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Country</span>
-                <span className="text-white/80 font-mono text-xs">{profile?.country || '—'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest">Joined</span>
-                <span className="text-white/80 font-mono text-xs">
-                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : '—'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
