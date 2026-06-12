@@ -23,6 +23,23 @@ const AdminTerminal: React.FC = () => {
         
         <nav className="flex-1 p-6 flex flex-col gap-3 overflow-y-auto custom-scrollbar">
           <Link
+            to="/admin/stats"
+            className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
+              currentTab === 'stats' 
+                ? 'text-[#00f0ff] bg-[#00f0ff]/5 border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]' 
+                : 'text-white/30 hover:text-white hover:bg-white/5 border border-transparent'
+            }`}
+          >
+            {currentTab === 'stats' && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00f0ff] shadow-[0_0_15px_#00f0ff]" />
+            )}
+            <svg className={`w-5 h-5 transition-colors ${currentTab === 'stats' ? 'text-[#00f0ff]' : 'text-white/20'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <span className="text-[11px] font-bold uppercase tracking-[3px]">Stats</span>
+          </Link>
+
+          <Link
             to="/admin/challenges"
             className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
               currentTab === 'challenges' 
@@ -54,23 +71,6 @@ const AdminTerminal: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
             <span className="text-[11px] font-bold uppercase tracking-[3px]">Users</span>
-          </Link>
-
-          <Link
-            to="/admin/stats"
-            className={`flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden ${
-              currentTab === 'stats' 
-                ? 'text-[#00f0ff] bg-[#00f0ff]/5 border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.1)]' 
-                : 'text-white/30 hover:text-white hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            {currentTab === 'stats' && (
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#00f0ff] shadow-[0_0_15px_#00f0ff]" />
-            )}
-            <svg className={`w-5 h-5 transition-colors ${currentTab === 'stats' ? 'text-[#00f0ff]' : 'text-white/20'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <span className="text-[11px] font-bold uppercase tracking-[3px]">Stats</span>
           </Link>
         </nav>
 
