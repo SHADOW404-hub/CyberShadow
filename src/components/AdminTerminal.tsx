@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const AdminTerminal: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'challenges' | 'users' | 'stats'>('challenges');
@@ -70,12 +71,12 @@ const AdminTerminal: React.FC = () => {
         </nav>
 
         <div className="p-6 border-t border-[#00f0ff]/10">
-          <a href="/" className="flex items-center gap-3 px-5 py-3 text-white/40 text-[10px] uppercase tracking-widest hover:text-[#ff3366] transition-colors group">
+          <Link to="/" className="flex items-center gap-3 px-5 py-3 text-white/40 text-[10px] uppercase tracking-widest hover:text-[#ff3366] transition-colors group">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 8.959 8.959 0 01-9 9 8.959 8.959 0 01-9-9z" />
             </svg>
             Exit to Site
-          </a>
+          </Link>
         </div>
       </aside>
 

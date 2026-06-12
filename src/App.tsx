@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import CyberBackground from './components/CyberBackground';
-import { BrowserRouter as Router, NavLink, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, NavLink, Routes, Route, Link, useLocation } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Dashboard from './components/Dashboard';
