@@ -16,7 +16,7 @@ const StatsContent: React.FC = () => {
     // Yer shari nuqtalari generatori (Oddiy kontinent mantiqi)
     // Haqiqiy xaritaga o'xshatish uchun matematik shovqin ishlatamiz
     const points: { x: number; y: number; z: number }[] = [];
-    const dotCount = 1500;
+    const dotCount = 2500; // Nuqtalar zichligini oshiramiz
 
     for (let i = 0; i < dotCount; i++) {
       const phi = Math.acos(-1 + (2 * i) / dotCount);
@@ -26,10 +26,15 @@ const StatsContent: React.FC = () => {
       const y = Math.sin(theta) * Math.sin(phi);
       const z = Math.cos(phi);
 
-      // Yer yuzasidagi quruqliklarni simulyatsiya qilish (Noise function o'rniga oddiyroq mantiq)
-      // Bu mantiq ba'zi joylarni bo'sh qoldiradi (okeanlar kabi)
-      const landProbability = Math.sin(x * 3) * Math.cos(y * 3) + Math.sin(z * 2);
-      if (landProbability > 0.2) {
+      // Murakkabroq kontinent simulyatsiyasi (Procedural Landmass)
+      const lon = Math.atan2(y, x);
+      const lat = Math.asin(z);
+      
+      const land = Math.sin(lon * 2.2) * Math.cos(lat * 1.5) + 
+                   Math.sin(lon * 4.5 + 1.2) * Math.cos(lat * 2.8) * 0.5 +
+                   Math.sin(lon * 8) * Math.sin(lat * 6) * 0.2;
+
+      if (land > 0.05) { // Threshold: Faqat quruqlik nuqtalarini qo'shamiz
         points.push({ x, y, z });
       }
     }
@@ -47,9 +52,9 @@ const StatsContent: React.FC = () => {
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      rotation += 0.005;
+      rotation += 0.004; // Aylanish tezligi
 
-      const radius = canvas.width * 0.35;
+      const radius = canvas.width * 0.38;
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
 
@@ -64,8 +69,8 @@ const StatsContent: React.FC = () => {
           const screenX = centerX + rotX * radius * perspective;
           const screenY = centerY + p.y * radius * perspective;
           
-          const opacity = Math.max(0.1, (rotZ + 1) / 2);
-          const size = Math.max(0.5, perspective * 1.2);
+          const opacity = Math.max(0.1, (rotZ + 0.8) / 1.8);
+          const size = Math.max(0.4, perspective * 0.8);
 
           ctx.beginPath();
           ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
