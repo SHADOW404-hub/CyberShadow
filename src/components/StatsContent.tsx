@@ -34,6 +34,17 @@ const StatsContent: React.FC = () => {
       }
     }
 
+    const handleResize = () => {
+      const parent = canvas.parentElement;
+      if (parent) {
+        canvas.width = parent.clientWidth < 192 ? parent.clientWidth : 192;
+        canvas.height = canvas.width;
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       rotation += 0.005;
@@ -78,6 +89,7 @@ const StatsContent: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
