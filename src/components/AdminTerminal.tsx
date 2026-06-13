@@ -88,43 +88,14 @@ const AdminTerminal: React.FC = () => {
       </aside>
 
       {/* Content Area */}
-      <main className="flex-1 h-screen overflow-y-auto overflow-x-hidden bg-[#0d101b] relative custom-scrollbar">
-        {/* Background Gradients for depth */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#00f0ff]/5 blur-[120px] rounded-full -mr-64 -mt-64 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#9d4edd]/5 blur-[120px] rounded-full -ml-64 -mb-64 pointer-events-none" />
-
-        <div className="p-10 relative z-10">
-          <header className="flex justify-between items-center mb-12">
-            <div>
-              <h1 className="text-3xl font-black tracking-[8px] text-white uppercase mb-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                {currentTab === 'challenges' 
-                  ? 'System_Challenges' 
-                  : currentTab === 'users' 
-                    ? 'User_Database' 
-                    : 'Operational_Stats'}
-              </h1>
-              <div className="flex items-center gap-3">
-                <div className="h-[2px] w-12 bg-[#00f0ff]"></div>
-                <span className="text-[10px] text-[#00f0ff] font-bold tracking-[4px] uppercase opacity-70">
-                  Access_Level: Administrator
-                </span>
-              </div>
-            </div>
-            <div className="px-5 py-2 border border-[#00f0ff]/20 bg-[#00f0ff]/5 rounded-lg text-[#00f0ff] text-[10px] font-bold tracking-[2px] uppercase shadow-[inset_0_0_10px_rgba(0,240,255,0.1)]">
-              v1.0.4-stable
-            </div>
-          </header>
-
-          <section className="bg-[#0d101b]/40 border border-[#00f0ff]/10 rounded-2xl p-8 backdrop-blur-md min-h-[600px] shadow-[inset_0_0_30px_rgba(0,240,255,0.02)]">
-            <Routes>
-              <Route path="stats" element={<StatsContent />} />
-              <Route path="challenges" element={<ChallengesContent />} />
-              <Route path="users" element={<UsersContent />} />
-              <Route path="/" element={<Navigate to="stats" replace />} />
-              <Route path="*" element={<Navigate to="stats" replace />} />
-            </Routes>
-          </section>
-        </div>
+      <main className="flex-1 h-screen overflow-y-auto bg-[#0d101b] p-8">
+        <Routes>
+          <Route path="stats" element={<StatsContent />} />
+          <Route path="challenges" element={<ChallengesContent />} />
+          <Route path="users" element={<UsersContent />} />
+          <Route path="/" element={<Navigate to="stats" replace />} />
+          <Route path="*" element={<Navigate to="stats" replace />} />
+        </Routes>
       </main>
     </div>
   );
