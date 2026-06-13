@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../services/supabase';
+import { supabase } from './supabase';
 
 interface UserProfile {
   id: string;
@@ -12,6 +12,7 @@ interface UserProfile {
 const UsersContent: React.FC = () => {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchUsers = async () => {
@@ -26,6 +27,7 @@ const UsersContent: React.FC = () => {
       if (error) throw error;
       setUsers(data || []);
     } catch (error) {
+      setError('Maʼlumotlarni yuklashda xatolik yuz berdi. Jadval mavjudligini tekshiring.');
       console.error('Foydalanuvchilarni yuklashda xatolik:', error);
     } finally {
       setLoading(false);
@@ -86,7 +88,13 @@ const UsersContent: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#00f0ff]/5">
-              {loading ? (
+              {error ? (
+                <tr>
+                  <td colSpan={5} className="px-8 py-24 text-center">
+                    <span className="text-red-500 font-bold uppercase tracking-[2px]">{error}</span>
+                  </td>
+                </tr>
+              ) : loading ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center">
                     <span className="text-white/10 italic tracking-[5px] uppercase animate-pulse font-bold">Scanning_Network...</span>
