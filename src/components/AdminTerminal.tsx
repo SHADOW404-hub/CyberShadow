@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import StatsContent from './StatsContent';
-import ChallengesContent from './/ChallengesContent';
+import ChallengesContent from './ChallengesContent';
 import UsersContent from './UsersContent';
 
 const AdminTerminal: React.FC = () => {
@@ -24,7 +24,7 @@ const AdminTerminal: React.FC = () => {
             <div className="w-8 h-8 bg-[#0d101b] border border-[#00f0ff]/40 rounded flex items-center justify-center shadow-[0_0_10px_rgba(0,240,255,0.2)]">
               <img src="/favicon.svg" alt="Logo" className="w-5 h-5 drop-shadow-[0_0_5px_rgba(0,240,255,0.8)]" />
             </div>
-            <span className="text-white font-black tracking-[4px] text-sm uppercase">Admin Panel</span>
+            <span className="text-white font-black tracking-[4px] text-sm uppercase">Admin Terminal</span>
           </div>
         </div>
         
