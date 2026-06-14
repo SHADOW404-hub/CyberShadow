@@ -94,17 +94,16 @@ const UsersContent: React.FC = () => {
           <table className="w-full text-left font-mono text-[11px] border-collapse">
             <thead className="sticky top-0 z-10 bg-[#0d101b] border-b border-[#00f0ff]/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
               <tr className="bg-[#00f0ff]/5 text-[#00f0ff]/50 font-bold tracking-[2px] uppercase">
-                <th className="px-8 py-5">Entity_UID</th>
                 <th className="px-8 py-5">Username</th>
                 <th className="px-8 py-5">Email</th>
                 <th className="px-8 py-5">Auth_Role</th>
-                <th className="px-8 py-5 text-right">Access_Status</th>
+                <th className="px-8 py-5 text-right">Country</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#00f0ff]/5">
               {error ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-16 text-center">
+                  <td colSpan={4} className="px-8 py-16 text-center">
                     <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto">
                       <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center">
                         <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,22 +125,19 @@ USING (true);`}
                 </tr>
               ) : loading ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center">
+                  <td colSpan={4} className="px-8 py-24 text-center">
                     <span className="text-white/10 italic tracking-[5px] uppercase animate-pulse font-bold">Scanning_Network...</span>
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center text-white/10 italic tracking-[5px] uppercase font-bold">
+                  <td colSpan={4} className="px-8 py-24 text-center text-white/10 italic tracking-[5px] uppercase font-bold">
                     Zero_Entities_Detected
                   </td>
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-[#00f0ff]/5 group transition-all duration-300">
-                    <td className="px-8 py-5 text-white/30 font-mono tracking-tighter group-hover:text-white/60">
-                      {user.id.substring(0, 18)}...
-                    </td>
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-[#0d101b] border border-[#00f0ff]/20 flex items-center justify-center text-[#00f0ff] font-bold shadow-[inset_0_0_10px_rgba(0,240,255,0.1)] overflow-hidden">
@@ -166,11 +162,8 @@ USING (true);`}
                         {user.role || 'user'}
                       </span>
                     </td>
-                    <td className="px-8 py-5 text-right">
-                      <span className="inline-flex items-center gap-2 text-[#00ff66] text-[9px] font-bold uppercase tracking-widest bg-[#00ff66]/5 px-3 py-1 rounded-full border border-[#00ff66]/20">
-                        <span className="w-1.5 h-1.5 bg-[#00ff66] rounded-full shadow-[0_0_8px_#00ff66] animate-pulse"></span>
-                        Authorized
-                      </span>
+                    <td className="px-8 py-5 text-right text-white/40 text-[10px] font-mono">
+                      {user.country || '—'}
                     </td>
                   </tr>
                 ))
