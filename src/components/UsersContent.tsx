@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabaseAdmin } from '../services/supabase';
+import { supabase } from '../services/supabase';
 
 interface UserProfile {
   id: string;
@@ -21,7 +21,7 @@ const UsersContent: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabaseAdmin
+      const { data, error } = await supabase
         .from('profiles')
         .select('id, username, email, role, avatar_url, country, created_at')
         .order('created_at', { ascending: false });
@@ -36,7 +36,7 @@ const UsersContent: React.FC = () => {
 
       if (!data || data.length === 0) {
         console.warn('[UsersContent] Bo\'sh data qaytdi — RLS yoki jadval muammosi');
-        setError('Bo\'sh natija: RLS policy "authenticated" emas "anon" role uchun ham qo\'yilganligini tekshiring, yoki service_role key kerak.');
+        setError('Bo\'sh natija: RLS yoki jadval imtiyozlari sababli natija kelmadi. Agar bu admin ma\'lumotlari bo\'lsa, server-side admin endpoint orqali so\'rov yuboring.');
         return;
       }
 

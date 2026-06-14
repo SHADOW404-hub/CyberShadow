@@ -3,6 +3,18 @@ import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { supabase } from '../services/supabase';
 
+// Minimal country list fallback (improve with full list if needed)
+const COUNTRIES: string[] = [
+  'Uzbekistan',
+  'United States',
+  'United Kingdom',
+  'Canada',
+  'Germany',
+  'France',
+  'China',
+  'Japan',
+];
+
 const UserProfile: React.FC = () => {
   const { profile, refreshProfile } = useAuth();
   const { notify } = useNotification();
@@ -106,16 +118,29 @@ const UserProfile: React.FC = () => {
                 />
               </div>
 
-              {/* Country Input */}
+              {/* Country Selection */}
               <div className="flex flex-col gap-2">
                 <label className="text-[#64748b] text-[10px] font-mono uppercase tracking-wider">Region / Country</label>
-                <input
-                  type="text" // Bu qatorni o'zgartirmaymiz
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="e.g. Uzbekistan, Cyber-Space"
-                  className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors font-mono text-xs"
-                />
+                <div className="relative group">
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-all font-mono text-xs appearance-none cursor-pointer hover:border-[#00f0ff]/50 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"
+                  >
+                    <option value="" className="bg-[#0d101b]">Select Region</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c} value={c} className="bg-[#0d101b] text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom Arrow Icon */}
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#00f0ff]/40 group-hover:text-[#00f0ff] transition-colors">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
 

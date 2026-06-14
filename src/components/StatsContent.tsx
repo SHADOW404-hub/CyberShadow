@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { supabaseAdmin } from '../services/supabase';
+import { supabase } from '../services/supabase';
 
 interface StatsData {
   totalUsers: number;
@@ -58,9 +58,9 @@ const StatsContent: React.FC = () => {
     setLoading(true);
     try {
       const [{ data: profiles }, { data: challenges }, { data: solves }] = await Promise.all([
-        supabaseAdmin.from('profiles').select('role, country'),
-        supabaseAdmin.from('challenges').select('name, points, difficulty, category, created_at'),
-        supabaseAdmin.from('solves').select('id'),
+        supabase.from('profiles').select('role, country'),
+        supabase.from('challenges').select('name, points, difficulty, category, created_at'),
+        supabase.from('solves').select('id'),
       ]);
 
       const byDifficulty: Record<string, number> = {};
