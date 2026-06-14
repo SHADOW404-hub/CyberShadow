@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../services/supabase';
+import { supabaseAdmin } from '../services/supabase';
 
 interface UserProfile {
   id: string;
@@ -17,18 +17,37 @@ const UsersContent: React.FC = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
+    setError(null);
     try {
       // Profiles jadvalidan barcha foydalanuvchilarni olamiz
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('profiles')
-        .select('*')
+        .select('id, username, role, created_at, avatar_url')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers(data || []);
-    } catch (error) {
-      setError('Maʼlumotlarni yuklashda xatolik yuz berdi. Jadval mavjudligini tekshiring.');
-      console.error('Foydalanuvchilarni yuklashda xatolik:', error);
+      if (error) {
+        console.error('Supabase error:', error);
+        if (error.code === '42501' || error.message?.includes('permission')) {
+          setError('RLS Policy xatoligi: Supabase dashboard\'da profiles jadvaliga "admin" uchun SELECT policy qo\'shing.');
+        } else {
+          setError(`Xatolik: ${error.message}`);
+        }
+        return;
+      }
+
+      console.log('Fetched users:', data?.length, data);
+
+      if (!data || data.length === 0) {
+        // RLS tufayli bo'sh bo'lishi mumkin — hech qanday xato yo'q lekin data yo'q
+        console.warn('Profiles bo\'sh qaytdi. RLS policy mavjudligini tekshiring.');
+        setError('Foydalanuvchilar topilmadi. Supabase RLS policy\'ni tekshiring: profiles jadvali uchun admin SELECT ruxsatini bering.');
+        setUsers([]);
+      } else {
+        setUsers(data);
+      }
+    } catch (err: any) {
+      setError(`Kutilmagan xatolik: ${err?.message || err}`);
+      console.error('Foydalanuvchilarni yuklashda xatolik:', err);
     } finally {
       setLoading(false);
     }
@@ -90,8 +109,24 @@ const UsersContent: React.FC = () => {
             <tbody className="divide-y divide-[#00f0ff]/5">
               {error ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-24 text-center">
-                    <span className="text-red-500 font-bold uppercase tracking-[2px]">{error}</span>
+                  <td colSpan={5} className="px-8 py-16 text-center">
+                    <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto">
+                      <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+                      <span className="text-red-500 font-bold uppercase tracking-[2px] text-xs">{error}</span>
+                      <div className="bg-[#0d101b] border border-[#00f0ff]/10 rounded-lg p-4 text-left w-full">
+                        <p className="text-[#00f0ff]/60 text-[9px] uppercase tracking-widest mb-2 font-bold">Supabase SQL Editor'da quyidagi query'ni bajaring:</p>
+                        <code className="text-[#00ff66] text-[10px] font-mono block whitespace-pre-wrap">
+{`CREATE POLICY "Admins view all profiles"
+ON profiles FOR SELECT
+TO authenticated
+USING (true);`}
+                        </code>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ) : loading ? (
