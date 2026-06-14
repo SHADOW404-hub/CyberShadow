@@ -19,35 +19,29 @@ const UsersContent: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      // Profiles jadvalidan barcha foydalanuvchilarni olamiz
       const { data, error } = await supabaseAdmin
         .from('profiles')
         .select('id, username, role, created_at, avatar_url')
         .order('created_at', { ascending: false });
 
+      console.log('[UsersContent] data:', data, '| error:', error);
+
       if (error) {
-        console.error('Supabase error:', error);
-        if (error.code === '42501' || error.message?.includes('permission')) {
-          setError('RLS Policy xatoligi: Supabase dashboard\'da profiles jadvaliga "admin" uchun SELECT policy qo\'shing.');
-        } else {
-          setError(`Xatolik: ${error.message}`);
-        }
+        console.error('[UsersContent] Supabase error:', JSON.stringify(error));
+        setError(`Xatolik [${error.code}]: ${error.message}`);
         return;
       }
 
-      console.log('Fetched users:', data?.length, data);
-
       if (!data || data.length === 0) {
-        // RLS tufayli bo'sh bo'lishi mumkin — hech qanday xato yo'q lekin data yo'q
-        console.warn('Profiles bo\'sh qaytdi. RLS policy mavjudligini tekshiring.');
-        setError('Foydalanuvchilar topilmadi. Supabase RLS policy\'ni tekshiring: profiles jadvali uchun admin SELECT ruxsatini bering.');
-        setUsers([]);
-      } else {
-        setUsers(data);
+        console.warn('[UsersContent] Bo\'sh data qaytdi — RLS yoki jadval muammosi');
+        setError('Bo\'sh natija: RLS policy "authenticated" emas "anon" role uchun ham qo\'yilganligini tekshiring, yoki service_role key kerak.');
+        return;
       }
+
+      setUsers(data);
     } catch (err: any) {
       setError(`Kutilmagan xatolik: ${err?.message || err}`);
-      console.error('Foydalanuvchilarni yuklashda xatolik:', err);
+      console.error('[UsersContent] catch error:', err);
     } finally {
       setLoading(false);
     }
