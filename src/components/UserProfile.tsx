@@ -8,7 +8,6 @@ const UserProfile: React.FC = () => {
   const { notify } = useNotification();
   const [username, setUsername] = useState(profile?.username || '');
   const [country, setCountry] = useState(profile?.country || '');
-  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -22,7 +21,6 @@ const UserProfile: React.FC = () => {
         .update({
           username,
           country,
-          avatar_url: avatarUrl || null,
         })
         .eq('id', profile.id);
 
@@ -44,7 +42,7 @@ const UserProfile: React.FC = () => {
           User Profile
         </h1>
         <p className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest mt-1">
-          Customize profile metadata and security credentials
+          Update your personal information
         </p>
       </div>
 
@@ -56,13 +54,9 @@ const UserProfile: React.FC = () => {
           <div className="flex flex-col items-center w-full">
             {/* Avatar container */}
             <div className="relative w-28 h-28 rounded-full border-2 border-[#00f0ff]/30 overflow-hidden bg-black/40 flex items-center justify-center mb-6">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-[#00f0ff] font-mono font-bold text-3xl drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
-                  {(profile?.username || 'U').charAt(0).toUpperCase()}
-                </span>
-              )}
+              <span className="text-[#00f0ff] font-mono font-bold text-3xl drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]">
+                {(profile?.username || 'U').charAt(0).toUpperCase()}
+              </span>
             </div>
 
             <h3 className="text-white font-mono font-bold text-lg uppercase tracking-wider mb-1">
@@ -71,6 +65,9 @@ const UserProfile: React.FC = () => {
             <span className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded border border-white/5">
               Role: {profile?.role || 'user'}
             </span>
+            <p className="text-[#00f0ff]/60 font-mono text-[10px] mt-4 lowercase tracking-tight">
+              {profile?.email || 'no-email-linked'}
+            </p>
           </div>
 
           {/* Quick Metrics */}
@@ -122,15 +119,15 @@ const UserProfile: React.FC = () => {
               </div>
             </div>
 
-            {/* Avatar URL Input */}
+            {/* Email Address (Read-only) */}
             <div className="flex flex-col gap-2">
-              <label className="text-[#64748b] text-[10px] font-mono uppercase tracking-wider">Avatar Image URL</label>
+              <label className="text-[#64748b] text-[10px] font-mono uppercase tracking-wider">Email Address</label>
               <input
-                type="url" // Bu qatorni o'zgartirmaymiz
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
-                className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors font-mono text-xs"
+                type="email"
+                value={profile?.email || ''}
+                disabled
+                placeholder="not_set@gmail.com"
+                className="bg-black/40 border border-[#333] p-3 text-[#00f0ff]/40 rounded-lg font-mono text-xs cursor-not-allowed"
               />
             </div>
 
