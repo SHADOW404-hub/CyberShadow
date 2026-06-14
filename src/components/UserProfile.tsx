@@ -41,7 +41,7 @@ const UserProfile: React.FC = () => {
     <div className="flex flex-col gap-8 w-full animate-scale-in">
       <div className="border-b border-[#00f0ff]/15 pb-6">
         <h1 className="text-white font-mono font-black text-2xl tracking-[4px] uppercase bg-clip-text text-transparent bg-gradient-to-r from-white to-[#00f0ff] drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]">
-          OPERATOR CONTROL UNIT
+          User Profile
         </h1>
         <p className="text-[#64748b] font-mono text-[10px] uppercase tracking-widest mt-1">
           Customize profile metadata and security credentials
@@ -91,7 +91,7 @@ const UserProfile: React.FC = () => {
           <div className="absolute top-0 right-0 w-2 h-2 bg-[#00f0ff] opacity-40" />
 
           <h2 className="text-white font-mono font-bold text-sm tracking-widest uppercase mb-6 border-b border-[#00f0ff]/10 pb-3">
-            Identity Configuration
+            Account Settings
           </h2>
 
           <form onSubmit={handleUpdate} className="flex flex-col gap-6">
@@ -103,8 +103,8 @@ const UserProfile: React.FC = () => {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  required
-                  placeholder="Operator Nickname"
+                  required // Bu qatorni o'zgartirmaymiz, chunki u funksionallikni ta'minlaydi
+                  placeholder="Your username"
                   className="bg-black border border-[#333] p-3 text-[#00f0ff] rounded-lg focus:outline-none focus:border-[#00f0ff] transition-colors font-mono text-xs"
                 />
               </div>
@@ -113,7 +113,7 @@ const UserProfile: React.FC = () => {
               <div className="flex flex-col gap-2">
                 <label className="text-[#64748b] text-[10px] font-mono uppercase tracking-wider">Region / Country</label>
                 <input
-                  type="text"
+                  type="text" // Bu qatorni o'zgartirmaymiz
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                   placeholder="e.g. Uzbekistan, Cyber-Space"
@@ -126,7 +126,7 @@ const UserProfile: React.FC = () => {
             <div className="flex flex-col gap-2">
               <label className="text-[#64748b] text-[10px] font-mono uppercase tracking-wider">Avatar Image URL</label>
               <input
-                type="url"
+                type="url" // Bu qatorni o'zgartirmaymiz
                 value={avatarUrl}
                 onChange={(e) => setAvatarUrl(e.target.value)}
                 placeholder="https://example.com/avatar.jpg"
@@ -140,8 +140,8 @@ const UserProfile: React.FC = () => {
                 type="submit"
                 disabled={isUpdating}
                 className="px-6 py-3 bg-[#00f0ff]/10 border border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff]/20 font-mono text-[10px] uppercase tracking-widest rounded-lg cursor-pointer transition-all duration-300 disabled:opacity-50"
-              >
-                {isUpdating ? 'SYNCING MATRIX...' : 'SAVE SETTINGS'}
+              > 
+                {isUpdating ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </form>
