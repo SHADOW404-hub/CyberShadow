@@ -8,6 +8,7 @@ interface UserProfile {
   role: string;
   avatar_url?: string;
   country?: string;
+  created_at?: string;
 }
 
 const UsersContent: React.FC = () => {
@@ -22,8 +23,8 @@ const UsersContent: React.FC = () => {
     try {
       const { data, error } = await supabaseAdmin
         .from('profiles')
-        .select('id, username, email, role, avatar_url, country')
-        .order('username', { ascending: true });
+        .select('id, username, email, role, avatar_url, country, created_at')
+        .order('created_at', { ascending: false });
 
       console.log('[UsersContent] data:', data, '| error:', error);
 
@@ -97,13 +98,14 @@ const UsersContent: React.FC = () => {
                 <th className="px-8 py-5">Username</th>
                 <th className="px-8 py-5">Email</th>
                 <th className="px-8 py-5">Auth_Role</th>
-                <th className="px-8 py-5 text-right">Country</th>
+                <th className="px-8 py-5">Country</th>
+                <th className="px-8 py-5 text-right">Joined_Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#00f0ff]/5">
               {error ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-16 text-center">
+                  <td colSpan={5} className="px-8 py-16 text-center">
                     <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto">
                       <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center">
                         <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,13 +127,13 @@ USING (true);`}
                 </tr>
               ) : loading ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-24 text-center">
+                  <td colSpan={5} className="px-8 py-24 text-center">
                     <span className="text-white/10 italic tracking-[5px] uppercase animate-pulse font-bold">Scanning_Network...</span>
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-24 text-center text-white/10 italic tracking-[5px] uppercase font-bold">
+                  <td colSpan={5} className="px-8 py-24 text-center text-white/10 italic tracking-[5px] uppercase font-bold">
                     Zero_Entities_Detected
                   </td>
                 </tr>
@@ -162,8 +164,13 @@ USING (true);`}
                         {user.role || 'user'}
                       </span>
                     </td>
-                    <td className="px-8 py-5 text-right text-white/40 text-[10px] font-mono">
+                    <td className="px-8 py-5 text-white/40 text-[10px] font-mono">
                       {user.country || '—'}
+                    </td>
+                    <td className="px-8 py-5 text-right text-white/30 text-[10px] font-mono whitespace-nowrap">
+                      {user.created_at
+                        ? new Date(user.created_at).toLocaleDateString('uz-UZ', { year: 'numeric', month: 'short', day: 'numeric' })
+                        : '—'}
                     </td>
                   </tr>
                 ))

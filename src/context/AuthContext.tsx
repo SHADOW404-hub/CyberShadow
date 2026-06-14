@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (data.user) {
       const { error: profError } = await supabase.from('profiles').insert([
-        { id: data.user.id, username, email }
+        { id: data.user.id, username, email, created_at: new Date().toISOString() }
       ]);
       if (profError) return { error: mapAuthError(profError) };
     }
