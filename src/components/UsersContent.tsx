@@ -4,9 +4,10 @@ import { supabaseAdmin } from '../services/supabase';
 interface UserProfile {
   id: string;
   username: string;
+  email?: string;
   role: string;
-  created_at: string;
   avatar_url?: string;
+  country?: string;
 }
 
 const UsersContent: React.FC = () => {
@@ -21,8 +22,8 @@ const UsersContent: React.FC = () => {
     try {
       const { data, error } = await supabaseAdmin
         .from('profiles')
-        .select('id, username, role, created_at, avatar_url')
-        .order('created_at', { ascending: false });
+        .select('id, username, email, role, avatar_url, country')
+        .order('username', { ascending: true });
 
       console.log('[UsersContent] data:', data, '| error:', error);
 
@@ -95,8 +96,8 @@ const UsersContent: React.FC = () => {
               <tr className="bg-[#00f0ff]/5 text-[#00f0ff]/50 font-bold tracking-[2px] uppercase">
                 <th className="px-8 py-5">Entity_UID</th>
                 <th className="px-8 py-5">Username</th>
+                <th className="px-8 py-5">Email</th>
                 <th className="px-8 py-5">Auth_Role</th>
-                <th className="px-8 py-5">Sync_Date</th>
                 <th className="px-8 py-5 text-right">Access_Status</th>
               </tr>
             </thead>
@@ -153,17 +154,17 @@ USING (true);`}
                         <span className="text-white font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">{user.username || 'NULL_IDENTITY'}</span>
                       </div>
                     </td>
+                    <td className="px-8 py-5 text-white/40 text-[10px] font-mono">
+                      {user.email || '—'}
+                    </td>
                     <td className="px-8 py-5">
                       <span className={`px-3 py-1 rounded text-[9px] font-black uppercase tracking-widest border ${
                         user.role === 'admin' 
                           ? 'bg-[#ff3366]/10 text-[#ff3366] border-[#ff3366]/30 shadow-[0_0_15px_rgba(255,51,102,0.1)]' 
                           : 'bg-[#00f0ff]/10 text-[#00f0ff] border-[#00f0ff]/30'
                       }`}>
-                        {user.role}
+                        {user.role || 'user'}
                       </span>
-                    </td>
-                    <td className="px-8 py-5 text-white/30 whitespace-nowrap">
-                      {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-8 py-5 text-right">
                       <span className="inline-flex items-center gap-2 text-[#00ff66] text-[9px] font-bold uppercase tracking-widest bg-[#00ff66]/5 px-3 py-1 rounded-full border border-[#00ff66]/20">
