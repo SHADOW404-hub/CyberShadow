@@ -97,9 +97,9 @@ const UsersContent: React.FC = () => {
               <tr className="bg-[#00f0ff]/5 text-[#00f0ff]/50 font-bold tracking-[2px] uppercase">
                 <th className="px-8 py-5">Username</th>
                 <th className="px-8 py-5">Email</th>
-                <th className="px-8 py-5">Auth_Role</th>
+                <th className="px-8 py-5">Role</th>
                 <th className="px-8 py-5">Country</th>
-                <th className="px-8 py-5 text-right">Joined_Date</th>
+                <th className="px-8 py-5 text-right">Joined Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#00f0ff]/5">
@@ -128,13 +128,13 @@ USING (true);`}
               ) : loading ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center">
-                    <span className="text-white/10 italic tracking-[5px] uppercase animate-pulse font-bold">Scanning_Network...</span>
+                    <span className="text-white/10 italic tracking-[5px] uppercase animate-pulse font-bold">Loading users...</span>
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-8 py-24 text-center text-white/10 italic tracking-[5px] uppercase font-bold">
-                    Zero_Entities_Detected
+                    No users found
                   </td>
                 </tr>
               ) : (
@@ -149,7 +149,7 @@ USING (true);`}
                             user.username?.[0]?.toUpperCase() || '?'
                           )}
                         </div>
-                        <span className="text-white font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">{user.username || 'NULL_IDENTITY'}</span>
+                        <span className="text-white font-bold tracking-wider group-hover:text-[#00f0ff] transition-colors">{user.username || 'Unknown'}</span>
                       </div>
                     </td>
                     <td className="px-8 py-5 text-white/40 text-[10px] font-mono">
@@ -182,8 +182,8 @@ USING (true);`}
         {/* Status bar */}
         {!loading && (
           <div className="bg-[#00f0ff]/2 px-8 py-3 border-t border-[#00f0ff]/10 flex justify-between items-center text-[9px] font-mono text-white/20 uppercase tracking-widest">
-            <span>Registry_Status: Stable</span>
-            <span>Total_Nodes: {filteredUsers.length}</span>
+            <span>Status: Ready</span>
+            <span>Total Users: {filteredUsers.length}</span>
           </div>
         )}
       </div>
