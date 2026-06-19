@@ -12,6 +12,8 @@ interface Challenge {
   solved: boolean;
   solvesCount: number;
   flag?: string;
+  link?: string | null;
+  file_url?: string | null;
 }
 
 const INITIAL_CHALLENGES: Challenge[] = [
@@ -110,7 +112,9 @@ const Challenges: React.FC = () => {
             description: c.description || '',
             solved: false,
             solvesCount: c.solves_count || 0,
-            flag: c.flag
+            flag: c.flag,
+            link: c.link || null,
+            file_url: c.file_url || null
           }));
           setChallenges(mapped);
         }
@@ -121,7 +125,7 @@ const Challenges: React.FC = () => {
     fetchChallenges();
   }, []);
 
-  const categories = ['All', 'Web', 'Pwn', 'Crypto', 'Reverse', 'Forensics'];
+  const categories = ['All', 'Web', 'Code', 'Pwn', 'Crypto', 'Reverse', 'Forensics'];
 
   const filteredChallenges = selectedCategory === 'All'
     ? challenges
@@ -263,9 +267,46 @@ const Challenges: React.FC = () => {
               </span>
             </div>
 
-            <p className="text-[#94a3b8] font-mono text-[11px] leading-relaxed mb-6 bg-black/30 border border-[#333] p-4 rounded-lg">
-              {selectedChallenge.description}
-            </p>
+            {selectedChallenge.description && (
+              <p className="text-[#94a3b8] font-mono text-[11px] leading-relaxed mb-4 bg-black/30 border border-[#333] p-4 rounded-lg">
+                {selectedChallenge.description}
+              </p>
+            )}
+
+            {(selectedChallenge.link || selectedChallenge.file_url) && (
+              <div className="flex flex-col gap-2 mb-6">
+                <span className="text-[#64748b] text-[9px] uppercase tracking-wider font-mono">Target Resources</span>
+                <div className="flex gap-3">
+                  {selectedChallenge.link && (
+                    <a
+                      href={selectedChallenge.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#00f0ff]/10 hover:bg-[#00f0ff]/20 text-[#00f0ff] border border-[#00f0ff]/30 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-center font-mono"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Access Service
+                    </a>
+                  )}
+                  {selectedChallenge.file_url && (
+                    <a
+                      href={selectedChallenge.file_url}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#00ff66]/10 hover:bg-[#00ff66]/20 text-[#00ff66] border border-[#00ff66]/30 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer text-center font-mono"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download Files
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
 
             <form onSubmit={handleFlagSubmit} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
