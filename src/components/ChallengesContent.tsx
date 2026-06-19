@@ -107,7 +107,7 @@ const ChallengesContent: React.FC = () => {
 
   // Form State
   const [name, setName] = useState('');
-  const [points, setPoints] = useState(100);
+  const [points, setPoints] = useState<number | ''>('');
   const [category, setCategory] = useState('Web');
   const [difficulty, setDifficulty] = useState<'Easy' | 'Medium' | 'Hard' | 'Insane'>('Easy');
   const [description, setDescription] = useState('');
@@ -139,7 +139,7 @@ const ChallengesContent: React.FC = () => {
   const openCreateModal = () => {
     setEditingChallenge(null);
     setName('');
-    setPoints(100);
+    setPoints('');
     setCategory('Web');
     setDifficulty('Easy');
     setDescription('');
@@ -175,7 +175,7 @@ const ChallengesContent: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !description || !flag) {
+    if (!name || !description || !flag || points === '') {
       notify('Please fill out all required fields', 'error');
       return;
     }
@@ -388,7 +388,7 @@ const ChallengesContent: React.FC = () => {
 
             {/* Dynamic Access Key Card Preview */}
             <div className="w-full flex justify-center mb-6">
-              <div className={`w-full max-w-[340px] aspect-[1.586] rounded-xl p-5 relative overflow-hidden transition-all duration-500 shadow-2xl border ${currentConfig.border} ${currentConfig.bg} ${currentConfig.shadow}`}>
+              <div className={`w-full max-w-[340px] aspect-[1.586] rounded-xl p-5 relative overflow-hidden transition-all duration-500 shadow-2xl border ${currentConfig.border} ${currentConfig.bg} ${currentConfig.shadow} flex flex-col justify-between`}>
                 
                 {/* Grid Overlay */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:8px_8px] pointer-events-none" />
@@ -407,61 +407,38 @@ const ChallengesContent: React.FC = () => {
                 </div>
 
                 {/* Top Section */}
-                <div className="flex justify-between items-start relative z-10">
-                  <div className="flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <span className="text-[7px] font-bold text-white/20 tracking-[2px] uppercase">SHADOW NET</span>
-                  </div>
+                <div className="flex justify-between items-center relative z-10 w-full">
+                  {/* Left Side: Difficulty */}
+                  <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest border border-current bg-black/40 ${currentConfig.text}`}>
+                    {difficulty}
+                  </span>
 
-                  <div className="px-2 py-0.5 rounded border border-white/5 bg-white/5 flex items-center gap-1">
-                    <div className="w-2.5 h-2.5 text-white/40">
+                  {/* Right Side: Type/Category */}
+                  <div className="px-2 py-0.5 rounded border border-white/10 bg-white/5 flex items-center gap-1.5 text-white/70">
+                    <div className="w-2.5 h-2.5">
                       {getCategoryIcon(category, "w-full h-full")}
                     </div>
-                    <span className="text-[7px] font-black text-white/50 tracking-wider uppercase">{category}</span>
+                    <span className="text-[8px] font-bold tracking-wider uppercase">{category}</span>
                   </div>
                 </div>
 
-                {/* Metal Smart Chip */}
-                <div className="mt-4 relative z-10 w-7 h-5 rounded bg-gradient-to-br from-amber-400/40 via-amber-200/20 to-amber-500/40 border border-amber-300/30 overflow-hidden flex flex-col justify-between p-0.5">
-                  <div className="h-[0.5px] bg-amber-200/20 w-full" />
-                  <div className="flex justify-between h-1.5">
-                    <div className="w-[0.5px] bg-amber-200/20 h-full" />
-                    <div className="w-[0.5px] bg-amber-200/20 h-full" />
-                    <div className="w-[0.5px] bg-amber-200/20 h-full" />
-                  </div>
-                  <div className="h-[0.5px] bg-amber-200/20 w-full" />
-                </div>
-
-                {/* Center Node Name */}
-                <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 text-center z-10">
+                {/* Center Section: Challenge Name */}
+                <div className="text-center z-10 my-auto py-2">
                   <h4 
-                    className={`text-xs font-black tracking-[2px] uppercase truncate transition-all duration-300 ${currentConfig.text}`}
+                    className={`text-sm font-black tracking-[2px] uppercase truncate transition-all duration-300 ${currentConfig.text}`}
                     style={{
                       textShadow: `0 0 8px ${currentConfig.color}33`
                     }}
                   >
-                    {name || "TARGET_NODE_UNNAMED"}
+                    {name || "CHALLENGE_NAME"}
                   </h4>
-                  <span className="text-[6px] text-white/25 tracking-[1px] uppercase mt-0.5 block">Access Identifier</span>
                 </div>
 
-                {/* Bottom Row */}
-                <div className="absolute bottom-4 inset-x-5 flex justify-between items-end relative z-10">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[5px] text-white/20 tracking-[1px] uppercase">threat_level</span>
-                    <span className={`text-[8px] font-black tracking-widest uppercase ${currentConfig.text}`}>
-                      {difficulty}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[5px] text-white/20 tracking-[1px] uppercase">node_value</span>
-                    <span className="text-[9px] font-mono font-bold text-white tracking-widest">
-                      {points ? `${points} PTS` : "0 PTS"}
-                    </span>
-                  </div>
+                {/* Bottom Section: Points */}
+                <div className="flex justify-center items-center relative z-10 w-full">
+                  <span className="px-3 py-1 rounded-full border border-white/10 bg-black/60 text-[10px] font-mono font-bold text-white tracking-widest shadow-[inset_0_0_8px_rgba(255,255,255,0.05)]">
+                    {points !== '' ? `${points} PTS` : "— PTS"}
+                  </span>
                 </div>
 
               </div>
@@ -512,7 +489,7 @@ const ChallengesContent: React.FC = () => {
                   <input
                     type="number"
                     value={points}
-                    onChange={(e) => setPoints(Number(e.target.value))}
+                    onChange={(e) => setPoints(e.target.value === '' ? '' : Number(e.target.value))}
                     placeholder="100"
                     className="bg-black border border-[#333] p-2.5 text-[#ff3366] rounded-lg focus:outline-none focus:border-[#ff3366] transition-colors font-mono text-xs"
                     required
