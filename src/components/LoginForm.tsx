@@ -39,9 +39,11 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
       userExists = true;
     }
 
+    const genericErrorMsg = 'ACCESS_DENIED: Invalid identifier or password';
+
     if (!userExists) {
-      setStatus({ text: 'USER NOT FOUND', type: 'error' });
-      notify('User not found', 'error');
+      setStatus({ text: genericErrorMsg, type: 'error' });
+      notify(genericErrorMsg, 'error');
       setIsBusy(false);
       return;
     }
@@ -49,8 +51,8 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     const { error } = await signIn(id, pass);
 
     if (error) {
-      setStatus({ text: 'INCORRECT PASSWORD', type: 'error' });
-      notify('Incorrect password', 'error');
+      setStatus({ text: genericErrorMsg, type: 'error' });
+      notify(genericErrorMsg, 'error');
       setIsBusy(false);
     } else {
       setStatus({ text: 'WELCOME', type: 'success' });
