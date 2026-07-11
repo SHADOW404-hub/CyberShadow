@@ -26,33 +26,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Boshlang'ich sessiyani olish
     const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-        const { data: prof } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        setProfile(prof);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setUser(session.user);
+          const { data: prof } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          setProfile(prof);
+        }
+      } catch (err) {
+        console.error('Failed to initialize session:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session) {
-        const { data: prof } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        setProfile(prof);
-      } else {
-        setProfile(null);
-      }
+    let subscription: any;
+    try {
+      const res = supabase.auth.onAuthStateChange(async (_event, session) => {
+        try {
+          setUser(session?.user ?? null);
+          if (session) {
+            const { data: prof } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            setProfile(prof);
+          } else {
+            setProfile(null);
+          }
+        } catch (err) {
+          console.error('Error in auth state change handler:', err);
+        } finally {
+          setLoading(false);
+        }
+      });
+      subscription = res?.data?.subscription;
+    } catch (err) {
+      console.error('Failed to subscribe to auth state changes:', err);
       setLoading(false);
-    });
+    }
 
-    return () => subscription.unsubscribe();
+    return () => {
+      if (subscription) subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (identifier: string, pass: string) => {
