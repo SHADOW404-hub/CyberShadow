@@ -58,8 +58,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (identifier: string, pass: string) => {
     let email = identifier;
     if (!identifier.includes('@')) {
-      const { data } = await supabase.from('profiles').select('email').eq('username', identifier).maybeSingle();
-      if (data) email = data.email;
+      try {
+        const { data } = await supabase.from('profiles').select('email').eq('username', identifier).maybeSingle();
+        if (data) email = data.email;
+      } catch (err) {
+        console.warn('Username to email mapping lookup failed:', err);
+      }
     }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password: pass });

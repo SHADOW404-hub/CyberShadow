@@ -7,6 +7,8 @@ export interface Profile {
   avatar_url: string | null;
   country: string | null;
   role: UserRole;
+  score?: number;
+  challenges_solved?: number;
   created_at?: string;
 }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNotification } from '../context/NotificationContext';
 import { supabase } from '../services/supabase';
+import { useAuth } from '../context/AuthContext';
 
 interface Challenge {
   id: string;
@@ -87,6 +88,7 @@ const INITIAL_CHALLENGES: Challenge[] = [
 
 const Challenges: React.FC = () => {
   const { notify } = useNotification();
+  const { user, profile, refreshProfile } = useAuth();
   const [challenges, setChallenges] = useState<Challenge[]>(INITIAL_CHALLENGES);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
@@ -94,23 +96,34 @@ const Challenges: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchChallenges = async () => {
+    const fetchChallengesAndSolves = async () => {
       try {
-        const { data, error } = await supabase
+        const { data: dataChallenges, error: errorChallenges } = await supabase
           .from('challenges')
           .select('*');
         
-        if (error) throw error;
+        if (errorChallenges) throw errorChallenges;
+
+        let solvedIds: string[] = [];
+        if (user?.id) {
+          const { data: dataSolves } = await supabase
+            .from('solves')
+            .select('challenge_id')
+            .eq('profile_id', user.id);
+          if (dataSolves) {
+            solvedIds = dataSolves.map((s: any) => s.challenge_id);
+          }
+        }
         
-        if (data && data.length > 0) {
-          const mapped: Challenge[] = data.map((c: any) => ({
+        if (dataChallenges && dataChallenges.length > 0) {
+          const mapped: Challenge[] = dataChallenges.map((c: any) => ({
             id: c.id,
             name: c.name,
             points: c.points,
             category: c.category,
             difficulty: c.difficulty,
             description: c.description || '',
-            solved: false,
+            solved: solvedIds.includes(c.id),
             solvesCount: c.solves_count || 0,
             flag: c.flag,
             link: c.link || null,
@@ -122,8 +135,8 @@ const Challenges: React.FC = () => {
         console.error('Failed to load challenges from Supabase, using defaults:', err);
       }
     };
-    fetchChallenges();
-  }, []);
+    fetchChallengesAndSolves();
+  }, [user]);
 
   const categories = ['All', 'Web', 'Code', 'Pwn', 'Crypto', 'Reverse', 'Forensics'];
 
@@ -131,37 +144,77 @@ const Challenges: React.FC = () => {
     ? challenges
     : challenges.filter(c => c.category === selectedCategory);
 
-  const handleFlagSubmit = (e: React.FormEvent) => {
+  const handleFlagSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!flagInput.trim() || !selectedChallenge) return;
+    if (!flagInput.trim() || !selectedChallenge || !user?.id) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      const isCorrect = selectedChallenge.flag 
-        ? flagInput.trim() === selectedChallenge.flag
-        : (flagInput.toLowerCase().includes('flag{') || flagInput.includes('csh{'));
+    
+    const isCorrect = selectedChallenge.flag 
+      ? flagInput.trim() === selectedChallenge.flag
+      : (flagInput.toLowerCase().includes('flag{') || flagInput.includes('csh{'));
 
-      if (isCorrect) {
+    if (isCorrect) {
+      try {
+        // Double check if already solved
+        const { data: alreadySolved } = await supabase
+          .from('solves')
+          .select('id')
+          .eq('profile_id', user.id)
+          .eq('challenge_id', selectedChallenge.id)
+          .maybeSingle();
+
+        if (alreadySolved) {
+          notify('INFO: CHALLENGE ALREADY COMPLETED', 'info');
+          setSelectedChallenge(null);
+          setIsSubmitting(false);
+          setFlagInput('');
+          return;
+        }
+
+        // 1. Record the solve in the solves table
+        await supabase.from('solves').insert([
+          { profile_id: user.id, challenge_id: selectedChallenge.id }
+        ]);
+
+        // 2. Increment solves count in Supabase
+        await supabase.from('challenges')
+          .update({ solves_count: selectedChallenge.solvesCount + 1 })
+          .eq('id', selectedChallenge.id);
+
+        // 3. Update user profile score and solved challenges count
+        const currentScore = profile?.score || 0;
+        const currentSolvedCount = profile?.challenges_solved || 0;
+        await supabase.from('profiles')
+          .update({
+            score: currentScore + selectedChallenge.points,
+            challenges_solved: currentSolvedCount + 1
+          })
+          .eq('id', user.id);
+
+        // 4. Refresh auth profile
+        await refreshProfile();
+
         notify('SUCCESS: FLAG ACCEPTED!', 'success');
+
+        // 5. Update local state
         setChallenges(prev => prev.map(c => 
           c.id === selectedChallenge.id 
             ? { ...c, solved: true, solvesCount: c.solvesCount + 1 } 
             : c
         ));
 
-        // Update solves count in Supabase asynchronously
-        supabase.from('challenges')
-          .update({ solves_count: selectedChallenge.solvesCount + 1 })
-          .eq('id', selectedChallenge.id)
-          .then();
-
         setSelectedChallenge(null);
-      } else {
-        notify('ERROR: INVALID FLAG SEQUENCE', 'error');
+      } catch (err) {
+        console.error('Error saving solve status:', err);
+        notify('ERROR: DATABASE WRITE FAILURE', 'error');
       }
-      setIsSubmitting(false);
-      setFlagInput('');
-    }, 1000);
+    } else {
+      notify('ERROR: INVALID FLAG SEQUENCE', 'error');
+    }
+
+    setIsSubmitting(false);
+    setFlagInput('');
   };
 
   return (

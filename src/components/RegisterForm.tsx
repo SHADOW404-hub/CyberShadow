@@ -39,13 +39,21 @@ const RegisterForm: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     setIsBusy(true);
     setStatus({ text: 'VERIFYING USERNAME...', type: 'info' });
 
-    const { data: existingUser } = await supabase
-      .from('profiles')
-      .select('username')
-      .eq('username', username)
-      .maybeSingle();
+    let usernameTaken = false;
+    try {
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .maybeSingle();
+      if (existingUser) {
+        usernameTaken = true;
+      }
+    } catch (err) {
+      console.warn('Username availability check failed:', err);
+    }
 
-    if (existingUser) {
+    if (usernameTaken) {
       const msg = 'This username is already taken';
       setStatus({ text: msg, type: 'error' });
       notify(msg, 'error');

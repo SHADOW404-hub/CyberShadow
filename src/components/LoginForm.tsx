@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
-import { supabase } from '../services/supabase';
 
 const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }> = ({ onSwitch, onForgotPassword }) => {
   const [id, setId] = useState('');
@@ -26,33 +25,11 @@ const LoginForm: React.FC<{ onSwitch: () => void; onForgotPassword: () => void }
     setIsBusy(true);
     setStatus({ text: 'CHECKING CREDENTIALS...', type: 'info' });
 
-    let userExists = false;
-    try {
-      if (id.includes('@')) {
-        const { data } = await supabase.from('profiles').select('email').eq('email', id).maybeSingle();
-        if (data) userExists = true;
-      } else {
-        const { data } = await supabase.from('profiles').select('email').eq('username', id).maybeSingle();
-        if (data) userExists = true;
-      }
-    } catch (err) {
-      userExists = true;
-    }
-
-    const genericErrorMsg = 'ACCESS_DENIED: Invalid identifier or password';
-
-    if (!userExists) {
-      setStatus({ text: genericErrorMsg, type: 'error' });
-      notify(genericErrorMsg, 'error');
-      setIsBusy(false);
-      return;
-    }
-
     const { error } = await signIn(id, pass);
 
     if (error) {
-      setStatus({ text: genericErrorMsg, type: 'error' });
-      notify(genericErrorMsg, 'error');
+      setStatus({ text: error, type: 'error' });
+      notify(error, 'error');
       setIsBusy(false);
     } else {
       setStatus({ text: 'WELCOME', type: 'success' });
